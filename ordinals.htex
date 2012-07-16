@@ -1,0 +1,36 @@
+\documentclass[11pt]{article}
+
+\usepackage{alltt}
+\usepackage{holtexbasic}
+\usepackage{times}
+
+
+\title{Ordinals in HOL: \\Transfinite Arithmetic up to Cantor Normal Forms}
+\author{Michael Norrish}
+
+\begin{document}
+
+\maketitle
+
+\section{Wellorders}
+\label{sec:wellorders}
+
+We define what it is for a relation $R$ to be a wellorder:
+\begin{alltt}
+\HOLthm[def,>>]{wellorder.wellorder_def}
+\end{alltt}
+As there is at least one value satisfying this definition (the empty set will do), we use HOL's standard type definition mechanism to define a new type (family) \HOLty{:'a wellorder} that captures all of the possible wellorders over values drawn from arbitrary types \HOLty{:'a}.
+
+The critical relations over wellorders are order-isomorphism and an ordering relation.
+The first is straightforward: two wellorders are isomorphic if there is a bijective function (conjuncts two and three below) between their respective fields (conjunct one) that preserves the ordering (conjunct four):
+\begin{alltt}
+\HOLthm[def,>>]{wellorder.orderiso_def}
+\end{alltt}
+(We are overloading/abusing notation somewhat here.
+In the last conjunct, the formula \HOLtm{(x,y) WIN w1} means that the pair \HOLtm{(x,y)} is a member of the relation (a set of pairs) that ``represents'' the wellorder value \HOLtm{w1}.
+Strictly speaking, wellorders are not sets; they are in bijection with those sets that satisfy the predicate \HOLtm{wellorder} defined above.)
+
+
+\end{document}
+
+%  LocalWords:  HOL wellorder HOL's wellorders bijective bijection

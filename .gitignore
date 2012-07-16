@@ -1,0 +1,13 @@
+ordinals.pdf
+ordinals.tex
+*.aux
+*.log
+*~
+.HOLMK
+*.uo
+*.ui
+*Theory.sig
+*Theory.sml
+munger
+munger.o
+holtexbasic.sty

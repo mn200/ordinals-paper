@@ -1,0 +1,13 @@
+ORDINAL_DIR = $(HOLDIR)/examples/set-theory/hol_sets
+INCLUDES = $(ORDINAL_DIR)
+
+MASTER_THEORY = prettyPrintingTheory
+
+munger: $(dprot $(MASTER_THEORY)).uo
+	$(protect $(HOLDIR)/bin/mkmunge.exe) -o $@ $(MASTER_THEORY)
+
+ordinals.tex: ordinals.htex holtexbasic.sty overrides munger
+	./munger overrides < $< > $@
+
+holtexbasic.sty: $(HOLDIR)/src/TeX/holtexbasic.sty
+	$(CP) $< $@
