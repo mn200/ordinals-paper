@@ -30,3 +30,4 @@ l1 1 \ensuremath{\ell\sb{1}}
 l2 1 \ensuremath{\ell\sb{2}}
 l3 1 \ensuremath{\ell\sb{3}}
 orderiso 2 \ensuremath{\approx_w}
+orderlt 2 \ensuremath{\prec_w}

@@ -51,6 +51,7 @@ val _ = add_rule {block_style = (AroundEachPhrase, (PP.CONSISTENT, 0)),
                   pp_elements = [TOK "(BSUP)", TM, TOK "(ESUP)"]}
 
 val _ = set_fixity "orderiso" (Infix(NONASSOC, 450))
+val _ = set_fixity "orderlt" (Infix(NONASSOC, 450))
 val _ = overload_on("fld", ``elsOf : 'a wellorder -> 'a set``)
 val _ = overload_on("IN", ``λp w. p IN strict (destWO w)``)
 
