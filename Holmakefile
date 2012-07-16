@@ -3,11 +3,14 @@ INCLUDES = $(ORDINAL_DIR)
 
 MASTER_THEORY = prettyPrintingTheory
 
-munger: $(dprot $(MASTER_THEORY)).uo
-	$(protect $(HOLDIR)/bin/mkmunge.exe) -o $@ $(MASTER_THEORY)
+EXTRA_CLEANS = holtexbasic.sty munger munger.o ordinals.tex \
+               ordinals.pdf ordinals.log ordinals.aux
 
 ordinals.tex: ordinals.htex holtexbasic.sty overrides munger
 	./munger overrides < $< > $@
 
-holtexbasic.sty: $(HOLDIR)/src/TeX/holtexbasic.sty
-	$(CP) $< $@
+munger: $(dprot $(MASTER_THEORY)).uo
+	$(protect $(HOLDIR)/bin/mkmunge.exe) -o $@ $(MASTER_THEORY)
+
+holtexbasic.sty: $(dprot $(HOLDIR)/src/TeX/holtexbasic.sty)
+	$(CP) $(protect $<) $@
