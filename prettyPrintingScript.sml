@@ -53,7 +53,14 @@ val _ = add_rule {block_style = (AroundEachPhrase, (PP.CONSISTENT, 0)),
 val _ = set_fixity "orderiso" (Infix(NONASSOC, 450))
 val _ = set_fixity "orderlt" (Infix(NONASSOC, 450))
 val _ = overload_on("fld", ``elsOf : 'a wellorder -> 'a set``)
-val _ = overload_on("IN", ``λp w. p IN strict (destWO w)``)
+val _ = clear_overloads_on "WIN"
+
+val _ = overload_on("strictWO", ``λw. strict (destWO w)``)
+val _ = add_rule {block_style = (AroundEachPhrase, (PP.CONSISTENT, 0)),
+                  paren_style = OnlyIfNecessary,
+                  fixity = Suffix 2100,
+                  term_name = "strictWO",
+                  pp_elements = [TOK "(STRICT)"]}
 
 val _ = export_theory()
 
