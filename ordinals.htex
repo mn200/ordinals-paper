@@ -21,26 +21,36 @@ We define what it is for a relation $R$ to be a wellorder:
 \end{alltt}
 As there is at least one value satisfying this definition (the empty set will do), we use HOL's standard type definition mechanism to define a new type (family) \HOLty{:'a wellorder} that captures all of the possible wellorders over values drawn from arbitrary types \HOLty{:'a}.
 
-The critical relations over wellorders are order-isomorphism and the linear ordering relation on wellorders.
+The critical relations over wellorders are order-isomorphism and the relation that orders them linearly.
 The first is straightforward: two wellorders are isomorphic if there is a bijective function (conjuncts two and three below) between their respective fields (conjunct one) that preserves the ordering (conjunct four):
 \begin{alltt}
 \HOLthm[def,>>]{wellorder.orderiso_def}
 \end{alltt}
 (We are overloading/abusing notation somewhat here.
-In the last conjunct, the formula \HOLtm{(x,y) WIN w1} means that the pair \HOLtm{(x,y)} is a member of the relation (a set of pairs) that ``represents'' the wellorder value \HOLtm{w1}.
+In the last conjunct, the formula \HOLtm{(x,y) IN strictWO w1} means that the pair \HOLtm{(x,y)} is strict inequality in the relation (a set of pairs) that ``represents'' the wellorder value \HOLtm{w1}.
+Alternatively, read \HOLtm{(x,y) IN strictWO w1} as ``$x$ is strictly less than $y$ in \HOLtm{w1}''.
 Strictly speaking, wellorders are not themselves sets; rather, they are in bijection with those sets that satisfy the predicate \HOLtm{wellorder} defined above.)
+
+It is straightforward to show that order-isomorphism is indeed an equivalence relation, confirming it as a suitable basis for a subsequent quotienting.
 
 The definition of the ordering relation on wellorders (written \HOLtm{w1 orderlt w1}) depends on the \HOLtm{wobound} function that truncates a wellorder so that it only includes those elements below a particular point.
 There are two important theorems about \HOLtm{wobound}:
 \begin{alltt}
 \HOLthm[>>,width=60]{wellorder.WIN_wobound}
-\HOLthm[>>,width=45]{wellorder.wobound2}
+\HOLthm[>>,width=45,x/a,y/b]{wellorder.wobound2}
 \end{alltt}
 Then the definition:
 \begin{alltt}
 \HOLthm[>>,def]{wellorder.orderlt_def}
 \end{alltt}
+Transitivity of \HOLtm[nodollarparens]{(orderlt)} follows from the transitivity of order-isomorphism and the second result about \HOLtm{wobound} above.
+Well-foundedness for \HOLtm[nodollarparens]{(orderlt)} follows easily from the well-foundedness of the underlying relation.
+Well-foundedness is also the basis for the proof that \HOLtm[nodollarparens]{(orderlt)} is irreflexive: if it were not, then the order-preserving bijection between the whole of the wellorder and its sub-segment would give rise to an infinite descending chain.
 
+The last important property of \HOLtm[nodollarparens]{(orderlt)} is that it is trichotomous.
+\begin{alltt}
+\HOLthm[>>]{wellorder.orderlt_trichotomy}
+\end{alltt}
 
 \end{document}
 
