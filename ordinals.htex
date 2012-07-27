@@ -51,6 +51,7 @@ The last important property of \HOLtm[nodollarparens]{(orderlt)} is that it is t
 \begin{alltt}
 \HOLthm[>>]{wellorder.orderlt_trichotomy}
 \end{alltt}
+The proof of this result is probably the most involved of this section.
 
 \end{document}
 
