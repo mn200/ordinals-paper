@@ -1,12 +1,13 @@
-\documentclass[11pt]{article}
+\documentclass[11pt]{llncs}
 
 \usepackage{alltt}
 \usepackage{holtexbasic}
 \usepackage{times}
 
 
-\title{Ordinals in HOL: \\Transfinite Arithmetic up to Cantor Normal Forms}
+\title{Ordinals in HOL: Transfinite Arithmetic up to $\omega_1$}
 \author{Michael Norrish}
+\institute{Canberra Research Lab., NICTA}
 
 \begin{document}
 
@@ -47,11 +48,30 @@ Transitivity of \HOLtm[nodollarparens]{(orderlt)} follows from the transitivity 
 Well-foundedness for \HOLtm[nodollarparens]{(orderlt)} follows easily from the well-foundedness of the underlying relation.
 Well-foundedness is also the basis for the proof that \HOLtm[nodollarparens]{(orderlt)} is irreflexive: if it were not, then the order-preserving bijection between the whole of the wellorder and its sub-segment would give rise to an infinite descending chain.
 
+\begin{theorem}
 The last important property of \HOLtm[nodollarparens]{(orderlt)} is that it is trichotomous.
 \begin{alltt}
 \HOLthm[>>]{wellorder.orderlt_trichotomy}
 \end{alltt}
+\end{theorem}
 The proof of this result is probably the most involved of this section.
+\begin{proof}
+Let $w_1$ be a wellorder over \HOLty{:'a}, and $w_2$ a wellorder over \HOLty{:'b}.
+We define a function $f$ of HOL type \HOLty{:'a -> 'b option} by well-founded recursion.
+The value of \HOLtm{f(x)} is \HOLtm{SOME y} when $y$ is the least element in $w_2$ not in the image of $f$ applied to all elements less than $x$.
+If there is no such $y$, then \HOLtm{f(x) = NONE}.
+If there is an $x$ such that \HOLtm{f(x) = NONE}, then $w_2$ is less than $w_1$, and the least value $x$ such that \HOLtm{f x = NONE} is exactly the bound needed to demonstrate this.
+If $f$ never has value \HOLtm{NONE}, then $w_2$ is at least as big as $w_1$.
+If the image of $f$ on the elements of $w_1$ is all the elements of $w_2$, then $f$ is the bijection we need to demonstrate isomorphism of $w_1$ and $w_2$.
+Otherwise, there is an element of $w_2$ not in the image of $f$.
+Take the least such element to be the bound demonstrating \HOLtm{w1 orderlt w2}.
+\end{proof}
+
+\section{Constructing the Ordinals}
+
+With \HOLtm[nodollarparens]{(orderiso)} an equivalence relation, we can quotient all possible wellorders over the type \HOLty{:'a}, giving us a natural type of ordinals over \HOLty{:'a}.
+However, if \HOLty{:'a} is a finite type (inhabited by only finitely many values), then there are only finitely many ordinals over this type.
+It's clear that all the interesting ordinals are those over infinite types, and so our approach is to make the new type \HOLty{:'a ordinal} a quotient over
 
 \end{document}
 
