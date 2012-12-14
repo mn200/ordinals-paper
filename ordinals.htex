@@ -71,7 +71,11 @@ Take the least such element to be the bound demonstrating \HOLtm{w1 orderlt w2}.
 
 With \HOLtm[nodollarparens]{(orderiso)} an equivalence relation, we can quotient all possible wellorders over the type \HOLty{:'a}, giving us a natural type of ordinals over \HOLty{:'a}.
 However, if \HOLty{:'a} is a finite type (inhabited by only finitely many values), then there are only finitely many ordinals over this type.
-It's clear that all the interesting ordinals are those over infinite types, and so our approach is to make the new type \HOLty{:'a ordinal} a quotient over
+It's clear that all the interesting ordinals are those over infinite types, and so our approach is to make the new type \HOLty{:'a ordinal} a quotient over the wellorders over the sum type \texttt{$\alpha$ + num}.
+This type-form is abbreviated as the ``\texttt{inf}'' constructor, so that it appears in the theorems to come as \HOLty{:'a inf}.
+
+This construction means that the distinct types \HOLty{:unit ordinal}, \HOLty{:bool ordinal} and \HOLty{:num ordinal} will all be isomorphic (they will all be copies of the countable ordinals).
+On the other hand, the type \HOLty{:(num -> bool) ordinal} is large enough to include the first uncountable ordinal, $\omega_1$.
 
 \end{document}
 
