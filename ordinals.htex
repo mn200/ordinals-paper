@@ -77,6 +77,24 @@ This type-form is abbreviated as the ``\texttt{inf}'' constructor, so that it ap
 This construction means that the distinct types \HOLty{:unit ordinal}, \HOLty{:bool ordinal} and \HOLty{:num ordinal} will all be isomorphic (they will all be copies of the countable ordinals).
 On the other hand, the type \HOLty{:(num -> bool) ordinal} is large enough to include the first uncountable ordinal, $\omega_1$.
 
+When we perform the quotient, creating the new type \HOLty{:'a ordinal}, we also lift \HOLtm{$orderlt} to the new type, defining \HOLtm{$ordlt}.
+This relation inherits the irreflexivity, transitivity, well-foundedness and trichotomy results of \HOLtm{$orderlt}.
+Using these, it is trivial to show that the ordinals themselves form a well-order.
+
+Well-foundedness also allows the definition of a ``least'' operator for ordinals:
+\begin{alltt}
+\HOLthm[>>,def,showtypes,width=50]{ordinal.oleast_def}
+\end{alltt}
+
+We give this constant ``binder syntax'', allowing us to write comprehension style-terms such as
+\begin{alltt}
+  \HOLtm{oleast x. y < x}
+\end{alltt}
+(The above is the definition of the successor of \HOLtm{y}.)
+
+
+\subsection{Supremum}
+
 \end{document}
 
 %  LocalWords:  HOL wellorder HOL's wellorders bijective bijection
