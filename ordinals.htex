@@ -90,10 +90,27 @@ We give this constant ``binder syntax'', allowing us to write comprehension styl
 \begin{alltt}
   \HOLtm{oleast x. y < x}
 \end{alltt}
-(The above is the definition of the successor of \HOLtm{y}.)
+(the definition of the successor of \HOLtm{y}), and
+\begin{alltt}
+  \HOLtm{oleast x. T}
+\end{alltt}
+(the definition of the ordinal $0$).
 
 
 \subsection{Supremum}
+
+\section{Arithmetic}
+
+\section{Cantor Normal Forms}
+
+\subsection{$\epsilon_0$}
+
+\section{Uncountable Ordinals}
+
+\section{Validating Algorithms on ACL2's Ordinals}
+
+\section{Another Model}
+
 
 \end{document}
 
