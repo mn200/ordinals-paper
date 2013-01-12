@@ -25,7 +25,9 @@ We define what it is for a relation $R$ to be a wellorder:
 As there is at least one value satisfying this definition (the empty set will do), we use HOL's standard type definition mechanism to define a new type (family) \HOLty{:'a wellorder} that captures all of the possible wellorders over values drawn from arbitrary types \HOLty{:'a}.
 
 The critical relations over wellorders are order-isomorphism and the relation that orders them linearly.
-The first is straightforward: two wellorders are isomorphic if there is a bijective function (conjuncts two and three below) between their respective fields (conjunct one) that preserves the ordering (conjunct four):
+The first is straightforward.
+
+\begin{definition} Two wellorders are isomorphic if there is a bijective function (conjuncts two and three below) between their respective fields (conjunct one) that preserves the ordering (conjunct four):
 \begin{alltt}
 \HOLthm[def,>>]{wellorder.orderiso_def}
 \end{alltt}
@@ -33,19 +35,22 @@ The first is straightforward: two wellorders are isomorphic if there is a biject
 In the last conjunct, the formula \HOLtm{(x,y) IN strictWO w1} means that the pair \HOLtm{(x,y)} is strict inequality in the relation (a set of pairs) that ``represents'' the wellorder value \HOLtm{w1}.
 Alternatively, read \HOLtm{(x,y) IN strictWO w1} as ``$x$ is strictly less than $y$ in \HOLtm{w1}''.
 Strictly speaking, wellorders are not themselves sets; rather, they are in bijection with those sets that satisfy the predicate \HOLtm{wellorder} defined above.)
+\end{definition}
 
 It is straightforward to show that order-isomorphism is indeed an equivalence relation, confirming it as a suitable basis for a subsequent quotienting.
 
-The definition of the ordering relation on wellorders (written \HOLtm{w1 orderlt w1}) depends on the \HOLtm{wobound} function that truncates a wellorder so that it only includes those elements below a particular point.
+The definition of the ordering relation on wellorders depends on the \HOLtm{wobound} function that truncates a wellorder so that it only includes those elements below a particular point.
 There are two important theorems about \HOLtm{wobound}:
 \begin{alltt}
 \HOLthm[>>,width=60]{wellorder.WIN_wobound}
 \HOLthm[>>,width=45,x/a,y/b]{wellorder.wobound2}
 \end{alltt}
-Then the definition:
+\begin{definition}
+The ordering relation for wellorders (written \HOLtm{w1 orderlt w1}) can then be defined
 \begin{alltt}
 \HOLthm[>>,def]{wellorder.orderlt_def}
 \end{alltt}
+\end{definition}
 Transitivity of \HOLtm[nodollarparens]{(orderlt)} follows from the transitivity of order-isomorphism and the second result about \HOLtm{wobound} above.
 Well-foundedness for \HOLtm[nodollarparens]{(orderlt)} follows easily from the well-foundedness of the underlying relation.
 Well-foundedness is also the basis for the proof that \HOLtm[nodollarparens]{(orderlt)} is irreflexive: if it were not, then the order-preserving bijection between the whole of the wellorder and its sub-segment would give rise to an infinite descending chain.
@@ -83,10 +88,12 @@ When we perform the quotient, creating the new type \HOLty{:'a ordinal}, we also
 This relation inherits the irreflexivity, transitivity, well-foundedness and trichotomy results of \HOLtm{$orderlt}.
 Using these, it is trivial to show that the ordinals themselves form a well-order.
 
+\begin{definition}
 Well-foundedness also allows the definition of a ``least'' operator for ordinals:
 \begin{alltt}
 \HOLthm[>>,def,showtypes,width=50]{ordinal.oleast_def}
 \end{alltt}
+\end{definition}
 
 We give this constant ``binder syntax'', allowing us to write comprehension style-terms such as
 \begin{alltt}
@@ -99,18 +106,21 @@ We give this constant ``binder syntax'', allowing us to write comprehension styl
 (the definition of the ordinal $0$).
 A copy of the natural numbers is a good starting point, and it is straightforward to inject HOL's existing type with a new constant \texttt{\& : \HOLty[of]{fromNat}}.
 Syntax overloading also allows ordinal numerals (\HOLtm{0}, \HOLtm{1}, \HOLtm{2}, \emph{etc}).
-To get trans-finite values, the notion of \emph{supremum} is required.
+To get transfinite values, the notion of \emph{supremum} is required.
 
 \subsection{Cardinality Arguments and Supremum}
 
 We want a constant \HOLtm[showtypes]{sup}, that takes a set of ordinals as an argument and returns their supremum.
 In our setting, this function can't be well-defined on all possible arguments: when passed the universal set of all $\alpha$-ordinals, there is no possible value to return.
 Nonetheless, we can characterise those situations when \HOLtm{sup s} does have a reasonable value.
-First, its definition:
+
+\begin{definition}
+The supremum of a set is the least element not in its collective predecessors.
 \begin{alltt}
 \HOLthm[def,>>,oset/ordset]{ordinal.sup_def}
 \end{alltt}
 (The \HOLtm{preds} function returns the set of an ordinal's predecessors. \HOLtm{BIGUNION} returns the union of a set of sets.)
+\end{definition}
 
 The key results (to come) are
 \begin{enumerate}
