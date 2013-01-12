@@ -133,7 +133,11 @@ Then any wellorder $w$ over the type \HOLty{:'a inf} is isomorphic to the segmen
 \end{alltt}
 \end{theorem}
 
-\begin{proof} INCLUDE PROOF? \end{proof}
+\begin{proof}
+By contradiction.
+If the two wellorders are not isomorphic, they by trichotomy of \HOLtm{(orderlt)}, one is smaller than the other.
+NEEDS FINISHING.
+\end{proof}
 
 This result means that the predecessors of any given \HOLty{:'a ordinal} must be equinumerous to a wellorder over \HOLty{:'a inf}.
 
