@@ -16,10 +16,12 @@
 \section{Wellorders}
 \label{sec:wellorders}
 
+\begin{definition}
 We define what it is for a relation $R$ to be a wellorder:
 \begin{alltt}
 \HOLthm[def,>>]{wellorder.wellorder_def}
 \end{alltt}
+\end{definition}
 As there is at least one value satisfying this definition (the empty set will do), we use HOL's standard type definition mechanism to define a new type (family) \HOLty{:'a wellorder} that captures all of the possible wellorders over values drawn from arbitrary types \HOLty{:'a}.
 
 The critical relations over wellorders are order-isomorphism and the relation that orders them linearly.
@@ -95,9 +97,29 @@ We give this constant ``binder syntax'', allowing us to write comprehension styl
   \HOLtm{oleast x. T}
 \end{alltt}
 (the definition of the ordinal $0$).
+A copy of the natural numbers is a good starting point, and it is straightforward to inject HOL's existing type with a new constant \texttt{\& : \HOLty[of]{fromNat}}.
+Syntax overloading also allows ordinal numerals (\HOLtm{0}, \HOLtm{1}, \HOLtm{2}, \emph{etc}).
+To get trans-finite values, the notion of \emph{supremum} is required.
+
+\subsection{Cardinality Arguments and Supremum}
+
+We want a constant \HOLtm[showtypes]{sup}, that takes a set of ordinals as an argument and returns their supremum.
+In our setting, this function can't be well-defined on all possible arguments: when passed the universal set of all $\alpha$-ordinals, there is no possible value to return.
+Nonetheless, we can characterise those situations when \HOLtm{sup s} does have a reasonable value.
+First, its definition:
+\begin{alltt}
+\HOLthm[def,>>,oset/ordset]{ordinal.sup_def}
+\end{alltt}
+(The \HOLtm{preds} function returns the set of an ordinal's predecessors. \HOLtm{BIGUNION} returns the union of a set of sets.)
+
+The key results (to come) are
+\begin{enumerate}
+\item the cardinality of the type \HOLty{:'a ordinal} is strictly greater than that of \HOLty{:'a inf}; and
+\item the cardinality of the predecessors of an ordinal is no greater than that of \HOLty{:'a inf}
+\end{enumerate}
+This then means that
 
 
-\subsection{Supremum}
 
 \section{Arithmetic}
 
