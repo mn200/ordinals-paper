@@ -61,7 +61,7 @@ The last important property of \HOLtm[nodollarparens]{(orderlt)} is that it is t
 \HOLthm[>>]{wellorder.orderlt_trichotomy}
 \end{alltt}
 \end{theorem}
-The proof of this result is probably the most involved of this section.
+The proof of this result is the most involved of this section.
 \begin{proof}
 Let $w_1$ be a wellorder over \HOLty{:'a}, and $w_2$ a wellorder over \HOLty{:'b}.
 We define a function $f$ of HOL type \HOLty{:'a -> 'b option} by well-founded recursion.
