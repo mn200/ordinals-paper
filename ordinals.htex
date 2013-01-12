@@ -93,9 +93,10 @@ Well-foundedness also allows the definition of a ``least'' operator for ordinals
 \begin{alltt}
 \HOLthm[>>,def,showtypes,width=50]{ordinal.oleast_def}
 \end{alltt}
+This is well-defined as long as the predicate (or set) $P$ is not everywhere false (the empty set).
 \end{definition}
 
-We give this constant ``binder syntax'', allowing us to write comprehension style-terms such as
+\noindent Syntactically, we make this constant a ``binder'', allowing us to write comprehension style-terms such as
 \begin{alltt}
   \HOLtm{oleast x. y < x}
 \end{alltt}
@@ -125,10 +126,10 @@ First, the definition: the supremum of a set is the least element not in its col
 To characterise the reasonable arguments to \HOLtm{sup}, we need two further theorems.
 
 \begin{theorem}
-Let \HOLtm{allOrds} be the wellorder of all the ordinals (ordered by \HOLtm{ordlt}).
+Let \HOLtm{allOrds} be the wellorder of all the $\alpha$-ordinals (ordered by \HOLtm{ordlt}).
 Then any wellorder $w$ over the type \HOLty{:'a inf} is isomorphic to the segment of \HOLtm{allOrds} below the element of \HOLty{:'a ordinal} to which the quotienting (\HOLtm{mkOrdinal}) maps $w$.
 \begin{alltt}
-\HOLthm[showtypes]{ordinal.wellorder_ordinal_isomorphism}
+\HOLthm[showtypes,width=55]{ordinal.wellorder_ordinal_isomorphism}
 \end{alltt}
 \end{theorem}
 
