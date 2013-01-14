@@ -5,13 +5,42 @@
 \usepackage{times}
 
 
-\title{Ordinals in HOL: Transfinite Arithmetic up to $\omega_1$}
+\title{Ordinals in HOL: Transfinite Arithmetic \\
+up to (and beyond) $\omega_1$}
 \author{Michael Norrish}
 \institute{Canberra Research Lab., NICTA}
 
 \begin{document}
 
 \maketitle
+
+\section{Introduction}
+
+\subsubsection{Contribution}
+
+This work makes a particular contribution in
+\begin{itemize}
+\item its definition of ordinal supremum,
+\item the fact that the mechanised notion of ordinal is polymorphic in an underlying universe type (allowing ordinals of large cardinality), and
+\item its mechanised validation of the ACL2 algorithms for ordinal arithmetic
+\end{itemize}
+
+\subsubsection{HOL4 Notation and Theorems}
+All statements appearing with a turnstile ($\vdash$) are HOL4 theorems, automatically pretty-printed to \LaTeX{} from the relevant theory in the HOL4 development.
+Notation specific to this paper is explained as it is introduced.
+Otherwise, HOL4 supports a notation that is a generally pleasant combination of quantifiers ($\forall$, $\exists$) and functional programming ($\lambda$ for function abstraction, juxtaposition for function application).
+
+The option type \HOLty{:'a option}, often used to encode partial functions, includes values \HOLtm{NONE}, and \HOLtm{SOME x} for all possible values \HOLtm{x} of type \HOLty{:'a}.
+
+Sets and characteristic functions (of type \HOLty{:'a -> bool} for element type \HOLty{:'a}) are identified.
+Sets can be enumerated between braces (\HOLtm{{1;2;3\}}).
+The notation also allows comprehensions such as \HOLtm{{x | x < 6\}}.
+Sets support standard operations such as union~\HOLtm{(UNION)}, intersection~\HOLtm{(INTER)}, difference~\HOLtm{(DIFF)} and element removal~(\HOLtm{s DELETE e}).
+We write \HOLtm{IMAGE f s} for the image of the set $s$ under function $f$, and \HOLtm{BIJ f s1 s2} means that function $f$ is a bijection between sets $s_1$ and $s_2$.
+Transfinite cardinality reasoning is expressed with \HOLtm{s <<= t} (``there is an injection from $s$ to $t$''), and \HOLtm{s ≈ t} (``there is a bijection between $s$ and $t$'').
+
+Hilbert choice is available through the epsilon notation.
+Read \HOLtm{@x. P x} as ``the $x$ that satisfies (predicate) $P$''.
 
 \section{Wellorders}
 \label{sec:wellorders}
