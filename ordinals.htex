@@ -8,7 +8,7 @@
 \title{Ordinals in HOL: Transfinite Arithmetic \\
 up to (and beyond) $\omega_1$}
 \author{Michael Norrish}
-\institute{Canberra Research Lab., NICTA}
+\institute{\email{Michael.Norrish@nicta.com.au}\\Canberra Research Lab., NICTA\thanks{NICTA is funded by the Australian Government as represented by the Department of Broadband, Communications and the Digital Economy and the Australian Research Council through the ICT Centre of Excellence program.}}
 
 \begin{document}
 
