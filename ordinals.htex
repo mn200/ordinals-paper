@@ -210,7 +210,7 @@ Transitivity of \HOLtm{(orderiso)} then gives us that \HOLtm{allOrds} is less th
 These results then combine to give us the important characterising theorem about \HOLtm{sup}:
 \begin{theorem}
 \label{thm:sup-thm}
-As long as the cardinality of set $s$ is not greater than that of \HOLtm{univ(:'a inf)}, an arbitrary ordinal \HOLtm{α} is less than that set's supremum iff there is an element of $s$ that is bigger than \HOLtm{α}.
+As long as the cardinality of the set $s$ is not greater than that of \HOLtm{univ(:'a inf)}, an arbitrary ordinal \HOLtm{α} is less than that set's supremum iff there is an element of $s$ that is bigger than \HOLtm{α}.
 \begin{alltt}
 \HOLthm[width=55]{ordinal.sup_thm}
 \end{alltt}
