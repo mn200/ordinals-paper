@@ -69,9 +69,10 @@ The value of \HOLtm{f(x)} is \HOLtm{SOME y} when $y$ is the least element in $w_
 If there is no such $y$, then \HOLtm{f(x) = NONE}.
 If there is an $x$ such that \HOLtm{f(x) = NONE}, then $w_2$ is less than $w_1$, and the least value $x$ such that \HOLtm{f x = NONE} is exactly the bound needed to demonstrate this.
 If $f$ never has value \HOLtm{NONE}, then $w_2$ is at least as big as $w_1$.
-If the image of $f$ on the elements of $w_1$ is all the elements of $w_2$, then $f$ is the bijection we need to demonstrate isomorphism of $w_1$ and $w_2$.
+If the image of $f$ on the elements of $w_1$ is all the elements of $w_2$, then $f$ is the bijection we need to demonstrate order-isomorphism of $w_1$ and $w_2$.
 Otherwise, there is an element of $w_2$ not in the image of $f$.
 Take the least such element to be the bound demonstrating \HOLtm{w1 orderlt w2}.
+\hfill{$\Box$}
 \end{proof}
 
 \section{Constructing the Ordinals}
@@ -107,16 +108,47 @@ This is well-defined as long as the predicate (or set) $P$ is not everywhere fal
 (the definition of the ordinal $0$).
 A copy of the natural numbers is a good starting point, and it is straightforward to inject HOL's existing type with a new constant \texttt{\& : \HOLty[of]{fromNat}}.
 Syntax overloading also allows ordinal numerals (\HOLtm{0}, \HOLtm{1}, \HOLtm{2}, \emph{etc}).
-To get transfinite values, the notion of \emph{supremum} is required.
+To get transfinite values, the notion of \emph{supremum} is required, for which see Section~\ref{sec:supremum}.
+
+\subsubsection{Predecessors and the von Neumann encoding}
+
+\begin{definition}
+\label{defn:preds}
+Write \HOLtm{preds α} to denote the set of all predecessors of an ordinal.
+\end{definition}
+
+\begin{definition}
+\label{defn:dward-closed}
+Define the notion of a set being downward closed:
+\begin{alltt}
+\HOLthm{ordinal.downward_closed_def}
+\end{alltt}
+\end{definition}
+
+\begin{theorem}
+\label{thm:preds-bij}
+von Neumann famously characterised the ordinal numbers as those sets equal to their own predecessors.
+We cannot achieve the same end in HOL, but we can observe that there is a bijection between all possible ordinals and all but one of the downward closed sets of ordinals.
+The one omission is the universal set.
+
+The bijection is given by the \HOLtm{preds} function:
+\begin{alltt}
+\HOLthm{ordinal.preds_bij}
+\end{alltt}
+\end{theorem}
+
 
 \subsection{Cardinality Arguments and Supremum}
+\label{sec:supremum}
 
 We want a constant \HOLtm[showtypes]{sup}, that takes a set of ordinals as an argument and returns their supremum.
 In our setting, this function can't be well-defined on all possible arguments: when passed the universal set of all $\alpha$-ordinals, there is no possible value to return.
 Nonetheless, we can characterise those situations when \HOLtm{sup s} does have a reasonable value.
+First, the definition:
 
 \begin{definition}
-First, the definition: the supremum of a set is the least element not in its collective predecessors.
+\label{defn:sup}
+The supremum of a set is the least element not in the set's collective predecessors.
 \begin{alltt}
 \HOLthm[def,>>,oset/ordset]{ordinal.sup_def}
 \end{alltt}
@@ -126,22 +158,35 @@ First, the definition: the supremum of a set is the least element not in its col
 To characterise the reasonable arguments to \HOLtm{sup}, we need two further theorems.
 
 \begin{theorem}
+\label{thm:wellorder-allOrds}
 Let \HOLtm{allOrds} be the wellorder of all the $\alpha$-ordinals (ordered by \HOLtm{ordlt}).
-Then any wellorder $w$ over the type \HOLty{:'a inf} is isomorphic to the segment of \HOLtm{allOrds} below the element of \HOLty{:'a ordinal} to which the quotienting (\HOLtm{mkOrdinal}) maps $w$.
+Then any wellorder $w$ over the type \HOLty{:'a inf} is order-isomorphic to the segment of \HOLtm{allOrds} below the element of \HOLty{:'a ordinal} to which the quotienting (\HOLtm{mkOrdinal}) maps $w$.
 \begin{alltt}
 \HOLthm[showtypes,width=55]{ordinal.wellorder_ordinal_isomorphism}
 \end{alltt}
+Note how $w$ is a wellorder over \HOLty{:'a inf}, but that the right-hand side of the isomorphism is the wellorder over all possible \emph{ordinals} over \HOLty{:'a inf}.
 \end{theorem}
 
 \begin{proof}
 By contradiction.
-If the two wellorders are not isomorphic, they by trichotomy of \HOLtm{(orderlt)}, one is smaller than the other.
-NEEDS FINISHING.
+Then, by well-foundedness, there is a least $w$ where the isomorphism doesn't hold.
+If the two wellorders are not order-isomorphic, one is smaller than the other, by trichotomy of \HOLtm{(orderlt)}.
+If $w$ is smaller, there is a bound $b$ (an ordinal) in \HOLtm{allOrds}, smaller still than \HOLtm{mkOrdinal w}, such that
+\[
+\HOLtm{w orderiso (wobound b allOrds)}
+\]
+There is a wellorder \HOLtm{bw} that is a member of $b$'s equivalence class.
+As \HOLtm{(orderlt)} is reflected by \HOLtm{(ordlt)}, we have \HOLtm{bw orderlt w}.
+Because \HOLtm{w} was least, \HOLtm{bw} must be order-isomorphic to \HOLtm{wobound b allOrds}.
+So, \HOLtm{bw} and \HOLtm{w} are order-isomorphic to the same ordinal (\HOLtm{wobound b allOrds}), but \HOLtm{bw orderlt w}, contradicting the irreflexivity of \HOLtm{(orderlt)}.
+The other direction (when \HOLtm{w} is larger) is similar.
+\hfill{$\Box$}
 \end{proof}
 
 This result means that the predecessors of any given \HOLty{:'a ordinal} must be equinumerous to a wellorder over \HOLty{:'a inf}.
 
 \begin{corollary}
+\label{clly:card-preds}
 The predecessors of any ordinal have cardinality no greater than that of (all of) the underlying set, \HOLty{:'a inf}.
 \begin{alltt}
 \HOLthm[a/ord]{ordinal.preds_inj_univ}
@@ -154,13 +199,42 @@ The cardinality of all of the type \HOLty{:'a ordinal} is strictly greater than 
 \HOLthm{ordinal.univ_ord_greater_cardinal}
 \end{alltt}
 \end{theorem}
+\begin{proof} By contradiction.
+If \HOLtm{univ(:'a ordinal) <<= univ(:'a inf)}, then the injection from left-to-right copies the wellorder \HOLtm{allOrds} into a wellorder \HOLtm{wo} of type \HOLty{:'a inf wellorder}.
+This gives \HOLtm{(orderiso) allOrds wo}.
+By Theorem~\ref{thm:wellorder-allOrds}, this \HOLtm{wo} is also order-isomorphic to \HOLtm{wobound (mkOrdinal wo) allOrds}.
+Transitivity of \HOLtm{(orderiso)} then gives us that \HOLtm{allOrds} is less than itself, which is impossible.
+\hfill{$\Box$}
+\end{proof}
+
+These results then combine to give us the important characterising theorem about \HOLtm{sup}:
+\begin{theorem}
+\label{thm:sup-thm}
+As long as the cardinality of set $s$ is not greater than that of \HOLtm{univ(:'a inf)}, an arbitrary ordinal \HOLtm{α} is less than that set's supremum iff there is an element of $s$ that is bigger than \HOLtm{α}.
+\begin{alltt}
+\HOLthm[width=55]{ordinal.sup_thm}
+\end{alltt}
+\end{theorem}
+\begin{proof}
+\HOLtm{sup} takes the union of all the predecessors of all the elements of $s$ (Definition~\ref{defn:sup}).
+Let $\kappa$ be the cardinality of \HOLtm{univ(:'a inf)}.
+By corollary~\ref{clly:card-preds} above, the predecessors of each element of set $s$ have that cardinality.
+If $s$ has no more than the same cardinality, then from the fact that $\kappa \times \kappa \approx \kappa$, the union calculated in the definition of \HOLtm{sup} cannot be the universal set of all possible ordinals.
+There must then be a least ordinal not within that union, and so \HOLtm{sup s} will be well-defined.
+
+Moreover, the set of all the combined predecessors (call it \HOLtm{ps}) is also downward closed, and so, by Theorem~\ref{thm:preds-bij}, there must be an ordinal $\alpha$ whose predecessors are exactly \HOLtm{ps}.
+So, \HOLtm{sup s = α}, and it is easy to show that the theorem's characterisation of its predecessors is correct.
+\hfill{$\Box$}
+\end{proof}
 
 
 \section{Arithmetic}
 
+
+
 \section{Cantor Normal Forms}
 
-\subsection{$\epsilon_0$}
+\subsection{Fixpoints and $\epsilon_0$}
 
 \section{Uncountable Ordinals}
 
@@ -172,3 +246,4 @@ The cardinality of all of the type \HOLty{:'a ordinal} is strictly greater than 
 \end{document}
 
 %  LocalWords:  HOL wellorder HOL's wellorders bijective bijection cardinality
+% LocalWords:  wobound ordlt
