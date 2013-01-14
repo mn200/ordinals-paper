@@ -247,8 +247,8 @@ As long as the cardinality of the set $s$ is not greater than that of \HOLtm{uni
 \begin{proof}
 \HOLtm{sup} takes the union of all the predecessors of all the elements of $s$ (Definition~\ref{defn:sup}).
 Let $\kappa$ be the cardinality of \HOLtm{univ(:'a inf)}.
-By corollary~\ref{clly:card-preds} above, the predecessors of each element of set $s$ have that cardinality.
-If $s$ has no more than the same cardinality, then from the fact that $\kappa \times \kappa \approx \kappa$, the union calculated in the definition of \HOLtm{sup} cannot be the universal set of all possible ordinals.
+By Corollary~\ref{clly:card-preds} above, the predecessors of each element of set $s$ have that cardinality.
+If $s$ has no more than the same cardinality, then from the fact that $\kappa \times \kappa \approx \kappa$ and Theorem~\ref{thm:wellorder-allOrds} above, the union calculated in the definition of \HOLtm{sup} cannot be the universal set of all possible ordinals.
 There must then be a least ordinal not within that union, and so \HOLtm{sup s} will be well-defined.
 
 Moreover, the set of all the combined predecessors (call it \HOLtm{ps}) is also downward closed, and so, by Theorem~\ref{thm:preds-bij}, there must be an ordinal $\alpha$ whose predecessors are exactly \HOLtm{ps}.
