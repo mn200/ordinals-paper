@@ -192,7 +192,7 @@ To characterise the reasonable arguments to \HOLtm{sup}, we need two further the
 Let \HOLtm{allOrds} be the wellorder of all the $\alpha$-ordinals (ordered by \HOLtm{ordlt}).
 Then any wellorder $w$ over the type \HOLty{:'a inf} is order-isomorphic to the segment of \HOLtm{allOrds} below the element of \HOLty{:'a ordinal} to which the quotienting (\HOLtm{mkOrdinal}) maps $w$.
 \begin{alltt}
-\HOLthm[showtypes,width=55]{ordinal.wellorder_ordinal_isomorphism}
+\HOLthm[showtypes,width=60]{ordinal.wellorder_ordinal_isomorphism}
 \end{alltt}
 Note how $w$ is a wellorder over \HOLty{:'a inf}, but that the right-hand side of the isomorphism is the wellorder over all possible \emph{ordinals} over \HOLty{:'a inf}.
 \end{theorem}
