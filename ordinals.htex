@@ -3,7 +3,7 @@
 \usepackage{alltt}
 \usepackage{holtexbasic}
 \usepackage{times}
-
+\renewcommand{\HOLConst}[1]{\textsf{#1}}
 
 \title{Ordinals in HOL: Transfinite Arithmetic \\
 up to (and beyond) $\omega_1$}
