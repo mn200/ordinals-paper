@@ -32,3 +32,4 @@ orderiso 2 \ensuremath{\approx_w}
 orderlt 2 \ensuremath{\prec_w}
 | 1 \ensuremath{\mid}
 |BarRight 1 \ensuremath{|}
+oleast 6 \HOLConst{oleast}
