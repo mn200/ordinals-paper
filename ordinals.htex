@@ -3,7 +3,9 @@
 \usepackage{alltt}
 \usepackage{holtexbasic}
 \usepackage{times}
-\renewcommand{\HOLConst}[1]{\textsf{\small #1}}
+\renewcommand{\HOLConst}[1]{\textsf{\upshape\small #1}}
+\renewcommand{\HOLinline}[1]{\ensuremath{#1}}
+\newenvironment{holmath}{\[\begin{array}{l}}{\end{array}\]}
 
 \title{Ordinals in HOL: Transfinite Arithmetic \\
 up to (and beyond) $\omega_1$}
@@ -33,7 +35,7 @@ Otherwise, HOL4 supports a notation that is a generally pleasant combination of 
 The option type \HOLty{:'a option}, often used to encode partial functions, includes values \HOLtm{NONE}, and \HOLtm{SOME x} for all possible values \HOLtm{x} of type \HOLty{:'a}.
 
 Sets and characteristic functions (of type \HOLty{:'a -> bool} for element type \HOLty{:'a}) are identified.
-Sets can be enumerated between braces (\HOLtm{{1;2;3\}}).
+Sets can be enumerated between braces (\HOLtm[mc]{{1;2;3\}}).
 The notation also allows comprehensions such as \HOLtm{{x | x < 6\}}.
 Sets support standard operations such as union~\HOLtm{(UNION)}, intersection~\HOLtm{(INTER)}, difference~\HOLtm{(DIFF)} and element removal~(\HOLtm{s DELETE e}).
 We write \HOLtm{IMAGE f s} for the image of the set $s$ under function $f$, and \HOLtm{BIJ f s1 s2} means that function $f$ is a bijection between sets $s_1$ and $s_2$.
@@ -48,9 +50,9 @@ Read \HOLtm{@x. P x} as ``the $x$ that satisfies (predicate) $P$''.
 
 \begin{definition}
 We define what it is for a relation $R$ to be a wellorder:
-\begin{alltt}
-\HOLthm[def,>>]{wellorder.wellorder_def}
-\end{alltt}
+\begin{holmath}
+\HOLthm[def,width=65]{wellorder.wellorder_def}
+\end{holmath}
 \end{definition}
 As there is at least one value satisfying this definition (the empty set will do), we use HOL's standard type definition mechanism to define a new type (family) \HOLty{:'a wellorder} that captures all of the possible wellorders over values drawn from arbitrary types \HOLty{:'a}.
 
@@ -58,9 +60,9 @@ The critical relations over wellorders are order-isomorphism and the relation th
 The first is straightforward.
 
 \begin{definition} Two wellorders are isomorphic if there is a bijective function (conjuncts two and three below) between their respective fields (conjunct one) that preserves the ordering (conjunct four):
-\begin{alltt}
+\begin{holmath}
 \HOLthm[def,>>]{wellorder.orderiso_def}
-\end{alltt}
+\end{holmath}
 (We are using HOL's overloading facilities to abuse notation somewhat here.
 In the last conjunct, the formula \HOLtm{(x,y) IN strictWO w1} means that the pair \HOLtm{(x,y)} is strict inequality in the relation (a set of pairs) that ``represents'' the wellorder value \HOLtm{w1}.
 Alternatively, read \HOLtm{(x,y) IN strictWO w1} as ``$x$ is strictly less than $y$ in \HOLtm{w1}''.
@@ -71,15 +73,15 @@ It is straightforward to show that order-isomorphism is indeed an equivalence re
 
 The definition of the ordering relation on wellorders depends on the \HOLtm{wobound} function that truncates a wellorder so that it only includes those elements below a particular point.
 There are two important theorems about \HOLtm{wobound}:
-\begin{alltt}
-\HOLthm[>>,width=60]{wellorder.WIN_wobound}
-\HOLthm[>>,width=45,x/a,y/b]{wellorder.wobound2}
-\end{alltt}
+\begin{holmath}
+\HOLthm[nostile,width=60]{wellorder.WIN_wobound} \\[2mm]
+\HOLthm[nostile,width=70,x/a,y/b]{wellorder.wobound2}
+\end{holmath}
 \begin{definition}
 The ordering relation for wellorders (written \HOLtm{w1 orderlt w1}) can then be defined
-\begin{alltt}
+\begin{holmath}
 \HOLthm[>>,def]{wellorder.orderlt_def}
-\end{alltt}
+\end{holmath}
 \end{definition}
 Transitivity of \HOLtm[nodollarparens]{(orderlt)} follows from the transitivity of order-isomorphism and the second result about \HOLtm{wobound} above.
 Well-foundedness for \HOLtm[nodollarparens]{(orderlt)} follows easily from the well-foundedness of the underlying relation.
@@ -87,9 +89,9 @@ Well-foundedness is also the basis for the proof that \HOLtm[nodollarparens]{(or
 
 \begin{theorem}
 The last important property of \HOLtm[nodollarparens]{(orderlt)} is that it is trichotomous.
-\begin{alltt}
+\begin{holmath}
 \HOLthm[>>]{wellorder.orderlt_trichotomy}
-\end{alltt}
+\end{holmath}
 \end{theorem}
 The proof of this result is the most involved of this section.
 \begin{proof}
@@ -121,22 +123,15 @@ Using these, it is trivial to show that the ordinals themselves form a well-orde
 
 \begin{definition}
 Well-foundedness also allows the definition of a ``least'' operator for ordinals:
-\begin{alltt}
+\begin{holmath}
 \HOLthm[>>,def,showtypes,width=50]{ordinal.oleast_def}
-\end{alltt}
+\end{holmath}
 This is well-defined as long as the predicate (or set) $P$ is not everywhere false (the empty set).
 \end{definition}
 
-\noindent Syntactically, we make this constant a ``binder'', allowing us to write comprehension style-terms such as
-\begin{alltt}
-  \HOLtm{oleast x. y < x}
-\end{alltt}
-(the definition of the successor of \HOLtm{y}), and
-\begin{alltt}
-  \HOLtm{oleast x. T}
-\end{alltt}
-(the definition of the ordinal $0$).
-A copy of the natural numbers is a good starting point, and it is straightforward to inject HOL's existing type with a new constant \texttt{\& : \HOLty[of]{fromNat}}.
+\noindent Syntactically, we make this constant a ``binder'', allowing us to write comprehension style-terms such as $(\HOLtm{oleast x. y < x})$ (the definition of the successor of \HOLtm{y}), and $(\HOLtm{oleast x. T})$ (the definition of the ordinal $0$).
+
+A copy of the natural numbers is a good starting point, and it is straightforward to inject HOL's existing type with a new constant \HOLinline{\HOLConst{\&}\,{:}}\HOLty[of]{fromNat}.
 Syntax overloading also allows ordinal numerals (\HOLtm{0}, \HOLtm{1}, \HOLtm{2}, \emph{etc}).
 To get transfinite values, the notion of \emph{supremum} is required, for which see Section~\ref{sec:supremum}.
 
@@ -150,9 +145,9 @@ Write \HOLtm{preds α} to denote the set of all predecessors of an ordinal.
 \begin{definition}
 \label{defn:dward-closed}
 Define the notion of a set being downward closed:
-\begin{alltt}
+\begin{holmath}
 \HOLthm{ordinal.downward_closed_def}
-\end{alltt}
+\end{holmath}
 \end{definition}
 
 \begin{theorem}
@@ -162,9 +157,9 @@ We cannot achieve the same end in HOL, but we can observe that there is a biject
 The one omission is the universal set.
 
 The bijection is given by the \HOLtm{preds} function:
-\begin{alltt}
-\HOLthm{ordinal.preds_bij}
-\end{alltt}
+\begin{holmath}
+\HOLthm[m;c,width=70]{ordinal.preds_bij}
+\end{holmath}
 \end{theorem}
 
 
@@ -179,9 +174,9 @@ First, the definition:
 \begin{definition}
 \label{defn:sup}
 The supremum of a set is the least element not in the set's collective predecessors.
-\begin{alltt}
+\begin{holmath}
 \HOLthm[def,>>,oset/ordset]{ordinal.sup_def}
-\end{alltt}
+\end{holmath}
 (The \HOLtm{preds} function returns the set of an ordinal's predecessors. \HOLtm{BIGUNION} returns the union of a set of sets.)
 \end{definition}
 
@@ -191,9 +186,11 @@ To characterise the reasonable arguments to \HOLtm{sup}, we need two further the
 \label{thm:wellorder-allOrds}
 Let \HOLtm{allOrds} be the wellorder of all the $\alpha$-ordinals (ordered by \HOLtm{ordlt}).
 Then any wellorder $w$ over the type \HOLty{:'a inf} is order-isomorphic to the segment of \HOLtm{allOrds} below the element of \HOLty{:'a ordinal} to which the quotienting (\HOLtm{mkOrdinal}) maps $w$.
-\begin{alltt}
-\HOLthm[showtypes,width=60]{ordinal.wellorder_ordinal_isomorphism}
-\end{alltt}
+\[
+\vdash \;\begin{array}[t]{l}
+\HOLthm[showtypes,width=70,nostile]{ordinal.wellorder_ordinal_isomorphism}
+\end{array}
+\]
 Note how $w$ is a wellorder over \HOLty{:'a inf}, but that the right-hand side of the isomorphism is the wellorder over all possible \emph{ordinals} over \HOLty{:'a inf}.
 \end{theorem}
 
@@ -202,9 +199,9 @@ By contradiction.
 Then, by well-foundedness, there is a least $w$ where the isomorphism doesn't hold.
 If the two wellorders are not order-isomorphic, one is smaller than the other, by trichotomy of \HOLtm{(orderlt)}.
 If $w$ is smaller, there is a bound $b$ (an ordinal) in \HOLtm{allOrds}, smaller still than \HOLtm{mkOrdinal w}, such that
-\[
-\HOLtm{w orderiso (wobound b allOrds)}
-\]
+\begin{holmath}
+\HOLtm[alltt]{w orderiso (wobound b allOrds)}
+\end{holmath}
 There is a wellorder \HOLtm{bw} that is a member of $b$'s equivalence class.
 As \HOLtm{(orderlt)} is reflected by \HOLtm{(ordlt)}, we have \HOLtm{bw orderlt w}.
 Because \HOLtm{w} was least, \HOLtm{bw} must be order-isomorphic to \HOLtm{wobound b allOrds}.
@@ -218,16 +215,16 @@ This result means that the predecessors of any given \HOLty{:'a ordinal} must be
 \begin{corollary}
 \label{clly:card-preds}
 The predecessors of any ordinal have cardinality no greater than that of (all of) the underlying set, \HOLty{:'a inf}.
-\begin{alltt}
-\HOLthm[a/ord]{ordinal.preds_inj_univ}
-\end{alltt}
+\begin{holmath}
+\HOLthm[m;;,a/ord]{ordinal.preds_inj_univ}
+\end{holmath}
 \end{corollary}
 
 \begin{theorem}
 The cardinality of all of the type \HOLty{:'a ordinal} is strictly greater than that of the type \HOLty{:'a inf}.
-\begin{alltt}
+\begin{holmath}
 \HOLthm{ordinal.univ_ord_greater_cardinal}
-\end{alltt}
+\end{holmath}
 \end{theorem}
 \begin{proof} By contradiction.
 If \HOLtm{univ(:'a ordinal) <<= univ(:'a inf)}, then the injection from left-to-right copies the wellorder \HOLtm{allOrds} into a wellorder \HOLtm{wo} of type \HOLty{:'a inf wellorder}.
@@ -241,9 +238,10 @@ These results then combine to give us the important characterising theorem about
 \begin{theorem}
 \label{thm:sup-thm}
 As long as the cardinality of the set $s$ is not greater than that of \HOLtm{univ(:'a inf)}, an arbitrary ordinal \HOLtm{α} is less than that set's supremum iff there is an element of $s$ that is bigger than \HOLtm{α}.
-\begin{alltt}
-\HOLthm[width=55]{ordinal.sup_thm}
-\end{alltt}
+\[
+\vdash \;
+\begin{array}[t]{l}\HOLthm[width=55,nostile]{ordinal.sup_thm}\end{array}
+\]
 \end{theorem}
 \begin{proof}
 \HOLtm{sup} takes the union of all the predecessors of all the elements of $s$ (Definition~\ref{defn:sup}).

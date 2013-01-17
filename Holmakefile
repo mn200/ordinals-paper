@@ -7,7 +7,7 @@ EXTRA_CLEANS = holtexbasic.sty munger munger.o ordinals.tex \
                ordinals.pdf ordinals.log ordinals.aux
 
 ordinals.tex: ordinals.htex holtexbasic.sty overrides munger
-	./munger overrides < $< > $@
+	./munger -mc overrides < $< > $@
 
 munger: $(dprot $(MASTER_THEORY)).uo
 	$(protect $(HOLDIR)/bin/mkmunge.exe) -o $@ $(MASTER_THEORY)
