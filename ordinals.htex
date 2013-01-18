@@ -1,11 +1,13 @@
 \documentclass[11pt]{llncs}
-
+\usepackage[T1]{fontenc}
 \usepackage{alltt}
 \usepackage{holtexbasic}
 \usepackage{times}
 \renewcommand{\HOLConst}[1]{\textsf{\upshape\small #1}}
+\renewcommand{\HOLTyOp}[1]{\mbox{\usefont{T1}{bch}{m}{it}\small #1}}
 \renewcommand{\HOLinline}[1]{\ensuremath{#1}}
-\newenvironment{holmath}{\[\begin{array}{l}}{\end{array}\]}
+
+\newenvironment{holmath}{\begin{displaymath}\begin{array}{l}}{\end{array}\end{displaymath}\ignorespacesafterend}
 
 \title{Ordinals in HOL: Transfinite Arithmetic \\
 up to (and beyond) $\omega_1$}
@@ -73,10 +75,13 @@ It is straightforward to show that order-isomorphism is indeed an equivalence re
 
 The definition of the ordering relation on wellorders depends on the \HOLtm{wobound} function that truncates a wellorder so that it only includes those elements below a particular point.
 There are two important theorems about \HOLtm{wobound}:
-\begin{holmath}
-\HOLthm[nostile,width=60]{wellorder.WIN_wobound} \\[2mm]
-\HOLthm[nostile,width=70,x/a,y/b]{wellorder.wobound2}
-\end{holmath}
+\[
+\begin{array}{l}
+\vdash\;\begin{array}[t]{l}
+\HOLthm[nostile,width=60]{wellorder.WIN_wobound}\end{array} \\[2mm]
+\vdash\;\begin{array}[t]{l}\HOLthm[nostile,width=70,x/a,y/b]{wellorder.wobound2}\end{array}
+\end{array}
+\]
 \begin{definition}
 The ordering relation for wellorders (written \HOLtm{w1 orderlt w1}) can then be defined
 \begin{holmath}
@@ -111,8 +116,8 @@ Take the least such element to be the bound demonstrating \HOLtm{w1 orderlt w2}.
 
 With \HOLtm[nodollarparens]{(orderiso)} an equivalence relation, we can quotient all possible wellorders over the type \HOLty{:'a}, giving us a natural type of ordinals over \HOLty{:'a}.
 However, if \HOLty{:'a} is a finite type (inhabited by only finitely many values), then there are only finitely many ordinals over this type.
-It's clear that all the interesting ordinals are those over infinite types, and so our approach is to make the new type \HOLty{:'a ordinal} a quotient over the wellorders over the sum type \texttt{$\alpha$ + num}.
-This type-form is abbreviated as the ``\texttt{inf}'' constructor, so that it appears in the theorems to come as \HOLty{:'a inf}.
+It's clear that all the interesting ordinals are those over infinite types, and so our approach is to make the new type \HOLty{:'a ordinal} a quotient over the wellorders over the sum type \HOLinline{\alpha + \HOLTyOp{num}}.
+This type-form is abbreviated as the ``\HOLTyOp{inf}\rule{1mm}{0mm}'' constructor, so that it appears in the theorems to come as \HOLty{:'a inf}.
 
 This construction means that the distinct types \HOLty{:unit ordinal}, \HOLty{:bool ordinal} and \HOLty{:num ordinal} will all be isomorphic (they will all be copies of the countable ordinals).
 On the other hand, the type \HOLty{:(num -> bool) ordinal} is large enough to include the first uncountable ordinal, $\omega_1$.
@@ -124,7 +129,7 @@ Using these, it is trivial to show that the ordinals themselves form a well-orde
 \begin{definition}
 Well-foundedness also allows the definition of a ``least'' operator for ordinals:
 \begin{holmath}
-\HOLthm[>>,def,showtypes,width=50]{ordinal.oleast_def}
+\HOLthm[def,showtypes]{ordinal.oleast_def}
 \end{holmath}
 This is well-defined as long as the predicate (or set) $P$ is not everywhere false (the empty set).
 \end{definition}
