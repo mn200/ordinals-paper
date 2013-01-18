@@ -28,7 +28,7 @@ l 1 \ensuremath{\ell}
 l1 1 \ensuremath{\ell\sb{1}}
 l2 1 \ensuremath{\ell\sb{2}}
 l3 1 \ensuremath{\ell\sb{3}}
-orderiso 2 \ensuremath{\approx_w}
+orderiso 2 \ensuremath{{\approx_w}}
 orderlt 2 {\ensuremath{\prec_w}}
 = 1 {\ensuremath{=}}
 | 1 {\ensuremath{\mid}}
@@ -41,3 +41,4 @@ univ 1 \ensuremath{{\cal U}}
 ≼ 1 \ensuremath{{\HOLTokenIsPrefix}}
 DELETE 6 \HOLConst{DELETE}
 ∀ 1 \ensuremath{{\forall}}
+⇔ 2 \ensuremath{{\iff}}
