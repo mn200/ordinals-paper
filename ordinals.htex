@@ -108,8 +108,7 @@ If there is an $x$ such that \HOLtm{f(x) = NONE}, then $w_2$ is less than $w_1$,
 If $f$ never has value \HOLtm{NONE}, then $w_2$ is at least as big as $w_1$.
 If the image of $f$ on the elements of $w_1$ is all the elements of $w_2$, then $f$ is the bijection we need to demonstrate order-isomorphism of $w_1$ and $w_2$.
 Otherwise, there is an element of $w_2$ not in the image of $f$.
-Take the least such element to be the bound demonstrating \HOLtm{w1 orderlt w2}.
-\hfill{$\Box$}
+Take the least such element to be the bound demonstrating \HOLtm{w1 orderlt w2}.\qed
 \end{proof}
 
 \section{Constructing the Ordinals}
@@ -212,7 +211,7 @@ As \HOLtm{(orderlt)} is reflected by \HOLtm{(ordlt)}, we have \HOLtm{bw orderlt 
 Because \HOLtm{w} was least, \HOLtm{bw} must be order-isomorphic to \HOLtm{wobound b allOrds}.
 So, \HOLtm{bw} and \HOLtm{w} are order-isomorphic to the same ordinal (\HOLtm{wobound b allOrds}), but \HOLtm{bw orderlt w}, contradicting the irreflexivity of \HOLtm{(orderlt)}.
 The other direction (when \HOLtm{w} is larger) is similar.
-\hfill{$\Box$}
+\qed
 \end{proof}
 
 This result means that the predecessors of any given \HOLty{:'a ordinal} must be equinumerous to a wellorder over \HOLty{:'a inf}.
@@ -236,7 +235,7 @@ If \HOLtm{univ(:'a ordinal) <<= univ(:'a inf)}, then the injection from left-to-
 This gives \HOLtm{(orderiso) allOrds wo}.
 By Theorem~\ref{thm:wellorder-allOrds}, this \HOLtm{wo} is also order-isomorphic to \HOLtm{wobound (mkOrdinal wo) allOrds}.
 Transitivity of \HOLtm{(orderiso)} then gives us that \HOLtm{allOrds} is less than itself, which is impossible.
-\hfill{$\Box$}
+\qed
 \end{proof}
 
 These results then combine to give us the important characterising theorem about \HOLtm{sup}:
@@ -257,7 +256,7 @@ There must then be a least ordinal not within that union, and so \HOLtm{sup s} w
 
 Moreover, the set of all the combined predecessors (call it \HOLtm{ps}) is also downward closed, and so, by Theorem~\ref{thm:preds-bij}, there must be an ordinal $\alpha$ whose predecessors are exactly \HOLtm{ps}.
 So, \HOLtm{sup s = α}, and it is easy to show that the theorem's characterisation of its predecessors is correct.
-\hfill{$\Box$}
+\qed
 \end{proof}
 
 
