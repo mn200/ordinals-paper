@@ -283,6 +283,14 @@ If \HOLtm{omax (preds α)} is \HOLtm{NONE}, we abbreviate this as \HOLtm{islimit
 %\end{holmath}
 \end{definition}
 
+\begin{theorem}
+\label{thm:lt-omega}
+One simple consequence of these definitions is that every natural number is less than \HOLtm{ω}, and that only the natural numbers are less than \HOLtm{ω}:
+\begin{holmath}
+\HOLthm[showtypes,width=85]{ordinal.lt_omega}
+\end{holmath}
+\end{theorem}
+
 \section{Arithmetic}
 
 \begin{theorem}
