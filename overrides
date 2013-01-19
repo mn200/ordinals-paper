@@ -1,12 +1,12 @@
 (BANG) 1 \ensuremath{!}
 (BSUB) 0 \HOLBeginSub{}
-(BSUP) 0 \HOLBeginSup{}
+(BSUP) 0 \sp{
 (BSUP1) 0 \HOLBeginSup{}
 (BSUP2) 0 \HOLBeginSup{}
 (BSUP3) 0 \HOLBeginSup{}
 (DOTS) 2 \ensuremath{\dots}
 (ESUB) 0 \HOLEndSub{}
-(ESUP) 0 \HOLEndSup{}
+(ESUP) 0 }
 (ESUP1) 0 \HOLEndSup{}
 (ESUP2) 0 \HOLEndSup{}
 (ESUP3) 0 \HOLEndSup{}
@@ -42,3 +42,6 @@ univ 1 \ensuremath{{\cal U}}
 DELETE 6 \HOLConst{DELETE}
 ∀ 1 \ensuremath{{\forall}}
 ⇔ 2 \ensuremath{{\iff}}
+& 1 \HOLConst{\&}
+{ 1 \ensuremath{{\{}}
+} 1 \ensuremath{{\}}}
