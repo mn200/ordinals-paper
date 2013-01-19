@@ -1,6 +1,7 @@
 \documentclass[11pt]{llncs}
 \usepackage[T1]{fontenc}
 \usepackage{alltt}
+\usepackage{url}
 \usepackage{holtexbasic}
 \usepackage{times}
 \renewcommand{\HOLConst}[1]{{\textsf{\upshape\small #1}}}
@@ -341,6 +342,14 @@ For example, the proofs (by induction) that addition and multiplication are asso
 
 \section{Another Model}
 
+
+\section{Conclusion}
+
+\paragraph{Availability}
+The bulk of the HOL4 theory of the ordinals described here is in the current release of HOL4 (Kananaskis-8, as of this writing).
+The validation of the ACL2 arithmetic algorithms was all pushed to the HOL4 repository by the time of commit \texttt{f2126545747}, and will be in the next official release.
+The HOL4 repository is at \url{github.com/mn200/HOL}.
+The sources for this paper are at \url{github.com/mn200/ordinals-paper}.
 
 \end{document}
 
