@@ -46,3 +46,4 @@ DELETE 6 \HOLConst{DELETE}
 { 1 \ensuremath{{\{}}
 } 1 \ensuremath{{\}}}
 ' 1 \textrm{`}
+λ 1 \ensuremath{{\lambda}}
