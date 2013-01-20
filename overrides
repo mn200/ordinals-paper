@@ -50,3 +50,4 @@ DELETE 6 \HOLConst{DELETE}
 % 1 \textrm{\upshape mod}
 * 1 \ensuremath{{\cdot}}
 < 1 \ensuremath{{<}}
+| 1 \ensuremath{{\,\mid\,}}
