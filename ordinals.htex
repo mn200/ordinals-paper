@@ -7,6 +7,7 @@
 \renewcommand{\HOLConst}[1]{{\textsf{\upshape\small #1}}}
 \renewcommand{\HOLTyOp}[1]{\mbox{\fontencoding{T1}\fontfamily{bch}\fontseries{m}\fontshape{it}\fontsize{9.5}{10}\selectfont #1}}
 \renewcommand{\HOLinline}[1]{\ensuremath{#1}}
+\newcommand{\holthmenv}[1]{\begin{array}[t]{l}#1\end{array}}
 
 \newenvironment{holmath}{\begin{displaymath}\begin{array}{l}}{\end{array}\end{displaymath}\ignorespacesafterend}
 
@@ -79,9 +80,8 @@ The definition of the ordering relation on wellorders depends on the \HOLtm{wobo
 There are two important theorems about \HOLtm{wobound}:
 \[
 \begin{array}{l}
-\vdash\;\begin{array}[t]{l}
-\HOLthm[nostile,width=60]{wellorder.WIN_wobound}\end{array} \\[2mm]
-\vdash\;\begin{array}[t]{l}\HOLthm[nostile,width=70,x/a,y/b]{wellorder.wobound2}\end{array}
+\vdash\;\holthmenv{\HOLthm[nostile,width=60]{wellorder.WIN_wobound}} \\[2mm]
+\vdash\;\holthmenv{\HOLthm[nostile,width=70,x/a,y/b]{wellorder.wobound2}}
 \end{array}
 \]
 \begin{definition}
@@ -192,9 +192,7 @@ To characterise the reasonable arguments to \HOLtm{sup}, we need two further the
 Let \HOLtm{allOrds} be the wellorder of all the $\alpha$-ordinals (ordered by \HOLtm{ordlt}).
 Then any wellorder $w$ over the type \HOLty{:'a inf} is order-isomorphic to the segment of \HOLtm{allOrds} below the element of \HOLty{:'a ordinal} to which the quotienting (\HOLtm{mkOrdinal}) maps $w$.
 \[
-\vdash \;\begin{array}[t]{l}
-\HOLthm[showtypes,width=70,nostile]{ordinal.wellorder_ordinal_isomorphism}
-\end{array}
+\vdash \;\holthmenv{\HOLthm[showtypes,width=70,nostile]{ordinal.wellorder_ordinal_isomorphism}}
 \]
 Note how $w$ is a wellorder over \HOLty{:'a inf}, but that the right-hand side of the isomorphism is the wellorder over all possible \emph{ordinals} over \HOLty{:'a inf}.
 \end{theorem}
@@ -245,7 +243,7 @@ These results then combine to give us the important characterising theorem about
 As long as the cardinality of the set $s$ is not greater than that of \HOLtm{univ(:'a inf)}, an arbitrary ordinal \HOLtm{α} is less than that set's supremum iff there is an element of $s$ that is bigger than \HOLtm{α}.
 \[
 \vdash \;
-\begin{array}[t]{l}\HOLthm[width=55,nostile]{ordinal.sup_thm}\end{array}
+\holthmenv{\HOLthm[width=55,nostile]{ordinal.sup_thm}}
 \]
 \end{theorem}
 \begin{proof}
