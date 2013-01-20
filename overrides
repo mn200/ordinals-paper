@@ -51,3 +51,4 @@ DELETE 6 \HOLConst{DELETE}
 * 1 \ensuremath{{\cdot}}
 < 1 \ensuremath{{<}}
 | 1 \ensuremath{{\,\mid\,}}
+(NIL) 2 \ensuremath{{[\,]}}

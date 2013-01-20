@@ -17,6 +17,8 @@ in
   save_thm("divmod_unique", CONJ ordDIV_UNIQUE0 ordMOD_UNIQUE0 |> DISCH_ALL)
 end
 
+val _ = overload_on("(NIL)", ``list$NIL``)
+
 val _ = add_rule {block_style = (AroundEachPhrase, (PP.CONSISTENT, 0)),
                   paren_style = OnlyIfNecessary,
                   fixity = Closefix,

@@ -47,6 +47,9 @@ We write \HOLtm{IMAGE f s} for the image of the set $s$ under function $f$, and 
 The universal set (over a given HOL type, \HOLty{:'a} say) is written \HOLtm{univ(:'a)}.
 Transfinite cardinality reasoning is expressed with \HOLtm{s <<= t} (``there is an injection from $s$ to $t$''), and \HOLtm{s ≈ t} (``there is a bijection between $s$ and $t$'').
 
+Lists can be explicitly enumerated between square brackets, as in \HOLtm{[1;2;3]}.
+When we construct a new list from a head element \HOLtm{h} and a tail/remainder list \HOLtm{t}, we write \HOLtm{h::t}, read ``\HOLtm{h} cons \HOLtm{t}''.
+
 Hilbert choice is available through the epsilon notation.
 Read \HOLtm{@x. P x} as ``the $x$ that satisfies (predicate) $P$''.
 
