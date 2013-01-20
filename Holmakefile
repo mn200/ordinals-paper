@@ -6,6 +6,9 @@ MASTER_THEORY = prettyPrintingTheory
 EXTRA_CLEANS = holtexbasic.sty munger munger.o ordinals.tex \
                ordinals.pdf ordinals.log ordinals.aux
 
+ordinals.pdf: ordinals.tex
+	pdflatex $<
+
 ordinals.tex: ordinals.htex holtexbasic.sty overrides munger
 	./munger -mc overrides < $< > $@
 
