@@ -31,7 +31,6 @@ l3 1 \ensuremath{\ell\sb{3}}
 orderiso 2 \ensuremath{{\approx_w}}
 orderlt 2 {\ensuremath{\prec_w}}
 = 1 {\ensuremath{=}}
-| 1 {\ensuremath{\mid}}
 |BarRight 1 \ensuremath{|}
 oleast 6 \HOLConst{oleast}
 -> 2 \ensuremath{{\rightarrow}}
@@ -41,6 +40,7 @@ univ 1 \ensuremath{{\cal U}}
 ≼ 1 \ensuremath{{\HOLTokenIsPrefix}}
 DELETE 6 \HOLConst{DELETE}
 ∀ 1 \ensuremath{{\forall}}
+∃ 1 \ensuremath{{\exists}}
 ⇔ 2 \ensuremath{{\iff}}
 & 1 \HOLConst{\&}
 { 1 \ensuremath{{\{}}
