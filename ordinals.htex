@@ -299,7 +299,7 @@ However, we can now recast this in a more palatable form, one that makes the ord
 \[
 \vdash \;
 \begin{array}[t]{l}
-\HOLthm[nosp,nostile,showtypes,width=85,a/α]{ordinal.ord_RECURSION}
+\HOLthm[nosp,nostile,showtypes,width=80,a/α]{ordinal.ord_RECURSION}
 \end{array}
 \]
 \end{theorem}
@@ -307,7 +307,7 @@ This recursion theorem allows the user to specify three cases: \HOLtm{z}, a valu
 The \HOLtm{lf} function is given the original limit ordinal \HOLtm{a} as well as the set of all the values given by recursive calls of \HOLtm{h} on \HOLtm{a}'s predecessors.
 
 The recursion theorem is all we need to define ordinal addition, multiplication and exponentiation.
-Working out the details for addition (\HOLtm{a + b}), we will recurse on the second argument, and let \HOLtm{z} be the value \HOLtm{a}, \HOLtm{sf} be $(\HOLtm{\x r. ordSUC r})$, and \HOLtm{lf} be $(\HOLtm{\x rs. sup rs})$.
+Working out the details for addition (\HOLtm{a + b}): we will recurse on \HOLtm{b}, and let \HOLtm{z} be the value \HOLtm{a}, \HOLtm{sf} be $(\HOLtm{\x r. ordSUC r})$, and \HOLtm{lf} be $(\HOLtm{\x rs. sup rs})$.
 This gives
 \begin{definition}
 Ordinal addition:

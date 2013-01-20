@@ -62,6 +62,9 @@ val _ = add_rule {block_style = (AroundEachPhrase, (PP.CONSISTENT, 0)),
                   term_name = "strictWO",
                   pp_elements = [TOK "(STRICT)"]}
 
+val _ = overload_on ("'", ``IMAGE``)
+val _ = set_fixity "'" (Infixl 2000);
+
 val _ = disable_tyabbrev_printing "cord"
 
 val _ = export_theory()
