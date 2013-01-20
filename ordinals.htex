@@ -338,7 +338,25 @@ Rewriting with these theorems allows operators such as \HOLtm{(+)} to move under
 For example, the proofs (by induction) that addition and multiplication are associative are greatly simplified by their continuity theorems.
 
 \subsection{Division and Modulus}
+The various arithmetic operations on ordinal numbers do not satisfy many of the typical properties of number systems.
+For example, addition and multiplication are not commutative.
+However, they do both enjoy cancellation properties for common arguments on the left:
+\[
+\begin{array}{l}
+\holthmenv{\HOLthm{ordinal.ordADD_RIGHT_CANCEL}} \\[2mm]
+\holthmenv{\HOLthm{ordinal.ordMULT_CANCEL_R}}
+\end{array}
+\]
+These then lead to the existence of unique divisors and remainders.
 
+\begin{theorem}
+\[
+\begin{array}{l}
+\holthmenv{\HOLthm{ordinal.ordDIVISION}} \\[2mm]
+\holthmenv{\HOLthm{prettyPrinting.divmod_unique}}
+\end{array}
+\]
+\end{theorem}
 
 \section{Cantor Normal Forms}
 

@@ -47,5 +47,6 @@ DELETE 6 \HOLConst{DELETE}
 } 1 \ensuremath{{\}}}
 ' 1 \textrm{`}
 λ 1 \ensuremath{{\lambda}}
+% 1 \textrm{\upshape mod}
 * 1 \ensuremath{{\cdot}}
 < 1 \ensuremath{{<}}

@@ -7,9 +7,15 @@ open HolKernel boolLib Parse bossLib
 (* open dependent theories *)
 open ordinalTheory
 
-val foo = ``(foo:num -> num) bar``
-
 val _ = new_theory "prettyPrinting"
+
+(* theorems recast for inclusion in paper *)
+val divmod_unique = let
+  val ordDIV_UNIQUE0 = ordDIV_UNIQUE |> SPEC_ALL |> UNDISCH_ALL
+  val ordMOD_UNIQUE0 = ordMOD_UNIQUE |> SPEC_ALL |> UNDISCH_ALL
+in
+  save_thm("divmod_unique", CONJ ordDIV_UNIQUE0 ordMOD_UNIQUE0 |> DISCH_ALL)
+end
 
 val _ = add_rule {block_style = (AroundEachPhrase, (PP.CONSISTENT, 0)),
                   paren_style = OnlyIfNecessary,
