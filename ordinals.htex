@@ -347,7 +347,7 @@ However, they do both enjoy cancellation properties for common arguments on the 
 \holthmenv{\HOLthm{ordinal.ordMULT_CANCEL_R}}
 \end{array}
 \]
-These then lead to the existence of unique divisors and remainders.
+These then lead to the existence of unique quotients and remainders.
 
 \begin{theorem}
 \[
@@ -357,6 +357,22 @@ These then lead to the existence of unique divisors and remainders.
 \end{array}
 \]
 \end{theorem}
+
+\begin{proof}
+The existence of the division and modulus constants is shown by taking the quotient \HOLtm{d} to be \HOLtm{sup { c | b * c ≤ a \}}.
+(The supremum is well-defined because the set is bounded above.)
+Then \HOLtm{b * d ≤ a} follows from the continuity of multiplication.
+The existence of the remainder follows from an earlier result that
+\HOLthm[tt]{ordinal.ordle_EXISTS_ADD}.
+
+The uniqueness result proceeds by first showing the uniqueness of the quotient (uniqueness of the modulus then follows from additive cancellation).
+If there is another quotient $q'$ not equal to \HOLtm{a/b} (write $q$), then it must be either larger or smaller than it.
+If larger, then $q' = q + \delta$, for some non-zero $\delta$, and $a = b(q + \delta) + r'$, where $r'$ is the remainder accompanying $q'$.
+Then $a = bq + b\delta + r$, and cancellation then gives us that $b\delta + r = \HOLtm{a%b}$.
+But $0 < \delta$, making \HOLtm{a%b} too large.
+The other case is similar.
+\qed
+\end{proof}
 
 \section{Cantor Normal Forms}
 
