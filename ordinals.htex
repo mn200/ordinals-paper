@@ -377,7 +377,31 @@ The other case is similar.
 \qed
 \end{proof}
 
-\section{Cantor Normal Forms}
+\subsection{Cantor Normal Forms}
+
+As division is to multiplication, so logarithm is to exponentiation.
+In a discrete domain such as the ordinals, division approximates multiplication, leaving a remainder.
+Analogously, with exponentiation we have a discrete logarithm for the ordinals.
+If working with base $b$, and $e$ is the largest value such that $b^e$ is under the target $a$, then we can ``drop down'' to the level of multiplication and find how many whole copies of $b^e$ fit into $a$, giving us a $c$ such that $b^ec \le a$.
+Then we can repeat the process with the remainder.
+
+Done over the natural numbers with $b=10$, we derive $a$'s decimal representation.
+Done over all ordinals, with $b=\omega$, we derive what is called the \emph{Cantor Normal Form} of $a$.
+
+\begin{definition}
+The sequence of exponents and coefficients we derive in the above construction is the same as the information needed to specify a polynomial over a single variable.
+Our variable is the base $b$, and we define a constant to evaluate sequences with respect to arbitrary bases:
+\begin{holmath}
+\HOLthm[def,b/a]{ordinal.eval_poly_def}
+\end{holmath}
+\end{definition}
+
+\begin{definition}
+We're only interested in well-formed sequences, so we define \HOLtm{is_polyform} to capture these, requiring that the sequence of exponents is decreasing and that the coefficients are always strictly between $0$ and $b$:
+\begin{holmath}
+\HOLthm[def,b/a]{ordinal.is_polyform_def}
+\end{holmath}
+\end{definition}
 
 \subsection{Fixpoints and $\epsilon_0$}
 
