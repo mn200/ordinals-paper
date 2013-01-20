@@ -344,7 +344,7 @@ However, they do both enjoy cancellation properties for common arguments on the 
 \[
 \begin{array}{l}
 \holthmenv{\HOLthm{ordinal.ordADD_RIGHT_CANCEL}} \\[2mm]
-\holthmenv{\HOLthm{ordinal.ordMULT_CANCEL_R}}
+\holthmenv{\HOLthm[α/z,β/x,γ/y]{ordinal.ordMULT_CANCEL_R}}
 \end{array}
 \]
 These then lead to the existence of unique quotients and remainders.
