@@ -368,7 +368,7 @@ The existence of the remainder follows from an earlier result that
 The uniqueness result proceeds by first showing the uniqueness of the quotient (uniqueness of the modulus then follows from additive cancellation).
 If there is another quotient $q'$ not equal to \HOLtm{a/b} (write $q$), then it must be either larger or smaller than it.
 If larger, then $q' = q + \delta$, for some non-zero $\delta$, and $a = b(q + \delta) + r'$, where $r'$ is the remainder accompanying $q'$.
-Then $a = bq + b\delta + r$, and cancellation then gives us that $b\delta + r = \HOLtm{a%b}$.
+Then $a = bq + b\delta + r$, and cancellation and associativity then give us that $b\delta + r = \HOLtm{a%b}$.
 But $0 < \delta$, making \HOLtm{a%b} too large.
 The other case is similar.
 \qed

@@ -11,8 +11,8 @@ val _ = new_theory "prettyPrinting"
 
 (* theorems recast for inclusion in paper *)
 val divmod_unique = let
-  val ordDIV_UNIQUE0 = ordDIV_UNIQUE |> SPEC_ALL |> UNDISCH_ALL
-  val ordMOD_UNIQUE0 = ordMOD_UNIQUE |> SPEC_ALL |> UNDISCH_ALL
+  val ordDIV_UNIQUE0 = ordDIV_UNIQUE |> SPEC_ALL |> UNDISCH_ALL |> SYM
+  val ordMOD_UNIQUE0 = ordMOD_UNIQUE |> SPEC_ALL |> UNDISCH_ALL |> SYM
 in
   save_thm("divmod_unique", CONJ ordDIV_UNIQUE0 ordMOD_UNIQUE0 |> DISCH_ALL)
 end
