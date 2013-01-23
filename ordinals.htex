@@ -160,11 +160,11 @@ This is well-defined as long as the predicate (or set) $P$ is not everywhere fal
 
 \noindent Syntactically, we make this constant a ``binder'', allowing us to write comprehension style-terms such as $(\HOLtm{oleast x. y < x})$ (the definition of the successor of \HOLtm{y}, written \HOLtm{ordSUC y}), and $(\HOLtm{oleast x. T})$ (the definition of the ordinal $0$).
 
-A copy of the natural numbers is a good starting point, and it is straightforward to inject HOL's existing type with a new constant \HOLinline{\HOLConst{\&}\,{:}}\HOLty[of]{fromNat}.
+This copy of the natural numbers is a good starting point, and it is straightforward to inject HOL's existing natural number type with a new constant: \HOLinline{\HOLConst{\&}\,{:}}\HOLty[of]{fromNat}.
 Syntax overloading also allows ordinal numerals (\HOLtm{0}, \HOLtm{1}, \HOLtm{2}, \emph{etc}).
 To get transfinite values, the notion of \emph{supremum} is required, for which see Section~\ref{sec:supremum}.
 
-\subsection{Predecessors and the von Neumann encoding}
+\subsection{Predecessors and the von Neumann Encoding}
 
 \begin{definition}
 \label{defn:preds}
@@ -182,7 +182,7 @@ Define the notion of a set being downward closed:
 \begin{theorem}
 \label{thm:preds-bij}
 von Neumann famously characterised the ordinal numbers as those sets equal to their own predecessors.
-We cannot achieve the same end in HOL, but we can observe that there is a bijection between all possible ordinals and all but one of the downward closed sets of ordinals.
+Our type system prevents the same end in HOL, but we can observe that there is a bijection between all possible ordinals and all but one of the downward closed sets of ordinals.
 The one omission is the universal set.
 
 The bijection is given by the \HOLtm{preds} function, so that while the ordinals are not \emph{equal} to their predecessors, they are at least in bijection with them:
@@ -298,7 +298,7 @@ This, the first limit ordinal, is the supremum of the copy of the natural number
 \begin{definition}
 We also define a constant \HOLtm{omax}, which returns the maximal element of a set of ordinals, if any.
 The \HOLTyOp{option} type is used to encode the partiality of this function, so the type of \HOLtm{omax} is \HOLty[of]{omax}.
-If \HOLtm{omax (preds α)} is \HOLtm{NONE}, we abbreviate this as \HOLtm{islimit α}.
+If \HOLtm{omax (preds a)} is \HOLtm{NONE}, we abbreviate this condition as \HOLtm{islimit a}.
 %\begin{holmath}
 %\HOLthm[def]{ordinal.omax_def}
 %\end{holmath}
