@@ -21,11 +21,26 @@ up to (and beyond) $\omega_1$}
 \maketitle
 \begin{abstract}
 We describe a comprehensive HOL mechanisation of the theory of ordinal numbers, focusing on the basic arithmetic operations.
-Mechanised results include the existence of fixpoints such as $\epsilon_0$, the existence of normal forms, and the validation of optimised algorithms used in the ACL2 theorem-proving system.
+Mechanised results include the existence of fixpoints such as $\epsilon_0$, the existence of normal forms, and the validation of some of the algorithms used in the ACL2 theorem-proving system.
 \end{abstract}
 
 
 \section{Introduction}
+
+The ordinal numbers are an important foundational type in axiomatic set theory; used there, for example, in the definition of the von Neumann hierarchy and the cardinal numbers.
+In logic, ordinal numbers also provide an important characterisation of the strength of various logical systems.
+
+In computer science, mapping program states into ordinal values is a way of providing termination arguments for complicated recursive functions.
+The ACL2 theorem-proving system uses ordinal numbers in this way.
+Relatively recently, Manolios and Vroon~\cite{ManoliosVroon:JAR2006:ordinal-arithmetic} improved ACL2's representation of ordinal numbers, and implemented new, more efficient algorithms for manipulating those numbers.
+
+Their work mechanised proofs that showed the correspondence between the old and new notational systems, and also proved the various properties one would expect of that system.
+However, ACL2 has no notation-independent theory of the ordinals available to it, and so no way to model the set-theoretic ordinals.
+Our work in \emph{this} paper does provide a rich enough model for the ACL2 theory, and so we are able to validate some of their algorithms.
+
+The typed logic implemented in the various HOL systems (including Isabelle/HOL) is not strong enough to define a type for all possible ordinal values.
+Nor can HOL model proper classes, including the class \textbf{Ord} of all ordinals that can be defined in set theories such as NBG.
+Nonetheless, the polymorphism of this paper's approach does mean that it can model all ordinals of underlying cardinalities of the form $\aleph_n$ for any fixed $n$ the user desires.
 
 \subsubsection{Contribution}
 
@@ -424,6 +439,9 @@ The bulk of the HOL4 theory of the ordinals described here is in the current rel
 The validation of the ACL2 arithmetic algorithms was all pushed to the HOL4 repository by the time of commit \texttt{f2126545747}, and will be in the next official release.
 The HOL4 repository is at \url{github.com/mn200/HOL}.
 The sources for this paper are at \url{github.com/mn200/ordinals-paper}.
+
+\bibliography{theorem-proving}
+\bibliographystyle{plain}
 
 \end{document}
 
