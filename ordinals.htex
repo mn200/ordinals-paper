@@ -61,7 +61,7 @@ The option type \HOLty{:'a option}, often used to encode partial functions, incl
 Sets and characteristic functions (of type \HOLty{:'a -> bool} for element type \HOLty{:'a}) are identified.
 Sets can be enumerated between braces (\HOLtm[mc]{{1;2;3\}}).
 The notation also allows comprehensions such as \HOLtm{{x | x < 6\}}.
-Sets support standard operations such as union~\HOLtm{(UNION)}, intersection~\HOLtm{(INTER)}, difference~\HOLtm{(DIFF)} and element removal~(\HOLtm{s DELETE e}).
+Sets support standard operations such as union~\HOLtm{(UNION)}, intersection~\HOLtm{(INTER)}, and element removal~(\HOLtm{s DELETE e}).
 The term \HOLtm{BIGUNION s} denotes the union of a set of sets, \HOLtm{s}.
 We write \HOLtm{IMAGE f s} for the image of the set $s$ under function $f$, and \HOLtm{BIJ f s1 s2} means that function $f$ is a bijection between sets $s_1$ and $s_2$.
 The universal set (over a given HOL type, \HOLty{:'a} say) is written \HOLtm{univ(:'a)}.
