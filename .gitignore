@@ -1,5 +1,7 @@
 ordinals.pdf
 ordinals.tex
+*.blg
+*.bbl
 *.aux
 *.log
 *~
