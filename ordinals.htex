@@ -426,7 +426,7 @@ We're only interested in well-formed sequences, so we define \HOLtm{is_polyform}
 Then, just as with division, we are able to prove that ``polynomial forms'' always exist, and that they are unique.
 
 \begin{theorem}
-For all ordinals \HOLtm{a}, and non-zero bases \HOLtm{b}, it is possible to express \HOLtm{a} as the sum of a sequence of pairs of coefficients and powers-of-\HOLtm{b}.
+For all ordinals \HOLtm{a}, and bases \HOLtm{b} greater than $1$, it is possible to express \HOLtm{a} as the sum of a sequence of pairs of coefficients and powers-of-\HOLtm{b}.
 In the sequence each successive exponent is smaller than its predecessors.
 \begin{holmath}
 \HOLthm[a/b,b/a]{ordinal.polyform_exists}
@@ -435,7 +435,7 @@ Define the new constant \HOLtm{polyform}, of type
 \begin{holmath}
 \HOLty[of,alltt]{polyform}
 \end{holmath}
-to return such a sequence when given parameters \HOLtm{b} and \HOLtm{a} (if \HOLtm{b=0}, allow that the function has no definite value).
+to return such a sequence when given parameters \HOLtm{b} and \HOLtm{a} (if \HOLtm{b<2}, allow that the function has no definite value).
 We can now show that there is only one possible sequence with the desired property, and that it must therefore be equal to \HOLtm{polyform}'s value:
 \[
 \vdash \;\begin{array}[t]{l}
