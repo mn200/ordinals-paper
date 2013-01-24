@@ -423,11 +423,44 @@ We're only interested in well-formed sequences, so we define \HOLtm{is_polyform}
 \end{holmath}
 \end{definition}
 
+Then, just as with division, we are able to prove that ``polynomial forms'' always exist, and that they are unique.
+
+\begin{theorem}
+For all ordinals \HOLtm{a}, and non-zero bases \HOLtm{b}, it is possible to express \HOLtm{a} as the sum of a sequence of pairs of coefficients and powers-of-\HOLtm{b}.
+In the sequence each successive exponent is smaller than its predecessors.
+\begin{holmath}
+\HOLthm[a/b,b/a]{ordinal.polyform_exists}
+\end{holmath}
+Define the new constant \HOLtm{polyform}, of type
+\begin{holmath}
+\HOLty[of,alltt]{polyform}
+\end{holmath}
+to return such a sequence when given parameters \HOLtm{b} and \HOLtm{a} (if \HOLtm{b=0}, allow that the function has no definite value).
+We can now show that there is only one possible sequence with the desired property, and that it must therefore be equal to \HOLtm{polyform}'s value:
+\[
+\vdash \;\begin{array}[t]{l}
+\HOLthm[nostile,a/b,b/a]{ordinal.polyform_UNIQUE}
+\end{array}
+\]
+\end{theorem}
+
+\begin{proof}
+Both proofs are by induction on the argument \HOLtm{a}.
+The first proof is similar to the proof of the existence of a quotient: the leading exponent is taken to be \HOLtm{sup { e | b ** e <= a \}}.
+After the coefficient $c$ is calculated by division, and $b^e\cdot c$ subtracted out, the remaining ordinal is smaller and the inductive hypothesis applies.
+The uniqueness proof hinges on the following important lemma:
+\begin{holmath}
+\HOLthm[b/a]{ordinal.is_polyform_head_dominates_tail}
+\end{holmath}
+An analogue of this result will recur below in Section~\ref{sec:validating-acl2}.\qed
+\end{proof}
+
 \subsection{Fixpoints and $\epsilon_0$}
 
 \section{Uncountable Ordinals}
 
 \section{Validating Algorithms on ACL2's Ordinals}
+\label{sec:validating-acl2}
 
 \section{Another Model}
 
