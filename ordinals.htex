@@ -242,7 +242,7 @@ This result means that the predecessors of any given \HOLty{:'a ordinal} must be
 \label{clly:card-preds}
 The predecessors of any ordinal have cardinality no greater than that of (all of) the underlying set, \HOLty{:'a inf}.
 \begin{holmath}
-\HOLthm[m;;,a/ord]{ordinal.preds_inj_univ}
+\HOLthm[a/ord]{ordinal.preds_inj_univ}
 \end{holmath}
 \end{corollary}
 

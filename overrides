@@ -37,7 +37,7 @@ oleast 6 \HOLConst{oleast}
 univ 1 \ensuremath{{\cal U}}
 : 1 \ensuremath{{:}}
 ≈ 1 \ensuremath{{\approx}}
-≼ 1 \ensuremath{{\HOLTokenIsPrefix}}
+≼ 1 \ensuremath{{\,\HOLTokenIsPrefix\,}}
 DELETE 6 \HOLConst{DELETE}
 ∀ 1 \ensuremath{{\forall}}
 ∃ 1 \ensuremath{{\exists}}
