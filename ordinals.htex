@@ -455,7 +455,31 @@ The uniqueness proof hinges on the following important lemma:
 An analogue of this result will recur below in Section~\ref{sec:validating-acl2}.\qed
 \end{proof}
 
+\noindent In what follows, we write \HOLtm{CNF a} for \HOLtm{polyform b a} when \HOLtm{b = ω}.
+
 \subsection{Fixpoints and $\epsilon_0$}
+
+A function \HOLtm[showtypes]{f:'a ordinal -> 'a ordinal} can be iterated any number of times.
+The set $\{x,f(x),f(f(x)),\dots,f^n(x),\dots\}$ is clearly only countably infinite, and will always have a supremum.
+Under certain conditions, that supremum will also be a fixpoint for $f$.
+
+\begin{theorem}
+If $f$ is non-decreasing and continuous, then it has a fixpoint.
+In fact, for any lower bound $a$, the function $f$ has fixpoints at least as large as $a$.
+\renewcommand{\arraystretch}{1.2}
+\[
+\vdash\;\begin{array}[t]{l}\HOLthm[nostile]{ordinal.fixpoints_exist}\end{array}
+\]
+\end{theorem}
+\begin{proof}
+Let \HOLtm{s} be the set above (all the $f$-iterates of $a$).
+Take the fixpoint to be the supremum of \HOLtm{s}.
+This supremum is at least as big as $a$, so the first conjunct of the theorem's conclusion is satisfied.
+The set \HOLtm{s} is non-empty and countable, so satisfies the continuity hypothesis' requirements.
+We therefore have that \HOLtm{f (sup s) = sup (IMAGE f s)}, and are required to show that \HOLtm{sup (IMAGE f s) = sup s}, which can be done by showing that every element of \HOLtm{IMAGE f s} is less than or equal to an element of $s$ and \emph{vice versa}.
+This follows straightforwardly because $f$ is non-decreasing.
+\end{proof}
+
 
 \section{Uncountable Ordinals}
 
