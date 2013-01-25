@@ -519,6 +519,9 @@ As suggested, the arithmetic operations are all closed under \HOLtm{epsilon0}:
 \section{Validating Algorithms on ACL2's Ordinals}
 \label{sec:validating-acl2}
 
+\nocite{KaufmannSlind:tphols09:ordinal-pearl}
+
+
 \section{Another Model}
 
 
@@ -530,7 +533,7 @@ The validation of the ACL2 arithmetic algorithms was all pushed to the HOL4 repo
 The HOL4 repository is at \url{github.com/mn200/HOL}.
 The sources for this paper are at \url{github.com/mn200/ordinals-paper}.
 
-\bibliography{theorem-proving}
+\bibliography{theorem-proving,includes}
 \bibliographystyle{plain}
 
 \end{document}
