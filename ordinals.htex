@@ -456,13 +456,13 @@ An analogue of this result will recur below in Section~\ref{sec:validating-acl2}
 \subsection{Fixpoints and $\epsilon_0$}
 
 A function \HOLtm[showtypes]{f:'a ordinal -> 'a ordinal} can be iterated any number of times.
-The set $\{x,f(x),f(f(x)),\dots,f^n(x),\dots\}$ is clearly only countably infinite, and will always have a supremum.
+The resulting set $\{x,f(x),f(f(x)),\dots,f^n(x),\dots\}$ is clearly only countably infinite, and so will always have a supremum.
 Under certain conditions, that supremum will also be a fixpoint for $f$.
 
 \begin{theorem}
 \label{thm:fixpoints-exist}
 If $f$ is non-decreasing and continuous, then it has a fixpoint.
-In fact, for any lower bound $a$, the function $f$ has fixpoints at least as large as $a$.
+In fact, for \emph{any} lower bound $a$, the function $f$ has a fixpoint at least as large as $a$.
 \renewcommand{\arraystretch}{1.2}
 \[
 \vdash\;\holthmenv{\HOLthm[nostile]{ordinal.fixpoints_exist}}
