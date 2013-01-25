@@ -14,7 +14,7 @@
 \title{Ordinals in HOL: Transfinite Arithmetic \\
 up to (and beyond) $\omega_1$}
 \author{Michael Norrish\inst{1} \and Brian Huffman\inst{2}}
-\institute{\email{Michael.Norrish@nicta.com.au}\\Canberra Research Lab., NICTA\thanks{NICTA is funded by the Australian Government as represented by the Department of Broadband, Communications and the Digital Economy and the Australian Research Council through the ICT Centre of Excellence program.}\\ \emph{also,} Australian National University \and \email{huffman.brian.c@gmail.com}\\Galois, Inc.}
+\institute{Canberra Research Lab., NICTA\thanks{NICTA is funded by the Australian Government as represented by the Department of Broadband, Communications and the Digital Economy and the Australian Research Council through the ICT Centre of Excellence program.}\\ \emph{also,} Australian National University\\\email{Michael.Norrish@nicta.com.au} \and Galois, Inc.\\\email{huffman.brian.c@gmail.com}}
 
 \begin{document}
 
