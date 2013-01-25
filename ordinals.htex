@@ -519,6 +519,12 @@ As suggested, the arithmetic operations are all closed under \HOLtm{epsilon0}:
 \section{Validating Algorithms on ACL2's Ordinals}
 \label{sec:validating-acl2}
 
+From Manolios and Vroon~\cite{ManoliosVroon:JAR2006:ordinal-arithmetic}:
+\begin{quote}\itshape
+Note that these proofs are not mechanically verified.
+To do so would require using a theorem prover that can reason both about ACL2 and set theory.
+\end{quote}
+
 \nocite{KaufmannSlind:tphols09:ordinal-pearl}
 
 
