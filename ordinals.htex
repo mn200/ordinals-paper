@@ -248,6 +248,7 @@ The predecessors of any ordinal have cardinality no greater than that of (all of
 \end{corollary}
 
 \begin{theorem}
+\label{thm:univ-over-greater-cardinal}
 The cardinality of all of the type \HOLty{:'a ordinal} is strictly greater than that of the type \HOLty{:'a inf}.
 \begin{holmath}
 \HOLthm{ordinal.univ_ord_greater_cardinal}
@@ -516,6 +517,47 @@ As suggested, the arithmetic operations are all closed under \HOLtm{epsilon0}:
 \end{theorem}
 
 \section{Uncountable Ordinals}
+
+\begin{definition}
+The ``countable ordinals'' are those with countably many predecessors.
+Write \HOLtm{countableOrd a} for an $a$ with this property.
+(In von Neumann's construction these ordinals are those that are themselves countable sets.)
+\end{definition}
+
+An immediate consequence of Theorem~\ref{thm:univ-over-greater-cardinal} is that there are uncountably many countable ordinals.
+Having quotiented wellorders over the \HOLty{:'a inf} type family, we can't guarantee that there will be any more values in the type \HOLty{:'a ordinal}.
+
+To make working with yet larger types notationally convenient, we define two more type abbreviations.
+\begin{definition}
+\label{defn:uncord-tyabbrevs}
+The \HOLty{:'a ucinf} type has at least the cardinality of $2^{\aleph_0}$.
+The \HOLty{:'a ucord} type contains ordinals that are quotients of wellorders over \HOLty{:'a ucinf}:
+\begin{eqnarray*}
+\HOLty{:'a ucinf} &=& (\HOLty{:'a + (num -> bool)})\,\HOLTyOp{inf}\\
+\HOLty{:'a ucord} &=& (\HOLty{:'a + (num -> bool)})\,\HOLTyOp{ordinal}
+\end{eqnarray*}
+\end{definition}
+\begin{lemma}
+\label{lem:ucord-sup-exists}
+The countable ordinals are not larger than the universe of \HOLty{:'a ucinf} (which contains \HOLtm{univ(:num->bool)} as a subset).
+\begin{holmath}
+\HOLthm{ucord.ucord_sup_exists_lemma}
+\end{holmath}
+\end{lemma}
+\begin{proof}
+By contradiction.
+Then \HOLtm{univ(:'a ucinf)} injects into the countable ordinals \emph{via} some \HOLtm{f}, but there cannot be a bijection between the two.
+We consider whether or not \HOLtm{sup (IMAGE f univ(:'a ucinf))} is a countable ordinal (the supremum is well-defined because the image cannot have greater cardinality than \HOLtm{univ(:'a ucinf)}).  UNFINISHED
+\qed
+\end{proof}
+
+\begin{definition}
+\label{defn:omega1}
+\begin{holmath}
+\HOLthm[def,showtypes]{ucord.omega1_def}
+\end{holmath}
+The supremum is well-defined because of Lemma~\ref{lem:ucord-sup-exists} above.
+\end{definition}
 
 \section{Validating Algorithms on ACL2's Ordinals}
 \label{sec:validating-acl2}

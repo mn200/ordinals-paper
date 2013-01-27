@@ -5,7 +5,7 @@
 open HolKernel boolLib Parse bossLib
 
 (* open dependent theories *)
-open ordinalTheory
+open ordinalTheory ucordTheory
 open ordNotationSemanticsTheory
 
 val _ = new_theory "prettyPrinting"
