@@ -4,6 +4,7 @@
 \usepackage{url}
 \usepackage{holtexbasic}
 \usepackage{times}
+\usepackage{stmaryrd}
 \renewcommand{\HOLConst}[1]{{\textsf{\upshape\small #1}}}
 \renewcommand{\HOLTyOp}[1]{\mbox{\fontencoding{T1}\fontfamily{bch}\fontseries{m}\fontshape{it}\fontsize{9.5}{10}\selectfont #1}}
 \renewcommand{\HOLinline}[1]{\ensuremath{#1}}
@@ -525,6 +526,16 @@ Note that these proofs are not mechanically verified.
 To do so would require using a theorem prover that can reason both about ACL2 and set theory.
 \end{quote}
 
+We also prove a version of Theorem~10 from~\cite{ManoliosVroon:JAR2006:ordinal-arithmetic}, where their constants \HOLtm{cf1}, and \HOLtm{pmult} are curried in our presentation:
+\begin{theorem}
+The efficient \HOLtm{pmult} algorithm does indeed correctly calculate ordinal multiplication.
+(The natural number parameter $n$ can be set to zero initially.)
+\renewcommand{\arraystretch}{1.2}
+\begin{holmath}
+\vdash \; \holthmenv{\HOLthm[nostile]{ordNotationSemantics.mvjar_theorem10}}
+\end{holmath}
+\end{theorem}
+
 \nocite{KaufmannSlind:tphols09:ordinal-pearl}
 
 
@@ -535,7 +546,7 @@ To do so would require using a theorem prover that can reason both about ACL2 an
 
 \paragraph{Availability}
 The bulk of the HOL4 theory of the ordinals described here is in the current release of HOL4 (Kananaskis-8, as of this writing).
-The validation of the ACL2 arithmetic algorithms was all pushed to the HOL4 repository by the time of commit \texttt{f2126545747}, and will be in the next official release.
+All newer material, including the validation of the ACL2 arithmetic algorithms, was pushed to the HOL4 repository by the time of commit \texttt{e3bd872ec1}, and will be in the next official release.
 The HOL4 repository is at \url{github.com/mn200/HOL}.
 The sources for this paper are at \url{github.com/mn200/ordinals-paper}.
 

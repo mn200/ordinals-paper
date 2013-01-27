@@ -6,8 +6,10 @@ open HolKernel boolLib Parse bossLib
 
 (* open dependent theories *)
 open ordinalTheory
+open ordNotationSemanticsTheory
 
 val _ = new_theory "prettyPrinting"
+val _ = ParseExtras.tight_equality()
 
 (* theorems recast for inclusion in paper *)
 val divmod_unique = let

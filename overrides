@@ -52,3 +52,7 @@ DELETE 6 \HOLConst{DELETE}
 < 1 \ensuremath{{<}}
 | 1 \ensuremath{{\,\mid\,}}
 (NIL) 2 \ensuremath{{[\,]}}
+⟦ 1 \ensuremath{\llbracket}
+⟧ 1 \ensuremath{\rrbracket}
+cf1 2 c1
+cf2 2 c2
