@@ -613,6 +613,8 @@ All newer material, including the validation of the ACL2 arithmetic algorithms, 
 The HOL4 repository is at \url{github.com/mn200/HOL}.
 The sources for this paper are at \url{github.com/mn200/ordinals-paper}.
 
+\paragraph{Acknowledgments} The first author wishes to acknowledge productive early conversations about ordinals with Thomas Forster.
+
 \bibliography{theorem-proving,includes}
 \bibliographystyle{plain}
 
