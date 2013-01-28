@@ -225,7 +225,7 @@ Then any wellorder $w$ over the type \HOLty{:'a inf} is order-isomorphic to the 
 \[
 \vdash \;\holthmenv{\HOLthm[showtypes,width=70,nostile]{ordinal.wellorder_ordinal_isomorphism}}
 \]
-Note how $w$ is a wellorder over \HOLty{:'a inf}, but that the right-hand side of the isomorphism is the wellorder over all possible \emph{ordinals} over \HOLty{:'a inf}.
+Note how $w$ is a wellorder over \HOLty{:'a inf}, but that the right-hand side of the isomorphism is a wellorder over all possible \emph{ordinals} over \HOLty{:'a inf}.
 \end{theorem}
 
 \begin{proof}
