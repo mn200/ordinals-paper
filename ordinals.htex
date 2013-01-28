@@ -536,7 +536,7 @@ The \HOLty{:'a ucord} type contains ordinals that are quotients of wellorders ov
 \HOLty{:'a ucinf} &=& (\HOLty{:'a + (num -> bool)})\,\HOLTyOp{inf}\\
 \HOLty{:'a ucord} &=& (\HOLty{:'a + (num -> bool)})\,\HOLTyOp{ordinal}
 \end{eqnarray*}
-Note that these abbreviations mean that every \HOLty{:'a ucord} is still an ordinal.
+Note that these abbreviations mean that every \HOLty{:'a ucord} is also an ordinal.
 Every theorem about values of type \HOLty{:'a ordinal} applies to values of type \HOLty{:'a ucord}.
 (This refinement of type variables is as good an approximation to sub-typing as HOL's logic will ever achieve.)
 \end{definition}
@@ -556,7 +556,7 @@ We now consider whether or not \HOLtm{a} is a countable ordinal.
 
 If so, then we show that there is an injection from \HOLtm{univ(:'a ucinf)} into the (countable) predecessors of \HOLtm{a}, which gives an immediate contradiction.
 If the image of \HOLtm{f} doesn't includes the supremum, the injection is $f$ itself.
-If there is a $u$ such that \HOLtm{f u = a}, then \HOLtm{f} is an injection from \HOLtm{univ(:'a ucinf) DELETE u} into the predecessors, and deleting a single element from an infinite doesn't change its cardinality, so the contradiction can still be obtained.
+If there is a $u$ such that \HOLtm{f u = a}, then \HOLtm{f} is an injection from \HOLtm{univ(:'a ucinf) DELETE u} into the predecessors, and deleting a single element from an infinite set doesn't change its cardinality, so the contradiction can still be obtained.
 
 If \HOLtm{a} is not a countable ordinal, then all of the countable ordinals must be among its predecessors.
 So, \HOLtm{{b:'a ucord | countableOrd b\} <<= preds a}.
