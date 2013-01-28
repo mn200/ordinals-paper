@@ -547,7 +547,17 @@ The countable ordinals are not larger than the universe of \HOLty{:'a ucinf} (wh
 \begin{proof}
 By contradiction.
 Then \HOLtm{univ(:'a ucinf)} injects into the countable ordinals \emph{via} some \HOLtm{f}, but there cannot be a bijection between the two.
-We consider whether or not \HOLtm{sup (IMAGE f univ(:'a ucinf))} is a countable ordinal (the supremum is well-defined because the image cannot have greater cardinality than \HOLtm{univ(:'a ucinf)}).  UNFINISHED
+Let \HOLtm{a = sup (IMAGE f univ(:'a ucinf))}.
+(The supremum is well-defined because the image cannot have greater cardinality than \HOLtm{univ(:'a ucinf)}.)
+We now consider whether or not \HOLtm{a} is a countable ordinal.
+
+If so, then we show that there is an injection from \HOLtm{univ(:'a ucinf)} into the (countable) predecessors of \HOLtm{a}, which gives an immediate contradiction.
+If the image of \HOLtm{f} doesn't includes the supremum, the injection is $f$ itself.
+If there is a $u$ such that \HOLtm{f u = a}, then \HOLtm{f} is an injection from \HOLtm{univ(:'a ucinf) DELETE u} into the predecessors, and deleting a single element from an infinite doesn't change its cardinality, so the contradiction can still be obtained.
+
+If \HOLtm{a} is not a countable ordinal, then all of the countable ordinals must be among its predecessors.
+So, \HOLtm{{b:'a ucord | countableOrd b\} <<= preds a}.
+But we also have that \HOLtm{preds a <<= univ(:'a ucinf)}, giving a contradiction by the transitivity of \HOLtm{(<<=)}.
 \qed
 \end{proof}
 
@@ -558,6 +568,14 @@ We consider whether or not \HOLtm{sup (IMAGE f univ(:'a ucinf))} is a countable 
 \end{holmath}
 The supremum is well-defined because of Lemma~\ref{lem:ucord-sup-exists} above.
 \end{definition}
+
+\begin{theorem}
+The ordinal \HOLtm{omega1} is the first uncountable ordinal:
+\begin{holmath}
+\HOLthm{ucord.x_lt_omega1_countable}
+\end{holmath}
+(The irreflexivity of \HOLtm{(<)} means that \HOLtm{ω₁} cannot itself be countable.)
+\end{theorem}
 
 \section{Validating Algorithms on ACL2's Ordinals}
 \label{sec:validating-acl2}
