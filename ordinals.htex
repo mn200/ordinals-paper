@@ -487,14 +487,8 @@ This follows straightforwardly because $f$ is non-decreasing.
 \end{proof}
 
 Our arithmetic operations (addition, multiplication and exponentiation) are all continuous in their right arguments and non-decreasing.
-Some examples of the relevant fix-points are:
-\begin{itemize}
-\item The first fixpoint of $(\HOLtm{(+) 1})$ is \HOLtm{ω}.
-The next fixpoint is \HOLtm{ω + 1}.
-The first fixpoint of $(\HOLtm{(+) ω})$ is \HOLtm{ordEXP ω 2}.
-\item The first fixpoint of $(\HOLtm{ordMULT (2:'a ordinal)})$ is \HOLtm{0}; the next is \HOLtm{ω}, and the third is \HOLtm{ω * 2}.
+So, for example, the first fixpoint of $(\HOLtm{ordMULT (2:'a ordinal)})$ is \HOLtm{0}; the next is \HOLtm{ω}, and the third is \HOLtm{ω * 2}.
 The first non-zero fixpoint of $(\HOLtm{ordMULT ω})$ is \HOLtm{ordEXP ω ω}.
-\end{itemize}
 
 It turns out that the first fixpoint of $(\HOLtm{ordEXP ω})$ is not expressible with any of the notation we have developed thus far.
 
