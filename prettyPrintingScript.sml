@@ -19,6 +19,11 @@ in
   save_thm("divmod_unique", CONJ ordDIV_UNIQUE0 ordMOD_UNIQUE0 |> DISCH_ALL)
 end
 
+val ordModel_BIJ = store_thm(
+  "ordModel_BIJ",
+  ``BIJ (λx. ⟦x⟧) { x | is_ord x } { a | a < ε₀ }``,
+  SIMP_TAC (srw_ss() ++ boolSimps.ETA_ss) [ordModel_BIJ]);
+
 val _ = overload_on("(NIL)", ``list$NIL``)
 
 val _ = add_rule {block_style = (AroundEachPhrase, (PP.CONSISTENT, 0)),

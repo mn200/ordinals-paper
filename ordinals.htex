@@ -9,8 +9,11 @@
 \renewcommand{\HOLTyOp}[1]{\mbox{\fontencoding{T1}\fontfamily{bch}\fontseries{m}\fontshape{it}\fontsize{9.5}{10}\selectfont #1}}
 \renewcommand{\HOLinline}[1]{\ensuremath{#1}}
 \newcommand{\holthmenv}[1]{\begin{array}[t]{l}#1\end{array}}
+\renewcommand{\HOLKeyword}[1]{\texttt{#1}}
 
 \newenvironment{holmath}{\begin{displaymath}\begin{array}{l}}{\end{array}\end{displaymath}\ignorespacesafterend}
+\newenvironment{holarray}{\begin{array}[t]{l}}{\end{array}}
+
 
 \title{Ordinals in HOL: Transfinite Arithmetic \\
 up to (and beyond) $\omega_1$}
@@ -424,6 +427,7 @@ Our variable is the base $b$, and we define a constant to evaluate sequences wit
 \end{definition}
 
 \begin{definition}
+\label{defn:is-polyform}
 We're only interested in well-formed sequences, so we define \HOLtm{is_polyform} to capture these, requiring that the sequence of exponents is decreasing and that the coefficients are always strictly between $0$ and $b$:
 \begin{holmath}
 \HOLthm[def,b/a]{ordinal.is_polyform_def}
@@ -590,13 +594,79 @@ The ordinal \HOLtm{omega1} is the first uncountable ordinal:
 \section{Validating Algorithms on ACL2's Ordinals}
 \label{sec:validating-acl2}
 
-From Manolios and Vroon~\cite{ManoliosVroon:JAR2006:ordinal-arithmetic}:
+The ACL2 system models ordinals up to \HOLtm{ε₀} with a representation based on Cantor Normal Form.
+ACL2's manipulations of those values are then defined by recursive functions over that syntax.
+Further, ACL2 then takes as axiomatic that these recursive functions are correct; that, for example, its less-than relation on these values really does correspond to \HOLtm{ordlt}, and thus that the system's relation really is well-founded.
+
+In isolation, these axiomatic assertions can only be checked manually.
+However, thanks to work started by Gordon~\emph{et~al.}~\cite{DBLP:conf/fmcad/GordonRHK06}, much of the ACL2 axiomatic system has been embedded in HOL4.
+More recently, the ``ACL2 in HOL'' project was completed by Kaufmann and Slind~\cite{KaufmannSlind:tphols09:ordinal-pearl}, who showed that ACL2's less-than relation is well-founded, justifying ACL2's recursion and induction principles.
+Kaufmann and Slind note in passing:
+\begin{quote}\itshape
+\dots{}we are not ascribing any semantics at all to the notation; a separate proof would be needed to show that indeed the following definitions do correspond to the ordinals up to \HOLtm{ε₀}.
+\end{quote}
+At much the same time, Manolios and Vroon~\cite{ManoliosVroon:JAR2006:ordinal-arithmetic} improved ACL's representation of the ordinals-up-to-$\varepsilon_0$, and developed efficient arithmetic algorithms for that representation.
+They noted:
 \begin{quote}\itshape
 Note that these proofs are not mechanically verified.
 To do so would require using a theorem prover that can reason both about ACL2 and set theory.
 \end{quote}
 
-We also prove a version of Theorem~10 from~\cite{ManoliosVroon:JAR2006:ordinal-arithmetic}, where their constants \HOLtm{cf1}, and \HOLtm{pmult} are curried in our presentation:
+HOL4 can reason about ACL2, thanks to the embedding above, and can now also reason about ordinals in a way that captures their nature as canonical wellorders.
+In other words, we are now in a position to do the mechanised proofs that could not be done in~\cite{KaufmannSlind:tphols09:ordinal-pearl,ManoliosVroon:JAR2006:ordinal-arithmetic}.
+
+Kaufmann and Slind's HOL4 theory file defines the ACL2 ordinals to be
+\begin{holmath}
+\HOLthm[>>]{ordinalNotation.datatype_osyntax}
+\end{holmath}
+In other words, \HOLty{:osyntax} is an algebraic type with two constructors: \HOLtm{End} taking a natural number argument, and \HOLtm{Plus} taking a number and two \HOLty{:osyntax} values as arguments.
+
+\begin{definition}
+\renewcommand{\arraystretch}{1.2}
+The \HOLty{:osyntax} type can be given a semantics in \HOLty{:'a ordinal}:
+\begin{holmath}
+\HOLthm[def]{ordNotationSemantics.ordModel_def}
+\end{holmath}
+\end{definition}
+Kaufmann and Slind define functions \HOLtm{oless} and \HOLtm{is_ord}, with the following equations for the interesting cases:
+\[
+\begin{array}{l}
+\begin{holarray}\HOLthm[def,conj4]{ordinalNotation.oless_equations}\end{holarray}\\[3mm]
+\begin{holarray}\HOLthm[def,conj2]{ordinalNotation.is_ord_equations}\end{holarray}
+\end{array}
+\]
+The \HOLtm{is_ord} function is the analogue of \HOLtm{is_polyform} from Definition~\ref{defn:is-polyform}, capturing whether or not the notation is well-formed (non-zero coefficients and decreasing exponents).
+(The \HOLtm{expt} function returns $e$ when applied to \HOLtm{Plus e c t}, and \HOLtm{End 0} otherwise.)
+
+\begin{theorem}
+The \HOLtm{oless} function is correct on well-formed \HOLty{:osyntax} values:
+\begin{holmath}
+\HOLthm{ordNotationSemantics.oless_modelled}
+\end{holmath}
+\end{theorem}
+And, ultimately:
+\begin{theorem}
+The model function ($\llbracket\_\rrbracket$) is a bijection from well-formed \HOLty{:osyntax} values into the ordinals less than \HOLtm{epsilon0}.
+\begin{holmath}
+\HOLthm[m;]{prettyPrinting.ordModel_BIJ}
+\end{holmath}
+\end{theorem}
+
+\subsection{Arithmetic}
+
+We have proved that the simple ACL2 definitions of addition and multiplicaton over \HOLty{:osyntax} values are correct:
+\begin{theorem}
+\[
+\begin{array}{l}
+\holthmenv{\HOLthm{ordNotationSemantics.ord_add_correct}} \\[2mm]
+\holthmenv{\HOLthm{ordNotationSemantics.ord_mult_correct}}
+\end{array}
+\]
+\end{theorem}
+
+Manolios and Vroon~\cite{ManoliosVroon:JAR2006:ordinal-arithmetic} note that their simple definition of multiplication is very inefficient, and prove a version with better complexity, based on new constants \HOLtm{pmult}, \HOLtm{cf1} and \HOLtm{cf2}.
+It turns out that the way in which \HOLtm{pmult} is embedded in ACL2 means that Manolios and Vroon had to prove it equivalent to the na\"\i{}ve algorithm (\HOLtm{ord_mult}).
+Though strictly unnecessary, we have also proved a version of their Theorem~10:
 \begin{theorem}
 The efficient \HOLtm{pmult} algorithm does indeed correctly calculate ordinal multiplication.
 (The natural number parameter $n$ can be set to zero initially.)
@@ -605,9 +675,6 @@ The efficient \HOLtm{pmult} algorithm does indeed correctly calculate ordinal mu
 \vdash \; \holthmenv{\HOLthm[nostile]{ordNotationSemantics.mvjar_theorem10}}
 \end{holmath}
 \end{theorem}
-
-\nocite{KaufmannSlind:tphols09:ordinal-pearl}
-
 
 \section{Another Model}
 
@@ -627,5 +694,4 @@ The sources for this paper are at \url{github.com/mn200/ordinals-paper}.
 
 \end{document}
 
-%  LocalWords:  HOL wellorder HOL's wellorders bijective bijection cardinality
-% LocalWords:  wobound ordlt
+% LocalWords:  HOL wellorder HOL's wellorders bijective bijection cardinality wobound ordlt ACL2

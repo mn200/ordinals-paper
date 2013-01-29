@@ -57,3 +57,4 @@ DELETE 6 \HOLConst{DELETE}
 cf1 2 c1
 cf2 2 c2
 ε₀ 1 \ensuremath{\varepsilon_0}
+of 2 \mbox{\texttt{\,of\,}}
