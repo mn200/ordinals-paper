@@ -545,7 +545,6 @@ The \HOLty{:'a ucord} type contains ordinals that are quotients of wellorders ov
 \end{eqnarray*}
 Note that these abbreviations mean that every \HOLty{:'a ucord} is also an ordinal.
 Every theorem about values of type \HOLty{:'a ordinal} applies to values of type \HOLty{:'a ucord}.
-(This refinement of type variables is as good an approximation to sub-typing as HOL's logic will ever achieve.)
 \end{definition}
 \begin{lemma}
 \label{lem:ucord-sup-exists}
