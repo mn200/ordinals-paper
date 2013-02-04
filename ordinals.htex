@@ -37,24 +37,21 @@ Mechanised results include the existence of fixpoints such as $\varepsilon_0$, t
 The ordinal numbers are an important foundational type in axiomatic set theory; used there, for example, in the definition of the von Neumann hierarchy and the cardinal numbers.
 In logic, ordinal numbers also provide an important characterisation of the strength of various logical systems.
 
-Unfortunately, the typed logic implemented in the various HOL systems (including Isabelle/HOL) is not strong enough to define a type for all possible ordinal values.
-Nor can HOL model proper classes, including the class \textbf{Ord} of all ordinals that can be defined in set theories such as NBG.
+Unfortunately, the typed logic implemented in the various HOL systems (including Isabelle/HOL) is not strong enough to define a type for all possible ordinal values (a proper class in a set theory like NBG).
 It turns out, however, that for any fixed $n$, we \emph{can} model all ordinals of cardinality $\aleph_n$.
 The user is thus able to choose an ordinal domain of sufficient size for their purposes.
 
-Essentially, our approach is to model ordinals as quotients of wellorders.
-The quotient is done with respect to wellorder isomorphism.
-Being within HOL, any wellorder has to be over some underlying domain (represented as a polymorphic type argument).
+Our approach is to model ordinals as quotients of wellorders with respect to wellorder isomorphism.
+This approach has not been mechanised before.
+Within HOL, any wellorder is some underlying domain (represented as a polymorphic type argument).
 The resulting ordinals are also parameterised by a type argument, indirectly encoding the limit of the type.
 For example, the type \HOLty{:num ordinal} captures only the countable ordinals.
 
-In computer science, mapping program states into ordinal values is a way of providing termination arguments for complicated recursive functions.
-The ACL2 theorem-proving system uses ordinal numbers in this way.
-Relatively recently, Manolios and Vroon~\cite{ManoliosVroon:JAR2006:ordinal-arithmetic} improved ACL2's representation of ordinal numbers, and implemented new, more efficient algorithms for manipulating those numbers.
-
-Their work mechanised proofs that showed the correspondence between the old and new notational systems, and also proved the various properties one would expect of that system.
+One important use of ordinal numbers occurs in the ACL2 theorem-proving system, which uses ordinal numbers as part of its termination reasoning for recursive definitions.
+Recently, Manolios and Vroon~\cite{ManoliosVroon:JAR2006:ordinal-arithmetic} improved ACL2's representation of ordinal numbers, and implemented new, more efficient algorithms for manipulating those numbers.
+Their work mechanised proofs of the correspondence between the old and new notational systems, and also proved the expected arithmetic properties.
 However, ACL2 has no notation-independent theory of the ordinals available to it, and so no way to model the set-theoretic ordinals.
-Our work in \emph{this} paper does provide a rich enough model for the ACL2 theory, and so we are able to validate some of their algorithms.
+In \emph{this} paper, we provide a sufficiently rich model, and are thus able to validate Manolios and Vroon's algorithms.
 
 \subsubsection{Contribution}
 
