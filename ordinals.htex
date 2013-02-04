@@ -2,9 +2,12 @@
 \usepackage[T1]{fontenc}
 \usepackage{alltt}
 \usepackage{url}
-\usepackage{holtexbasic}
 \usepackage{times}
 \usepackage{stmaryrd}
+
+\usepackage[strings]{underscore}
+\usepackage{holtexbasic}
+
 \renewcommand{\HOLConst}[1]{{\textsf{\upshape\small #1}}}
 \renewcommand{\HOLTyOp}[1]{\mbox{\fontencoding{T1}\fontfamily{bch}\fontseries{m}\fontshape{it}\fontsize{9.5}{10}\selectfont #1}}
 \renewcommand{\HOLinline}[1]{\ensuremath{#1}}
@@ -667,6 +670,23 @@ The efficient \HOLtm{pmult} algorithm does indeed correctly calculate ordinal mu
 
 \section{Another Model}
 
+\subsection{Related Work}
+There is relatively little published work on mechanisations of ordinals within a non-set-theoretic setting.
+One early development is John Harrison's \texttt{wellorder} library~\cite{harrison92:_hol_wellorder}.
+Originally developed for HOL88, this remains part of the HOL~Light library.
+This theory picks out certain wellorders to be ordinals using Hilbert-choice, and proves some consequences of the Axiom of Choice, such as Zorn's Lemma.
+It does not include any arithmetic on ordinals, and only successor on wellorders.
+
+In similar vein, there is a large theory of ordinals and cardinals behind Traytel~\emph{et~al.}~\cite{LICS2012:Traytel:datatypes}.
+This work is available at Isabelle's Archive of Formal Proofs.
+It defines wellorders and develops a number of important facts about cardinalities.
+It does not quotient its wellorder type, and emulates ordinal arithmetic ``synthetically'' (\emph{e.g.}, addition as wellorder concatenation).
+This work does not define ordinal multiplication nor exponentiation.
+
+Finally, it is possible to stick with (countable) notational approaches (as in ACL2).
+A great deal of interesting ordinal theory (up to $\Gamma_0$) has been mechanised in this style in Coq by Cast\'eran and Contejean~\cite{coq-ordinals}.
+
+\nocite{Dennis:TPHOLs2001:ordinal-arithmetic}
 
 \section{Conclusion}
 
@@ -678,7 +698,7 @@ The sources for this paper are at \url{github.com/mn200/ordinals-paper}.
 
 \paragraph{Acknowledgments} The first author wishes to acknowledge productive early conversations about ordinals with Thomas Forster.
 
-\bibliography{theorem-proving,includes}
+\bibliography{std-abbrevs,theorem-proving,includes}
 \bibliographystyle{plain}
 
 \end{document}
