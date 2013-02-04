@@ -103,8 +103,6 @@ Alternatively, read \HOLtm{(x,y) IN strictWO w1} as ``$x$ is strictly less than 
 Strictly speaking, wellorders are not themselves sets; rather, they are in bijection with those sets that satisfy the predicate \HOLtm{wellorder} defined above.)
 \end{definition}
 
-It is straightforward to show that order-isomorphism is indeed an equivalence relation, confirming it as a suitable basis for a subsequent quotienting.
-
 The definition of the ordering relation on wellorders depends on the \HOLtm{wobound} function that truncates a wellorder so that it only includes those elements below a particular point.
 There are two important theorems about \HOLtm{wobound}:
 \[
@@ -121,7 +119,7 @@ The ordering relation for wellorders (written \HOLtm{w1 orderlt w1}) can then be
 \end{definition}
 Transitivity of \HOLtm[nodollarparens]{(orderlt)} follows from the transitivity of order-isomorphism and the second result about \HOLtm{wobound} above.
 Well-foundedness for \HOLtm[nodollarparens]{(orderlt)} follows easily from the well-foundedness of the underlying relation.
-Well-foundedness is also the basis for the proof that \HOLtm[nodollarparens]{(orderlt)} is irreflexive: if it were not, then the order-preserving bijection between the whole of the wellorder and its sub-segment would give rise to an infinite descending chain.
+Well-foundedness is also the basis for the proof that \HOLtm[nodollarparens]{(orderlt)} is irreflexive.
 
 \begin{theorem}
 The last important property of \HOLtm[nodollarparens]{(orderlt)} is that it is trichotomous.
@@ -131,11 +129,11 @@ The last important property of \HOLtm[nodollarparens]{(orderlt)} is that it is t
 \end{theorem}
 The proof of this result is the most involved of this section.
 \begin{proof}
-Let $w_1$ be a wellorder over \HOLty{:'a}, and $w_2$ a wellorder over \HOLty{:'b}.
-We define a function $f$ of HOL type \HOLty{:'a -> 'b option} by well-founded recursion.
+Let $w_1$ and $w_2$ be wellorders over \HOLty{:'a} and \HOLty{:'b} respectively.
+We define $f$ of type \HOLty{:'a -> 'b option} by well-founded recursion.
 The value of \HOLtm{f(x)} is \HOLtm{SOME y} when $y$ is the least element in $w_2$ not in the image of $f$ applied to all elements less than $x$.
 If there is no such $y$, then \HOLtm{f(x) = NONE}.
-If there is an $x$ such that \HOLtm{f(x) = NONE}, then $w_2$ is less than $w_1$, and the least value $x$ such that \HOLtm{f x = NONE} is exactly the bound needed to demonstrate this.
+If there is an $x$ such that \HOLtm{f(x) = NONE}, then $w_2$ is less than $w_1$, and the least value $x$ where \HOLtm{f x = NONE} is the bound needed to demonstrate this.
 If $f$ never has value \HOLtm{NONE}, then $w_2$ is at least as big as $w_1$.
 If the image of $f$ on the elements of $w_1$ is all the elements of $w_2$, then $f$ is the bijection we need to demonstrate order-isomorphism of $w_1$ and $w_2$.
 Otherwise, there is an element of $w_2$ not in the image of $f$.
