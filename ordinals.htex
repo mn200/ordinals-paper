@@ -483,9 +483,7 @@ In fact, for \emph{any} lower bound $a$, the function $f$ has a fixpoint at leas
 \begin{proof}
 Let \HOLtm{s} be the set above (all the $f$-iterates of $a$).
 Take the fixpoint to be the supremum of \HOLtm{s}.
-This supremum is at least as big as $a$, so the first conjunct of the theorem's conclusion is satisfied.
-The set \HOLtm{s} is non-empty and countable, so satisfies the continuity hypothesis' requirements.
-We therefore have that \HOLtm{f (sup s) = sup (IMAGE f s)}, and are required to show that \HOLtm{sup (IMAGE f s) = sup s}, which can be done by showing that every element of \HOLtm{IMAGE f s} is less than or equal to an element of $s$ and \emph{vice versa}.
+We have that \HOLtm{f (sup s) = sup (IMAGE f s)}, and are required to show that \HOLtm{sup (IMAGE f s) = sup s}.
 This follows straightforwardly because $f$ is non-decreasing.
 \end{proof}
 
