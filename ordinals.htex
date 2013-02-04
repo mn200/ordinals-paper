@@ -465,7 +465,7 @@ An analogue of this result will recur below in Section~\ref{sec:validating-acl2}
 
 \noindent In what follows, we write \HOLtm{CNF a} for \HOLtm{polyform b a} when \HOLtm{b = ω}.
 
-\subsection{Fixpoints and $\epsilon_0$}
+\subsection{Fixpoints and $\varepsilon_0$}
 
 A function \HOLtm[showtypes]{f:'a ordinal -> 'a ordinal} can be iterated any number of times from a starting value $x$.
 The resulting set $\{x,f(x),f(f(x)),\dots,f^n(x),\dots\}$ is clearly only countably infinite, and so will always have a supremum.
