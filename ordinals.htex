@@ -66,22 +66,21 @@ This work makes a particular contribution in
 \end{itemize}
 
 \subsubsection{HOL4 Notation and Theorems}
-All statements appearing with a turnstile ($\vdash$) are HOL4 theorems, automatically pretty-printed to \LaTeX{} from the relevant theory in the HOL4 development.
+All statements appearing with a turnstile ($\vdash$) are HOL4 theorems, automatically pretty-printed to \LaTeX{} from the relevant theory in the development.
 Notation specific to this paper is explained as it is introduced.
-Otherwise, HOL4 supports a notation that is a generally pleasant combination of quantifiers ($\forall$, $\exists$) and functional programming ($\lambda$ for function abstraction, juxtaposition for function application).
+Otherwise, HOL4's syntax is a generally pleasant combination of quantifiers ($\forall$, $\exists$) and functional programming.
 
 The option type \HOLty{:'a option}, often used to encode partial functions, includes values \HOLtm{NONE}, and \HOLtm{SOME x} for all possible values \HOLtm{x} of type \HOLty{:'a}.
+Hilbert choice is available through the epsilon notation.
+Read \HOLtm{@x. P x} as ``the $x$ that satisfies (predicate) $P$''.
 
 Sets and characteristic functions (of type \HOLty{:'a -> bool} for element type \HOLty{:'a}) are identified.
-Set comprehensions are written with a vertical bar: \HOLtm{{x | x < 6\}}.
 Sets support standard operations such as union~\HOLtm{(UNION)}, and element removal~(\HOLtm{s DELETE e}).
 The term \HOLtm{BIGUNION s} denotes the union of a set of sets, \HOLtm{s}.
 We write \HOLtm{IMAGE f s} for the image of the set $s$ under function $f$, and \HOLtm{BIJ f s1 s2} means that function $f$ is a bijection between sets $s_1$ and $s_2$.
-The universal set (over a given HOL type, \HOLty{:'a} say) is written \HOLtm{univ(:'a)}.
+The universal set over a given HOL type \HOLty{:'a} is written \HOLtm{univ(:'a)}.
 Cardinality reasoning is expressed with \HOLtm{s <<= t} (``there is an injection from $s$ to $t$''), and \HOLtm{s ≈ t} (``there is a bijection between $s$ and $t$'').
 
-Hilbert choice is available through the epsilon notation.
-Read \HOLtm{@x. P x} as ``the $x$ that satisfies (predicate) $P$''.
 
 \section{Wellorders}
 \label{sec:wellorders}
