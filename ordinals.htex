@@ -406,7 +406,6 @@ The other case is similar.
 
 \subsection{Cantor Normal Forms}
 
-As division is to multiplication, so logarithm is to exponentiation.
 In a discrete domain such as the ordinals, division approximates multiplication's inverse, leaving a remainder.
 Analogously, with exponentiation we have a discrete logarithm for the ordinals.
 If working with base $b$, and $e$ is the largest value such that $b^e$ is under the target $a$, then we can ``drop down'' to the level of multiplication and find how many whole copies of $b^e$ fit into $a$, giving us a $c$ such that $b^ec \le a$.
@@ -444,7 +443,7 @@ Define the new constant \HOLtm{polyform}, of type
 \HOLty[of,alltt]{polyform}
 \end{holmath}
 to return such a sequence when given parameters \HOLtm{b} and \HOLtm{a} (if \HOLtm{b<2}, allow that the function has no definite value).
-We can now show that there is only one possible sequence with the desired property, and that it must therefore be equal to \HOLtm{polyform}'s value:
+We now show that all possible sequences with the desired property have \HOLtm{polyform}'s value:
 \[
 \vdash \;\holthmenv{\HOLthm[nostile,a/b,b/a]{ordinal.polyform_UNIQUE}}
 \]
@@ -458,10 +457,7 @@ The uniqueness proof hinges on the following important lemma:
 \begin{holmath}
 \HOLthm[b/a]{ordinal.is_polyform_head_dominates_tail}
 \end{holmath}
-An analogue of this result will recur below in Section~\ref{sec:validating-acl2}.\qed
 \end{proof}
-
-\noindent In what follows, we write \HOLtm{CNF a} for \HOLtm{polyform b a} when \HOLtm{b = ω}.
 
 \subsection{Fixpoints and $\varepsilon_0$}
 
