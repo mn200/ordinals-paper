@@ -164,11 +164,8 @@ This is well-defined as long as the predicate (or set) $P$ is not everywhere fal
 
 \noindent Syntactically, we make \HOLtm{(oleast)} a ``binder'', allowing us to write comprehension style-terms such as $(\HOLtm{oleast x. y < x})$ (the definition of the successor of \HOLtm{y}, written \HOLtm{ordSUC y}), and $(\HOLtm{oleast x. T})$ (the zero-ordinal).
 
-This copy of the natural numbers is a good starting point, and it is straightforward to inject HOL's existing natural number type with a new constant: \HOLinline{\HOLConst{\&}\,{:}}\HOLty[of]{fromNat}.
-Syntax overloading also allows ordinal numerals (\HOLtm{0}, \HOLtm{1}, \HOLtm{2}, \emph{etc}).
-In Section~\ref{sec:supremum} we will construct transfinite values.
-
-\subsection{Predecessors and the von Neumann Encoding}
+This copy of the natural numbers is a good starting point.
+It is straightforward to inject HOL's natural numbers with a new constant: \HOLinline{\HOLConst{\&}\,{:}}\HOLty[of]{fromNat}, which is also the basis for ordinal numerals~($0$, $1$, $2$ \emph{etc}).
 
 \begin{definition}
 \label{defn:preds}
@@ -185,8 +182,8 @@ Define the notion of a set being downward closed:
 
 \begin{theorem}
 \label{thm:preds-bij}
-von Neumann famously characterised the ordinal numbers as those sets equal to their own predecessors.
-Our type system prevents the same end in HOL, but we can observe that there is a bijection between all possible ordinals and all but one of the downward closed sets of ordinals.
+Von Neumann famously characterised the ordinal numbers as those sets equal to their own predecessors.
+HOL's type system doesn't allow this, but we do have that there is a bijection between all possible ordinals and all but one of the downward closed sets of ordinals.
 The one omission is the universal set.
 
 The bijection is given by the \HOLtm{preds} function, so that while the ordinals are not \emph{equal} to their predecessors, they are at least in bijection with them:
