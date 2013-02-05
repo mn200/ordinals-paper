@@ -641,7 +641,7 @@ We have proved that the simple ACL2 definitions of addition and multiplicaton ov
 
 Manolios and Vroon~\cite{ManoliosVroon:JAR2006:ordinal-arithmetic} note that \HOLtm{ord_mult} is very inefficient, and prove a version with better complexity, based on new constants \HOLtm{pmult}, \HOLtm{cf1} and \HOLtm{cf2}.
 In order to embed it in ACL2, Manolios and Vroon have already mechanically proved \HOLtm{pmult} equivalent to \HOLtm{ord_mult}.
-Nonetheless, we have also proved a version of their Theorem~10:
+Nonetheless, we also proved a version of their Theorem~10:
 \begin{theorem}[after Manolios and Vroon]
 The efficient \HOLtm{pmult} algorithm does indeed correctly calculate ordinal multiplication.
 (The natural number parameter $n$ can be set to zero initially.)
