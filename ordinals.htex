@@ -401,12 +401,12 @@ The other case is similar.
 \subsection{Cantor Normal Forms}
 
 In a discrete domain such as the ordinals, division approximates multiplication's inverse, leaving a remainder.
-Analogously, with exponentiation we have a discrete logarithm for the ordinals.
-If working with base $b$, and $e$ is the largest value such that $b^e$ is under the target $a$, then we can ``drop down'' to the level of multiplication and find how many whole copies of $b^e$ fit into $a$, giving us a $c$ such that $b^ec \le a$.
+Analogously, with exponentiation we can construct a discrete logarithm.
+If working with base $b$, and $e$ is the largest value such that $b^e$ is under the target $a$, then we can ``drop down'' to the level of multiplication and find how many whole copies of \HOLtm{b **e} fit into $a$, giving us a $c$ such that \HOLtm{b**e * c ≤ a}.
 Then we can repeat the process with the remainder.
 
 Done over the natural numbers with $b=10$, we derive $a$'s decimal representation (strictly, the non-zero coefficients along with their indices).
-Done over all ordinals, with $b=\omega$, we derive what is called the \emph{Cantor Normal Form} of $a$.
+Over all ordinals, with $b=\omega$, we derive the \emph{Cantor Normal Form} of $a$.
 
 \begin{definition}
 The sequence of exponents and coefficients we derive in the above construction is the same as the information needed to specify a polynomial over a single variable.
