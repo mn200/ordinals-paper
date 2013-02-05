@@ -495,8 +495,8 @@ This is well-defined because of Theorem~\ref{thm:fixpoints-exist}, giving us the
 \begin{theorem}
 As suggested, the arithmetic operations are all closed under \HOLtm{epsilon0}:
 \[
-\begin{array}{l}
-\vdash \;\holthmenv{\HOLthm[nostile,a/x,b/y]{ordinal.ordADD_under_epsilon0}}\\[2mm]
+\begin{array}{c}
+\vdash \;\holthmenv{\HOLthm[nostile,a/x,b/y]{ordinal.ordADD_under_epsilon0}} \qquad
 \vdash \;\holthmenv{\HOLthm[nostile,a/x,b/y]{ordinal.ordMUL_under_epsilon0}}\\[2mm]
 \vdash \;\holthmenv{\HOLthm[nostile]{ordinal.ordEXP_under_epsilon0}}
 \end{array}
