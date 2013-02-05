@@ -359,9 +359,8 @@ Ordinal exponentiation:
 $(\HOLtm{ordEXP a})$ is equivalent to $(\HOLtm{\b. a ** b})$; the pretty-printing obscures this because the underlying constant prints as \HOLtm{ordEXP} when it doesn't have two arguments.
 \end{definition}
 
-Note that on arguments less than \HOLtm{ω}, all three notions correspond to the analogous operations on natural numbers.
-
-Reasoning about all of these definitions is made easier by the observation that all three constants are \emph{continuous} (in their second arguments).  For addition, the continuity result is
+Reasoning about all of these definitions is made easier by the observation that all three constants are \emph{continuous} (in their second arguments).
+For addition, the continuity result is
 \begin{holmath}
 \HOLthm{ordinal.ordADD_continuous}
 \end{holmath}
