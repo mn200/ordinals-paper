@@ -143,14 +143,14 @@ Take the least such element to be the bound demonstrating \HOLtm{w1 orderlt w2}.
 \section{Constructing the Ordinals}
 
 With \HOLtm[nodollarparens]{(orderiso)} an equivalence relation, we can quotient all possible wellorders over the type \HOLty{:'a}, giving us a natural type of ordinals over \HOLty{:'a}.
-However, if \HOLty{:'a} is a finite type (inhabited by only finitely many values), then there are only finitely many ordinals over this type.
-It's clear that all the interesting ordinals are those over infinite types, and so our approach is to make the new type \HOLty{:'a ordinal} a quotient over the wellorders over the sum type \HOLinline{\alpha + \HOLTyOp{num}}.
-This type-form is abbreviated as the ``\HOLTyOp{inf}\rule{1mm}{0mm}'' constructor, so that it appears in the theorems to come as \HOLty{:'a inf}.
+However, if \HOLty{:'a} is a finite type, then there are only finitely many ordinals over this type.
+Clearly, all the interesting ordinals are those over infinite types, and so our approach is to make the new type \HOLty{:'a ordinal} a quotient over the wellorders over the sum type \HOLinline{\alpha + \HOLTyOp{num}}.
+Henceforth, this type is abbreviated as \HOLty{:'a inf}.
 
 This construction means that the distinct types \HOLty{:unit ordinal}, \HOLty{:bool ordinal} and \HOLty{:num ordinal} will all be isomorphic (they will all be copies of the countable ordinals).
 On the other hand, the type \HOLty{:(num -> bool) ordinal} is large enough to include the first uncountable ordinal, $\omega_1$.
 
-When we perform the quotient, creating the new type \HOLty{:'a ordinal}, we also lift \HOLtm{$orderlt} to the new type, defining \HOLtm{$ordlt}.
+When we quotient, and create the new type \HOLty{:'a ordinal}, the \HOLtm{$orderlt} relation lifts to the new type, defining \HOLtm{$ordlt}.
 This relation inherits the irreflexivity, transitivity, well-foundedness and trichotomy results of \HOLtm{$orderlt}.
 Using these, it is trivial to show that the ordinals themselves form a well-order.
 
@@ -162,11 +162,11 @@ Well-foundedness also allows the definition of a ``least'' operator for ordinals
 This is well-defined as long as the predicate (or set) $P$ is not everywhere false (the empty set).
 \end{definition}
 
-\noindent Syntactically, we make this constant a ``binder'', allowing us to write comprehension style-terms such as $(\HOLtm{oleast x. y < x})$ (the definition of the successor of \HOLtm{y}, written \HOLtm{ordSUC y}), and $(\HOLtm{oleast x. T})$ (the definition of the ordinal $0$).
+\noindent Syntactically, we make \HOLtm{(oleast)} a ``binder'', allowing us to write comprehension style-terms such as $(\HOLtm{oleast x. y < x})$ (the definition of the successor of \HOLtm{y}, written \HOLtm{ordSUC y}), and $(\HOLtm{oleast x. T})$ (the zero-ordinal).
 
 This copy of the natural numbers is a good starting point, and it is straightforward to inject HOL's existing natural number type with a new constant: \HOLinline{\HOLConst{\&}\,{:}}\HOLty[of]{fromNat}.
 Syntax overloading also allows ordinal numerals (\HOLtm{0}, \HOLtm{1}, \HOLtm{2}, \emph{etc}).
-To get transfinite values, the notion of \emph{supremum} is required, for which see Section~\ref{sec:supremum}.
+In Section~\ref{sec:supremum} we will construct transfinite values.
 
 \subsection{Predecessors and the von Neumann Encoding}
 
