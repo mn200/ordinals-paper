@@ -479,6 +479,7 @@ Let \HOLtm{s} be the set above (all the $f$-iterates of $a$).
 Take the fixpoint to be the supremum of \HOLtm{s}.
 We have that \HOLtm{f (sup s) = sup (IMAGE f s)}, and are required to show that \HOLtm{sup (IMAGE f s) = sup s}.
 This follows straightforwardly because $f$ is non-decreasing.
+\qed
 \end{proof}
 
 Our arithmetic operations (addition, multiplication and exponentiation) are all continuous in their right arguments and non-decreasing.
