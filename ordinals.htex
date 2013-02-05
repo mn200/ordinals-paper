@@ -416,7 +416,7 @@ Done over all ordinals, with $b=\omega$, we derive what is called the \emph{Cant
 
 \begin{definition}
 The sequence of exponents and coefficients we derive in the above construction is the same as the information needed to specify a polynomial over a single variable.
-Our variable is the base $b$, and we define a constant to evaluate sequences with respect to arbitrary bases:
+We define \HOLtm{eval_poly} to evaluate such sequences with respect to arbitrary bases:
 \begin{holmath}
 \HOLthm[def,b/a]{ordinal.eval_poly_def}
 \end{holmath}
@@ -424,7 +424,7 @@ Our variable is the base $b$, and we define a constant to evaluate sequences wit
 
 \begin{definition}
 \label{defn:is-polyform}
-We're only interested in well-formed sequences, so we define \HOLtm{is_polyform} to capture these, requiring that the sequence of exponents is decreasing and that the coefficients are always strictly between $0$ and $b$:
+We define \HOLtm{is_polyform} to capture well-formed ``polynomial'' sequences, requiring that the exponents are decreasing, and that the coefficients are always strictly between $0$ and $b$:
 \begin{holmath}
 \HOLthm[def,b/a]{ordinal.is_polyform_def}
 \end{holmath}
@@ -438,12 +438,8 @@ In the sequence each successive exponent is smaller than its predecessors.
 \begin{holmath}
 \HOLthm[a/b,b/a]{ordinal.polyform_exists}
 \end{holmath}
-Define the new constant \HOLtm{polyform}, of type
-\begin{holmath}
-\HOLty[of,alltt]{polyform}
-\end{holmath}
-to return such a sequence when given parameters \HOLtm{b} and \HOLtm{a} (if \HOLtm{b<2}, allow that the function has no definite value).
-We now show that all possible sequences with the desired property have \HOLtm{polyform}'s value:
+Define the new constant \HOLtm{polyform} to return such a sequence when given parameters \HOLtm{b} and \HOLtm{a} (if \HOLtm{b<2}, allow that the function has no definite value).
+We show that all possible sequences with the desired property have \HOLtm{polyform}'s value:
 \[
 \vdash \;\holthmenv{\HOLthm[nostile,a/b,b/a]{ordinal.polyform_UNIQUE}}
 \]
