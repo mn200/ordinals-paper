@@ -370,7 +370,7 @@ For example, the proofs (by induction) that addition and multiplication are asso
 \subsection{Division and Modulus}
 The various arithmetic operations on ordinal numbers do not satisfy many of the typical properties of number systems.
 For example, addition and multiplication are not commutative.
-However, they do both enjoy cancellation properties for common arguments on the left:
+However, they both enjoy cancellation properties for common arguments on the left:
 \[
 \begin{array}{l}
 \holthmenv{\HOLthm{ordinal.ordADD_RIGHT_CANCEL}} \\[2mm]
@@ -396,7 +396,7 @@ The existence of the remainder follows from an earlier result that
 \HOLthm[tt]{ordinal.ordle_EXISTS_ADD}.
 
 The uniqueness result proceeds by first showing the uniqueness of the quotient (uniqueness of the modulus then follows from additive cancellation).
-If there is another quotient $q'$ not equal to \HOLtm{a/b} (write $q$), then it must be either larger or smaller than it.
+If there is another quotient $q'$ not equal to \HOLtm{a/b} (write $q$), then it is either larger or smaller.
 If larger, then $q' = q + \delta$, for some non-zero $\delta$, and $a = b(q + \delta) + r'$, where $r'$ is the remainder accompanying $q'$.
 Then $a = bq + b\delta + r$, and cancellation and associativity then give us that $b\delta + r = \HOLtm{a%b}$.
 But $0 < \delta$, making \HOLtm{a%b} too large.
