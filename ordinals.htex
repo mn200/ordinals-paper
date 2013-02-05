@@ -675,7 +675,7 @@ It defines wellorders and develops a number of important facts about cardinaliti
 It does not quotient its wellorder type, and emulates ordinal arithmetic ``synthetically'' (\emph{e.g.}, addition as wellorder concatenation).
 This work does not define ordinal multiplication nor exponentiation.
 
-Finally, it is possible to stick with (countable) notational approaches (as in ACL2).
+Finally, as in ACL2 (see above), it is possible to use ordinal \emph{notations} (capturing countably many ordinals).
 A great deal of interesting ordinal theory (up to $\Gamma_0$) has been mechanised in this style in Coq by Cast\'eran and Contejean~\cite{coq-ordinals}.
 
 \nocite{Dennis:TPHOLs2001:ordinal-arithmetic}
