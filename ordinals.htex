@@ -162,7 +162,7 @@ Well-foundedness also allows the definition of a ``least'' operator for ordinals
 This is well-defined as long as the predicate (or set) $P$ is not everywhere false (the empty set).
 \end{definition}
 
-\noindent Syntactically, we make \HOLtm{(oleast)} a ``binder'', allowing us to write comprehension style-terms such as $(\HOLtm{oleast x. y < x})$ (the definition of the successor of \HOLtm{y}, written \HOLtm{ordSUC y}), and $(\HOLtm{oleast x. T})$ (the zero-ordinal).
+\noindent Syntactically, we make \HOLtm{(oleast)} a binder, allowing us to write terms such as $(\HOLtm{oleast x. y < x})$ (the definition of the successor of \HOLtm{y}, written \HOLtm{ordSUC y}), and $(\HOLtm{oleast x. T})$ (the zero-ordinal).
 
 This copy of the natural numbers is a good starting point.
 It is straightforward to inject HOL's natural numbers with a new constant: \HOLinline{\HOLConst{\&}\,{:}}\HOLty[of]{fromNat}, which is also the basis for ordinal numerals~($0$, $1$, $2$ \emph{etc}).
