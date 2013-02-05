@@ -196,6 +196,8 @@ The bijection is given by the \HOLtm{preds} function, so that while the ordinals
 \end{theorem}
 
 
+
+
 \subsection{Cardinality Arguments and Supremum}
 \label{sec:supremum}
 
@@ -286,9 +288,12 @@ So, \HOLtm{sup s = α}, and it is easy to show that the theorem's characterisati
 \qed
 \end{proof}
 
-An easy corollary of these theorems is that there is no maximal ordinal.
-For any ordinal \HOLtm{α}, we can always take \HOLtm{sup (preds α ∪ {α\})} to generate an ordinal that is larger.
-Moreover, this ordinal will be \HOLtm{α}'s successor.
+An easy corollary of these results is that there is no maximal ordinal.
+For any ordinal \HOLtm{α}, we observe that \HOLtm{preds α ∪ {α\}} is downward closed and of the same cardinality as \HOLtm{preds α}, and so not equal to \HOLtm{univ(:'a ordinal)}.
+Then, by Theorem~\ref{thm:preds-bij} there must be an ordinal with that set as \emph{its} predecessors.
+In fact, it will be the successor of \HOLtm{α}.
+
+
 
 \subsection{Limit ordinals}
 
