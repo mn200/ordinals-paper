@@ -286,11 +286,8 @@ So, \HOLtm{sup s = α}, and it is easy to show that the theorem's characterisati
 \end{proof}
 
 An easy corollary of these results is that there is no maximal ordinal.
-For any ordinal \HOLtm{α}, we observe that \HOLtm{preds α ∪ {α\}} is downward closed and of the same cardinality as \HOLtm{preds α}, and so not equal to \HOLtm{univ(:'a ordinal)}.
-Then, by Theorem~\ref{thm:preds-bij} there must be an ordinal with that set as \emph{its} predecessors.
-In fact, it will be the successor of \HOLtm{α}.
-
-
+For any ordinal \HOLtm{α}, we observe that \HOLtm{preds α ∪ {α\}} is downward closed  and not equal to \HOLtm{univ(:'a ordinal)}.
+Then, by Theorem~\ref{thm:preds-bij} there must be an ordinal larger than \HOLtm{α} with that set as \emph{its} predecessors.
 
 \subsection{Limit ordinals}
 
