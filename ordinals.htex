@@ -28,7 +28,7 @@ up to (and beyond) $\omega_1$}
 \maketitle
 \begin{abstract}
 We describe a comprehensive HOL mechanisation of the theory of ordinal numbers, focusing on the basic arithmetic operations.
-Mechanised results include the existence of fixpoints such as $\varepsilon_0$, the existence of normal forms, and the validation of some of the algorithms used in the ACL2 theorem-proving system.
+Mechanised results include the existence of fixpoints such as $\varepsilon_0$, the existence of normal forms, and the validation of algorithms used in the ACL2 theorem-proving system.
 \end{abstract}
 
 
