@@ -512,9 +512,7 @@ Write \HOLtm{countableOrd a} for an $a$ with this property.
 \end{definition}
 
 An immediate consequence of Theorem~\ref{thm:univ-over-greater-cardinal} is that there are uncountably many countable ordinals.
-Having quotiented wellorders over the \HOLty{:'a inf} type family, we can't guarantee that there will be any more values in the type \HOLty{:'a ordinal}.
-
-To make working with yet larger types notationally convenient, we define two more type abbreviations.
+To guarantee even larger sets, we must instantiate the \HOLtm{α} type-parameter with known-to-be-larger types:
 \begin{definition}
 \label{defn:uncord-tyabbrevs}
 The \HOLty{:'a ucinf} type has at least the cardinality of $2^{\aleph_0}$.
@@ -535,7 +533,7 @@ The countable ordinals are not larger than the universe of \HOLty{:'a ucinf} (wh
 \end{lemma}
 \begin{proof}
 By contradiction.
-Then \HOLtm{univ(:'a ucinf)} injects into the countable ordinals \emph{via} some \HOLtm{f}, but there cannot be a bijection between the two.
+Then \HOLtm{univ(:'a ucinf)} injects into the countable ordinals \emph{via} some \HOLtm{f}, but there is no bijection between the two.
 Let \HOLtm{a = sup (IMAGE f univ(:'a ucinf))}.
 (The supremum is well-defined because the image cannot have greater cardinality than \HOLtm{univ(:'a ucinf)}.)
 We now consider whether or not \HOLtm{a} is a countable ordinal.
