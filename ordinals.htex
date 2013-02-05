@@ -579,8 +579,8 @@ The ordinal \HOLtm{omega1} is the first uncountable ordinal:
 \label{sec:validating-acl2}
 
 The ACL2 system models ordinals up to \HOLtm{ε₀} with a representation based on Cantor Normal Form.
-ACL2's manipulations of those values are then defined by recursive functions over that syntax.
-Further, ACL2 then takes as axiomatic that these recursive functions are correct; that, for example, its less-than relation on these values really does correspond to \HOLtm{ordlt}, and thus that the system's relation really is well-founded.
+ACL2's manipulations of those values are defined by recursive functions over that syntax.
+ACL2 then takes as axiomatic that these recursive functions are correct; that, for example, its less-than relation on these values really does correspond to \HOLtm{ordlt}.
 
 In isolation, these axiomatic assertions can only be checked manually.
 However, thanks to work started by Gordon~\emph{et~al.}~\cite{DBLP:conf/fmcad/GordonRHK06}, much of the ACL2 axiomatic system has been embedded in HOL4.
@@ -597,7 +597,7 @@ To do so would require using a theorem prover that can reason both about ACL2 an
 \end{quote}
 
 HOL4 can reason about ACL2, thanks to the embedding above, and can now also reason about ordinals in a way that captures their nature as canonical wellorders.
-In other words, we are now in a position to do the mechanised proofs that could not be done in~\cite{KaufmannSlind:tphols09:ordinal-pearl,ManoliosVroon:JAR2006:ordinal-arithmetic}.
+Thus we are now in a position to do the mechanised proofs that could not be done in~\cite{KaufmannSlind:tphols09:ordinal-pearl,ManoliosVroon:JAR2006:ordinal-arithmetic}.
 
 Kaufmann and Slind's HOL4 theory file defines the ACL2 ordinals to be
 \begin{holmath}
@@ -648,10 +648,10 @@ We have proved that the simple ACL2 definitions of addition and multiplicaton ov
 \]
 \end{theorem}
 
-Manolios and Vroon~\cite{ManoliosVroon:JAR2006:ordinal-arithmetic} note that their simple definition of multiplication is very inefficient, and prove a version with better complexity, based on new constants \HOLtm{pmult}, \HOLtm{cf1} and \HOLtm{cf2}.
-It turns out that the way in which \HOLtm{pmult} is embedded in ACL2 means that Manolios and Vroon had to prove it equivalent to the na\"\i{}ve algorithm (\HOLtm{ord_mult}).
-Though strictly unnecessary, we have also proved a version of their Theorem~10:
-\begin{theorem}
+Manolios and Vroon~\cite{ManoliosVroon:JAR2006:ordinal-arithmetic} note that \HOLtm{ord_mult} is very inefficient, and prove a version with better complexity, based on new constants \HOLtm{pmult}, \HOLtm{cf1} and \HOLtm{cf2}.
+In order to embed it in ACL2, Manolios and Vroon have already mechanically proved \HOLtm{pmult} equivalent to \HOLtm{ord_mult}.
+Nonetheless, we have also proved a version of their Theorem~10:
+\begin{theorem}[after Manolios and Vroon]
 The efficient \HOLtm{pmult} algorithm does indeed correctly calculate ordinal multiplication.
 (The natural number parameter $n$ can be set to zero initially.)
 \renewcommand{\arraystretch}{1.2}
