@@ -647,7 +647,7 @@ The efficient \HOLtm{pmult} algorithm does indeed correctly calculate ordinal mu
 (The natural number parameter $n$ can be set to zero initially.)
 \renewcommand{\arraystretch}{1.2}
 \begin{holmath}
-\vdash \; \holthmenv{\HOLthm[nostile]{ordNotationSemantics.mvjar_theorem10}}
+\vdash \; \holthmenv{\HOLthm[nostile,width=90]{ordNotationSemantics.mvjar_theorem10}}
 \end{holmath}
 \end{theorem}
 
