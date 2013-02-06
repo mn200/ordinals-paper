@@ -21,7 +21,7 @@
 \title{Ordinals in HOL: Transfinite Arithmetic \\
 up to (and beyond) $\omega_1$}
 \author{Michael Norrish\inst{1} \and Brian Huffman\inst{2}}
-\institute{Canberra Research Lab., NICTA\thanks{NICTA is funded by the Australian Government as represented by the Department of Broadband, Communications and the Digital Economy and the Australian Research Council through the ICT Centre of Excellence program.}\\ \emph{also,} Australian National University\\\email{Michael.Norrish@nicta.com.au} \and Galois, Inc.\\\email{huffman.brian.c@gmail.com}}
+\institute{Canberra Research Lab., NICTA\thanks{NICTA is funded by the Australian Government as represented by the Department of Broadband, Communications and the Digital Economy and the Australian Research Council through the ICT Centre of Excellence program.}\\ \emph{also,} Australian National University\\\email{Michael.Norrish@nicta.com.au} \and Galois, Inc.\\\email{huffman@galois.com}}
 
 \begin{document}
 
@@ -142,6 +142,7 @@ Take the least such element to be the bound demonstrating \HOLtm{w1 orderlt w2}.
 \end{proof}
 
 \section{Constructing the Ordinals}
+\label{sec:constructing}
 
 With \HOLtm[nodollarparens]{(orderiso)} an equivalence relation, we can quotient all possible wellorders over the type \HOLty{:'a}, giving us a natural type of ordinals over \HOLty{:'a}.
 However, if \HOLty{:'a} is a finite type, then there are only finitely many ordinals over this type.
@@ -318,6 +319,7 @@ One simple consequence of these definitions is that every natural number is less
 \end{theorem}
 
 \section{Arithmetic}
+\label{sec:arithmetic}
 
 \begin{theorem}
 With access to a total well-founded relation \HOLtm{ordlt}, we have always been able to define functions by well-founded recursion.
@@ -651,6 +653,33 @@ The efficient \HOLtm{pmult} algorithm correctly calculates ordinal multiplicatio
 \end{theorem}
 
 \section{Another Model}
+
+Sections \ref{sec:wellorders} and \ref{sec:constructing} showed how to construct a type \HOLty{:'a ordinal} using wellorders. In this section, we describe an alternative construction of ordinals that starts with the infinitely-branching tree datatype shown below. The goal is to construct a wellordered type \HOLTyOp{ordinal} that has upper bounds for all countable sets; from this foundation, an Isabelle formalization by the second author \cite{Huffman-AFP05} develops ordinal arithmetic as described in Section~\ref{sec:arithmetic}.
+
+\begin{HOLblock}
+\HOLKeyword{datatype}\,\HOLTyOp{preordinal}\,=\,\HOLConst{Zero}\,|\,\HOLConst{StrictLim}(\HOLTyOp{num}\,\ensuremath{\rightarrow}\,\HOLTyOp{preordinal})
+\end{HOLblock}
+
+%TODO: We might instead give the parameterized definition:
+%\begin{HOLblock}
+%\HOLKeyword{datatype}\,\ensuremath{\alpha}\,\HOLTyOp{preordinal}\,=\,\HOLConst{Zero}\,|\,\HOLConst{StrictLim}(\HOLty{:'a inf}\,\ensuremath{\rightarrow}\,\ensuremath{\alpha}\,\HOLTyOp{preordinal})
+%\end{HOLblock}
+
+We define the subterm relation $\lhd$ as the least transitive relation satisfying $f(x) \lhd \HOLConst{StrictLim}(f)$ for all $f, x$. The wellfoundedness of $\lhd$ follows from the datatype induction rule for \HOLTyOp{preordinal}. However, $\lhd$ is not a wellorder because it is not linear. To construct a wellorder, we will need to quotient \HOLTyOp{preordinal} by a suitable equivalence relation.
+
+We inductively define relations $\preceq$ and $\prec$ as the smallest relations satisfying the following rules. Intuitively, $x \preceq y$ iff $(\preceq)$ relates every subterm of $x$ to some subterm of $y$. We then define $x \approx y$ iff $x \preceq y \land y \preceq x$.
+
+\[
+(\forall x.\;x \lhd y \Rightarrow x \prec z) \Rightarrow y \preceq z
+\]
+\[
+x \preceq y \land y \lhd z \Rightarrow x \prec z
+\]
+
+Proofs by wellfounded induction (using $\lhd$) show that $\preceq$ is reflexive and transitive. It directly follows that $\approx$ is an equivalence relation. We can similarly prove further transitivity rules for various combinations of $\prec$ and $\preceq$. Finally we can prove the order trichotomy rule $x \prec y \lor y \prec x \lor x \approx y$ by nested inductions on $x$ and $y$.
+
+We then define type \HOLTyOp{ordinal} as a quotient $\HOLTyOp{preordinal} / \mathord{\approx}$. The various transitivity rules show that $\prec$ and $\preceq$ respect $\approx$, so we can lift them to relations $<$ and $\le$ on the quotient type \HOLTyOp{ordinal}. The order trichotomy rule implies that \HOLTyOp{ordinal} is wellordered by $<$. Finally, we can construct a (strict) upper bound for any countably infinite set by lifting the constructor function \HOLConst{StrictLim} to type \HOLTyOp{ordinal}.
+
 
 \subsection{Related Work}
 There is relatively little published work on mechanisations of ordinals within a non-set-theoretic setting.
