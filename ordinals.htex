@@ -656,9 +656,9 @@ The efficient \HOLtm{pmult} algorithm correctly calculates ordinal multiplicatio
 
 Sections \ref{sec:wellorders} and \ref{sec:constructing} showed how to construct a type \HOLty{:'a ordinal} using wellorders. In this section, we describe an alternative construction of ordinals that starts with the infinitely-branching tree datatype shown below. The goal is to construct a wellordered type \HOLTyOp{ordinal} that has upper bounds for all countable sets; from this foundation, an Isabelle formalization by the second author \cite{Huffman-AFP05} develops ordinal arithmetic as described in Section~\ref{sec:arithmetic}.
 
-\begin{HOLblock}
-\HOLKeyword{datatype}\,\HOLTyOp{preordinal}\,=\,\HOLConst{Zero}\,|\,\HOLConst{StrictLim}(\HOLTyOp{num}\,\ensuremath{\rightarrow}\,\HOLTyOp{preordinal})
-\end{HOLblock}
+\[
+\HOLTyOp{preordinal}\,\,=\,\,\HOLConst{Zero}\,|\,\HOLConst{StrictLim}(\HOLTyOp{num}\,\ensuremath{\rightarrow}\,\HOLTyOp{preordinal})
+\]
 
 %TODO: We might instead give the parameterized definition:
 %\begin{HOLblock}
@@ -676,9 +676,14 @@ We inductively define relations $\preceq$ and $\prec$ as the smallest relations 
 x \preceq y \land y \lhd z \Rightarrow x \prec z
 \]
 
-Proofs by wellfounded induction (using $\lhd$) show that $\preceq$ is reflexive and transitive. It directly follows that $\approx$ is an equivalence relation. We can similarly prove further transitivity rules for various combinations of $\prec$ and $\preceq$. Finally we can prove the order trichotomy rule $x \prec y \lor y \prec x \lor x \approx y$ by nested inductions on $x$ and $y$.
+Proofs by wellfounded induction (using $\lhd$) show that $\preceq$ is reflexive and transitive.
+It directly follows that $\approx$ is an equivalence relation. We can similarly prove further transitivity rules for various combinations of $\prec$ and $\preceq$.
+Finally we can prove the order trichotomy rule $x \prec y \lor y \prec x \lor x \approx y$ by nested inductions on $x$ and $y$.
 
-We then define type \HOLTyOp{ordinal} as a quotient $\HOLTyOp{preordinal} / \mathord{\approx}$. The various transitivity rules show that $\prec$ and $\preceq$ respect $\approx$, so we can lift them to relations $<$ and $\le$ on the quotient type \HOLTyOp{ordinal}. The order trichotomy rule implies that \HOLTyOp{ordinal} is wellordered by $<$. Finally, we can construct a (strict) upper bound for any countably infinite set by lifting the constructor function \HOLConst{StrictLim} to type \HOLTyOp{ordinal}.
+We then define type \HOLTyOp{ordinal} as a quotient $\HOLTyOp{preordinal} / \mathord{\approx}$.
+The various transitivity rules show that $\prec$ and $\preceq$ respect $\approx$, so we can lift them to relations $<$ and $\le$ on the quotient type \HOLTyOp{ordinal}.
+The order trichotomy rule implies that \HOLTyOp{ordinal} is wellordered by $<$.
+Finally, we can construct a (strict) upper bound for any countably infinite set by lifting the constructor function \HOLConst{StrictLim} to type \HOLTyOp{ordinal}.
 
 
 \subsection{Related Work}
