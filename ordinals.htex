@@ -698,9 +698,8 @@ Finally, as in ACL2 (see above), it is possible to use ordinal \emph{notations} 
 A great deal of interesting ordinal theory (up to $\Gamma_0$) has been mechanised in this style in Coq by Cast\'eran and Contejean~\cite{coq-ordinals}.
 
 \paragraph{Availability}
-The bulk of the HOL4 theory of the ordinals described here is in the current release of HOL4 (Kananaskis-8, as of this writing).
-All newer material, including the validation of the ACL2 arithmetic algorithms, was pushed to the HOL4 repository by the time of commit \texttt{e3bd872ec1}, and will be in the next official release.
-The HOL4 repository is at \url{github.com/mn200/HOL}.
+Most of the HOL4 theory of the ordinals described here is in the current release of HOL4.
+Newer material, including the validation of the ACL2 algorithms, was in the HOL4 repository\footnote{The HOL4 repository is at \url{github.com/mn200/HOL}.} by the time of commit \texttt{e3bd872ec1}.
 The sources for this paper are at \url{github.com/mn200/ordinals-paper}.
 
 \paragraph{Acknowledgments} The first author wishes to acknowledge productive early conversations about ordinals with Thomas Forster.
