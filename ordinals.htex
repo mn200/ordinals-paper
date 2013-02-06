@@ -342,12 +342,7 @@ Ordinal addition:
 \end{holmath}
 \end{definition}
 The definitions of multiplication and exponentiation are as straightforward.
-\begin{definition}
-Ordinal multiplication:
-\begin{holmath}
-\HOLthm[def,a/β,b/α]{ordinal.ordMULT_def}
-\end{holmath}
-\end{definition}
+For example:
 \begin{definition}
 Ordinal exponentiation:
 \begin{holmath}
