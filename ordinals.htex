@@ -693,7 +693,7 @@ There is relatively little published work on mechanisations of ordinals within a
 One early development is John Harrison's \texttt{wellorder} library~\cite{harrison92:_hol_wellorder}.
 Originally developed for HOL88, this remains part of the HOL~Light library.
 This theory picks out certain wellorders to be ordinals using Hilbert-choice, and proves some consequences of the Axiom of Choice, such as Zorn's Lemma.
-It does not include any arithmetic on ordinals, and only successor on wellorders.
+It does not include any ordinal arithmetic.
 
 In similar vein, there is a large theory of ordinals and cardinals behind Traytel~\emph{et~al.}~\cite{LICS2012:Traytel:datatypes}.
 This work is available at Isabelle's Archive of Formal Proofs.
