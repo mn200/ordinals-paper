@@ -511,11 +511,10 @@ As suggested, the arithmetic operations are all closed under \HOLtm{epsilon0}:
 \begin{definition}
 The ``countable ordinals'' are those with countably many predecessors.
 Write \HOLtm{countableOrd a} for an $a$ with this property.
-(In von Neumann's construction these ordinals are those that are themselves countable sets.)
 \end{definition}
 
 An immediate consequence of Theorem~\ref{thm:univ-over-greater-cardinal} is that there are uncountably many countable ordinals.
-To guarantee even larger sets, we must instantiate the \HOLtm{α} type-parameter with known-to-be-larger types:
+To guarantee even larger ordinals, we must instantiate the \HOLtm{α} type-parameter with known-to-be-larger types:
 \begin{definition}
 \label{defn:uncord-tyabbrevs}
 The \HOLty{:'a ucinf} type has at least the cardinality of $2^{\aleph_0}$.
