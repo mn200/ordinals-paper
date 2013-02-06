@@ -707,7 +707,7 @@ A great deal of interesting ordinal theory (up to $\Gamma_0$) has been mechanise
 
 \paragraph{Availability}
 Most of the HOL4 theory of the ordinals described here is in the current release of HOL4.
-Newer material, including the validation of the ACL2 algorithms, was in the HOL4 repository by the time of commit \texttt{e3bd872ec1}.
+Newer material, including the validation of the ACL2 algorithms, was in the HOL4 repository by the time of commit \texttt{e3bd872ec1} and will appear in the next release.
 The sources for this paper are at \url{github.com/mn200/ordinals-paper}.
 
 \bibliography{std-abbrevs,theorem-proving,includes}
