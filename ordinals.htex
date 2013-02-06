@@ -686,7 +686,9 @@ The order trichotomy rule implies that \HOLTyOp{ordinal} is wellordered by $<$.
 Finally, we can construct a (strict) upper bound for any countably infinite set by lifting the constructor function \HOLConst{StrictLim} to type \HOLTyOp{ordinal}.
 
 
-\subsection{Related Work}
+
+\section{Conclusion}
+\paragraph{Related Work}
 There is relatively little published work on mechanisations of ordinals within a non-set-theoretic setting.
 One early development is John Harrison's \texttt{wellorder} library~\cite{harrison92:_hol_wellorder}.
 Originally developed for HOL88, this remains part of the HOL~Light library.
@@ -701,10 +703,6 @@ This work does not define ordinal multiplication nor exponentiation.
 
 Finally, as in ACL2 (see above), it is possible to use ordinal \emph{notations} (capturing countably many ordinals).
 A great deal of interesting ordinal theory (up to $\Gamma_0$) has been mechanised in this style in Coq by Cast\'eran and Contejean~\cite{coq-ordinals}.
-
-\nocite{Dennis:TPHOLs2001:ordinal-arithmetic}
-
-\section{Conclusion}
 
 \paragraph{Availability}
 The bulk of the HOL4 theory of the ordinals described here is in the current release of HOL4 (Kananaskis-8, as of this writing).
