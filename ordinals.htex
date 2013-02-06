@@ -99,12 +99,12 @@ The first is straightforward.
 \HOLthm[def,>>]{wellorder.orderiso_def}
 \end{holmath}
 (%
-We are using syntax overloading to simplify notation: in the last conjunct, the formula \HOLtm{(x,y) IN strictWO w1} means that the pair \HOLtm{(x,y)} is a strict inequality in the relation (a set of pairs) that represents the wellorder value \HOLtm{w1}.
+We are using syntax overloading to simplify notation: the formula \HOLtm{(x,y) IN strictWO w1} means that the pair \HOLtm{(x,y)} is a strict inequality in the relation (a set of pairs) that represents the wellorder value \HOLtm{w1}.
 Alternatively, read \HOLtm{(x,y) IN strictWO w1} as ``$x$ is strictly less than $y$ in \HOLtm{w1}''.%
 )
 \end{definition}
 
-The definition of the ordering relation on wellorders depends on the \HOLtm{wobound} function that truncates a wellorder so that it only includes those elements below a particular point.
+The definition of the ordering relation on wellorders depends on the \HOLtm{wobound} function, which truncates a wellorder so that it includes only those elements below a particular point.
 There are two important theorems about \HOLtm{wobound}:
 \[
 \begin{array}{l}
