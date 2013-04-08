@@ -1,0 +1,87 @@
+----------------------- REVIEW 1 ---------------------
+PAPER: 20
+TITLE: Ordinals in HOL: Transfinite Arithmetic up to (and beyond) ω₁
+AUTHORS: Michael Norrish and Brian Huffman
+
+OVERALL EVALUATION: 1 (weak accept)
+REVIEWER'S CONFIDENCE: 5 (expert)
+
+----------- REVIEW -----------
+This is a nice piece of work, elegant in both the formalisation and the write-up, and with applications. My first impulse was to rate it as Strong Accept. I have had to tone this down, since the mathematics that was formalised doesn't appear to be that difficult. Nevertheless, it is an exemplary piece of writing and might be considered as a Proof Pearl.
+
+Other formalisations of the ordinals have been based on some sort of ordinal notation, but ordinals were originally derived from well orderings, so it's natural to define ordinals as well orderings quotiented by isomorphism, as is done here.
+
+One point in need of improvement concerns the statements of definitions and theorems. The all-important definitions at the beginning of section 3 are given in English (which is certainly essential for readability), but they are not "declared" as definitions and the quotient is never presented. Theorem 1 begins "The last important property of ..." but of course never proves that the trichotomy law is important, or last. Theorem 2 makes a historical claim about Von Neumann. Theorem 3 defines a constant (allOrds) that is referred to not merely in the theorem statement but on subsequent pages, and the reader who seeks its definition will find it hard to locate. All that is needed to correct these problems is to move some text from the statements of definitions or theorems into the preceding paragraph. Of course no theorem should consist of a formula standing alone, but the text of a theorem statement should be a mathematical fact that has been proved.
+
+Section 7 describes another model of the ordinals. But it doesn't compare this model with the one presented in the previous six sections. Why was this model (formalised in 2005) abandoned in favour of the new one?
+
+My other main content is that the paper is unclear (perhaps the authors are unclear in their minds) about the possible cardinalities available with this formalisation. In the second paragraph of the paper, they say "we can model all ordinals of cardinality Aleph_n". This hints at all cardinalities, until we realise that n must be a natural number, not an arbitrary ordinal, so we get only a tiny initial segment of the cardinals. The first sentence of section 8 flatly says "arbitrarily large cardinality" and that is certainly true within the context of HOL, but many people will think of cardinals in the context of set theory (where the Aleph notation originates). And at the risk of sounding pedantic: the continuum hypothesis is undecidable, and almost nothing is known about the cardinality of the continuum (it could for example equal Aleph_n for any natural number n). Therefore, I suggest not mentioning Aleph at all. It would be accurate to say that the system can model ordinals of any cardinality expressible in HOL, while pointing out that this is a tiny fragment of the usual class of cardinals.
+
+Minor remarks:
+
+I suggest replacing definition 11 by the definition of ordinal multiplication, because it is less obvious, multiplication not being commutative.
+
+On page 2 you refer to the explicit union of the domain and range, while on page 3, without comment, you introduce the constant fld. Strange.
+
+
+----------------------- REVIEW 2 ---------------------
+PAPER: 20
+TITLE: Ordinals in HOL: Transfinite Arithmetic up to (and beyond) ω₁
+AUTHORS: Michael Norrish and Brian Huffman
+
+OVERALL EVALUATION: 3 (strong accept)
+REVIEWER'S CONFIDENCE: 4 (high)
+
+----------- REVIEW -----------
+This paper presents an implementation of ordinal arithmetic in HOL4.  The most interesting aspect of the notation is that the construction of ordinals is parameterized, allowing the construction of large ordinals, e.g., uncountable ordinals such as w1.  An especially nice touch in the paper is a formalization of the ordinal arithmetic from the theorem prover ACL2.  This is quite nice, since such a theory cannot be stated inside ACL2, because ordinals larger then e0 (ACL2's largest ordinal) are required.
+
+The results described in this paper are very interesting and the presentation is clear and well motivated.  The paper is also clearly in the scope of ITP.  I strongly recommend it.
+
+
+----------------------- REVIEW 3 ---------------------
+PAPER: 20
+TITLE: Ordinals in HOL: Transfinite Arithmetic up to (and beyond) ω₁
+AUTHORS: Michael Norrish and Brian Huffman
+
+OVERALL EVALUATION: 1 (weak accept)
+REVIEWER'S CONFIDENCE: 4 (high)
+
+----------- REVIEW -----------
+The paper describes the mechanization of the theory of ordinal
+numbers in HOL4. The ordinal numbers are obviously of foundational
+importance in set theory and in proof theory. The paper describes
+a mechanical proof of the existence of fixpoints including
+epsilon_0, and the validation of some of the algorithms used in
+ACL2 for ordinal arithmetic on ordinal notations.
+
+The paper provides a definition of wellorders and proves various
+standard results. It then defines the ordinals by quotienting
+over wellorders and proceeds to define the succesor of an
+ordinal, the predecessors of an ordinal, the supremem of a set of
+ordinals (which requires some work), limit ordinals, ordinal
+arithmetic, cantor normal forms, fixpoints, and uncountable
+ordinals. The proofs, definitions, lemmas, etc are more or less
+what one would expect, but this is a sizable formalization
+effort.
+
+In section 6, the Manolios/Vroon algorithms for manipulating
+ordinal notations (implemented in ACL2) are verified. This is
+made possible by the work of Gordon, Reynolds, Hunt, and Kaufmann
+and the work by Kaufmann and Slind (the ACL2 in HOL project).  In
+the final paper, please indicate if you also verified the
+algorithms for ordinal exponentiation. They are more complicated
+that the multiplication and addition algorithms.
+
+Overall, a solid paper that covers a significant amout of
+material. There is some novelty in the modeling of ordinals and
+the supremum in HOL. The connection between HOL and ACL2 was also
+interesting.
+
+Minor issues:
+
+In definition 2, I think you want (w_1 <_w w_2)
+
+In section 6, you say that the (1) ACL2 in HOL project was completed
+by Kaufmann and Slind at much the same time as the (2) Manolios/Vroon
+ordinal arithmetic work, but (1) was in 2007 and (2) was in 2003
+(CADE) so that doesn't seem accurate.
