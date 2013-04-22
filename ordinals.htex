@@ -101,7 +101,8 @@ The first is straightforward.
 \end{holmath}
 (%
 We are using syntax overloading to simplify notation: the formula \HOLtm{(x,y) IN strictWO w1} means that the pair \HOLtm{(x,y)} is a strict inequality in the relation (a set of pairs) that represents the wellorder value \HOLtm{w1}.
-Alternatively, read \HOLtm{(x,y) IN strictWO w1} as ``$x$ is strictly less than $y$ in \HOLtm{w1}''.%
+Alternatively, read \HOLtm{(x,y) IN strictWO w1} as ``$x$ is strictly less than $y$ in \HOLtm{w1}''.
+Read \HOLtm{fld w} as the union of the domain and range of the relation representing \HOLtm{w}.%
 )
 \end{definition}
 
