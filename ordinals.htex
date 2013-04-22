@@ -577,7 +577,7 @@ Kaufmann and Slind note in passing:
 \begin{quote}\itshape
 \dots{}we are not ascribing any semantics at all to the notation; a separate proof would be needed to show that indeed the following definitions do correspond to the ordinals up to \HOLtm{ε₀}.
 \end{quote}
-At much the same time, Manolios and Vroon~\cite{ManoliosVroon:JAR2006:ordinal-arithmetic} improved ACL's representation of the ordinals-up-to-$\varepsilon_0$, and developed efficient arithmetic algorithms for that representation.
+A little earlier, Manolios and Vroon~\cite{ManoliosVroon:JAR2006:ordinal-arithmetic} improved ACL's representation of the ordinals-up-to-$\varepsilon_0$, and developed efficient arithmetic algorithms for that representation.
 They noted:
 \begin{quote}\itshape
 Note that these proofs are not mechanically verified.
