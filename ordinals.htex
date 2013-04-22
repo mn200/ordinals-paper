@@ -525,7 +525,7 @@ An immediate consequence of Theorem~\ref{thm:univ-over-greater-cardinal} is that
 To guarantee even larger ordinals, we must instantiate the \HOLtm{α} type-parameter with known-to-be-larger types:
 \begin{definition}
 \label{defn:uncord-tyabbrevs}
-The \HOLty{:'a ucinf} type has at least the cardinality of $2^{\aleph_0}$.
+The \HOLty{:'a ucinf} type has at least the cardinality of $2^{\aleph_0}$, and is thus at least as big as $\aleph_1$.
 The \HOLty{:'a ucord} type contains ordinals that are quotients of wellorders over \HOLty{:'a ucinf}:
 \begin{eqnarray*}
 \HOLty{:'a ucinf} &=& (\HOLty{:'a + (num -> bool)})\,\HOLTyOp{inf}\\
