@@ -1,0 +1,767 @@
+\documentclass[11pt]{llncs}
+\usepackage[T1]{fontenc}
+\usepackage{alltt}
+\usepackage{url}
+\usepackage{times}
+\usepackage{stmaryrd}
+
+\usepackage[strings]{underscore}
+\usepackage{holtexbasic}
+
+\renewcommand{\HOLConst}[1]{{\textsf{\upshape\small #1}}}
+\renewcommand{\HOLTyOp}[1]{\mbox{\fontencoding{T1}\fontfamily{bch}\fontseries{m}\fontshape{it}\fontsize{9.5}{10}\selectfont #1}}
+\renewcommand{\HOLinline}[1]{\ensuremath{#1}}
+\newcommand{\holthmenv}[1]{\begin{array}[t]{l}#1\end{array}}
+\renewcommand{\HOLKeyword}[1]{\texttt{#1}}
+
+\newenvironment{holmath}{\begin{displaymath}\begin{array}{l}}{\end{array}\end{displaymath}\ignorespacesafterend}
+\newenvironment{holarray}{\begin{array}[t]{l}}{\end{array}}
+
+
+\title{Ordinals in HOL: Transfinite Arithmetic \\
+up to (and beyond) $\omega_1$}
+\author{Michael Norrish\inst{1} \and Brian Huffman\inst{2}}
+\institute{Canberra Research Lab., NICTA\thanks{NICTA is funded by the Australian Government as represented by the Department of Broadband, Communications and the Digital Economy and the Australian Research Council through the ICT Centre of Excellence program. The first author also thanks Thomas Forster for productive early discussions.
+Finally, we thank ITP's anonymous reviewers for helpful comments.}\\ \emph{also,} Australian National University\\\email{Michael.Norrish@nicta.com.au} \and Galois, Inc.\\\email{huffman@galois.com}}
+
+\begin{document}
+
+\maketitle
+\setcounter{footnote}{0}
+
+\begin{abstract}
+We describe a comprehensive HOL mechanisation of the theory of ordinal numbers, focusing on the basic arithmetic operations.
+Mechanised results include the existence of fixpoints such as $\varepsilon_0$, the existence of normal forms, and the validation of algorithms used in the ACL2 theorem-proving system.
+\end{abstract}
+
+
+\section{Introduction}
+
+The ordinal numbers are an important foundational type in axiomatic set theory; used there, for example, in the definition of the von Neumann hierarchy and the cardinal numbers.
+In logic, ordinal numbers also provide an important characterisation of the strength of various logical systems.
+
+Unfortunately, the typed logic implemented in the various HOL systems (including Isabelle/HOL) is not strong enough to define a type for all possible ordinal values (a proper class in a set theory like NBG).
+It turns out, however, that for any fixed $n\in\mathbb{N}$, we \emph{can} model all ordinals of cardinality $\aleph_n$.
+The user is thus able to choose an ordinal domain of sufficient size for their purposes.
+
+Our approach is to model ordinals as quotients of wellorders with respect to wellorder isomorphism.
+This approach has not been mechanised before.
+Within HOL, any wellorder is some underlying domain (represented as a polymorphic type argument).
+The resulting ordinals are also parameterised by a type argument, indirectly encoding the limit of the type.
+For example, the type \HOLinline{\HOLTyOp{num}\,\HOLTyOp{ordinal}} captures only the countable ordinals.
+
+One important use of ordinal numbers occurs in the ACL2 theorem-proving system, which uses ordinal numbers as part of its termination reasoning for recursive definitions.
+Recently, Manolios and Vroon~\cite{ManoliosVroon:JAR2006:ordinal-arithmetic} improved ACL2's representation of ordinal numbers, and implemented new, more efficient algorithms for manipulating those numbers.
+Their work mechanised proofs of the correspondence between the old and new notational systems, and also proved the expected arithmetic properties.
+However, ACL2 has no notation-independent theory of the ordinals available to it, and so no way to model the set-theoretic ordinals.
+In \emph{this} paper, we provide a sufficiently rich model, and are thus able to validate Manolios and Vroon's algorithms.
+
+\subsubsection{Contribution}
+
+This work makes a particular contribution in
+\begin{itemize}
+\item its definition of ordinal supremum,
+\item the fact that the mechanised notion of ordinal is polymorphic in an underlying universe type (allowing ordinals of large cardinality), and
+\item its mechanised validation of the ACL2 algorithms for ordinal arithmetic
+\end{itemize}
+
+\subsubsection{HOL4 Notation and Theorems}
+All statements appearing with a turnstile ($\vdash$) are HOL4 theorems, automatically pretty-printed to \LaTeX{}.
+Notation specific to this paper is explained as it is introduced.
+Otherwise, HOL4's syntax is a generally pleasant combination of quantifiers ($\forall$, $\exists$) and functional programming.
+
+The option type \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{option}}, often used to encode partial functions, includes values \HOLinline{\HOLConst{NONE}}, and \HOLinline{\HOLConst{SOME}\,\HOLFreeVar{x}} for all possible values \HOLinline{\HOLFreeVar{x}} of type \HOLinline{\ensuremath{\alpha}}.
+Hilbert choice is available through the epsilon notation.
+Read \HOLinline{\HOLTokenHilbert{}\HOLBoundVar{x}\ensuremath{.}\,\HOLFreeVar{P}\,\HOLBoundVar{x}} as ``the $x$ that satisfies (predicate) $P$''.
+
+Sets and characteristic functions (of type \HOLinline{\ensuremath{\alpha}\,\ensuremath{{\rightarrow}}\,\HOLTyOp{bool}} for element type \HOLinline{\ensuremath{\alpha}}) are identified.
+Sets support standard operations such as union~\HOLinline{(\HOLConst{\HOLTokenUnion{}})}, and element removal~(\HOLinline{\HOLFreeVar{s}\,\HOLConst{DELETE}\,\HOLFreeVar{e}}).
+The term \HOLinline{\HOLConst{BIGUNION}\,\HOLFreeVar{s}} denotes the union of a set of sets.
+We write \HOLinline{\HOLFreeVar{f}\,\textrm{`}\,\HOLFreeVar{s}} for the image of the set $s$ under function $f$.
+\HOLinline{\HOLConst{BIJ}\,\HOLFreeVar{f}\,\HOLFreeVar{s\sb{\mathrm{1}}}\,\HOLFreeVar{s\sb{\mathrm{2}}}} means that function $f$ is a bijection between sets $s_1$ and $s_2$.
+The universal set over type \HOLinline{\ensuremath{\alpha}} is written \HOLinline{\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha})}.
+Cardinality reasoning is expressed with \HOLinline{\HOLFreeVar{s}\,\ensuremath{{\,\HOLTokenIsPrefix\,}}\,\HOLFreeVar{t}} (``there is an injection from $s$ to $t$''), and \HOLinline{\HOLFreeVar{s}\,\ensuremath{{\approx}}\,\HOLFreeVar{t}} (``there is a bijection between $s$ and $t$'').
+
+
+\section{Wellorders}
+\label{sec:wellorders}
+
+\begin{definition}
+We define what it is for a relation $R$ to be a wellorder:
+\begin{holmath}
+\HOLConst{wellorder}\,\HOLFreeVar{R}\,\ensuremath{{\iff}}\\
+\,\,\,\,\,\,\HOLConst{wellfounded}\,(\HOLConst{strict}\,\HOLFreeVar{R})\,\HOLTokenConj{}\\
+\,\,\,\,\,\,\HOLConst{linear_order}\,\HOLFreeVar{R}\,(\HOLConst{domain}\,\HOLFreeVar{R}\,\HOLTokenUnion{}\,\HOLConst{range}\,\HOLFreeVar{R})\,\HOLTokenConj{}\\
+\,\,\,\,\,\,\HOLConst{reflexive}\,\HOLFreeVar{R}\,(\HOLConst{domain}\,\HOLFreeVar{R}\,\HOLTokenUnion{}\,\HOLConst{range}\,\HOLFreeVar{R})
+\end{holmath}
+\label{defn:wellorder}
+\end{definition}
+As there is at least one value satisfying this definition (the empty set will do), we use HOL's standard type definition mechanism to define a new type (family) \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{wellorder}} that captures all of the possible wellorders over values drawn from arbitrary types \HOLinline{\ensuremath{\alpha}}.
+The critical relations over wellorders are order-isomorphism and the relation that orders them linearly.
+The first is straightforward.
+
+\begin{definition} Two wellorders are isomorphic if there is a bijective function (conjuncts two and three below) between their respective fields (conjunct one) that preserves the ordering (conjunct four):
+\begin{holmath}
+\,\,\HOLFreeVar{w\sb{\mathrm{1}}}\,\ensuremath{{\approx_w}}\,\HOLFreeVar{w\sb{\mathrm{2}}}\,\ensuremath{{\iff}}\\
+\,\,\,\,\,\,\,\,\ensuremath{{\exists}}\HOLBoundVar{f}\ensuremath{.}\\
+\,\,\,\,\,\,\,\,\,\,(\ensuremath{{\forall}}\HOLBoundVar{x}\ensuremath{.}\,\HOLBoundVar{x}\,\HOLTokenIn{}\,\HOLConst{fld}\,\HOLFreeVar{w\sb{\mathrm{1}}}\,\HOLTokenImp{}\,\HOLBoundVar{f}\,\HOLBoundVar{x}\,\HOLTokenIn{}\,\HOLConst{fld}\,\HOLFreeVar{w\sb{\mathrm{2}}})\,\HOLTokenConj{}\\
+\,\,\,\,\,\,\,\,\,\,(\ensuremath{{\forall}}\HOLBoundVar{x\sb{\mathrm{1}}}\,\HOLBoundVar{x\sb{\mathrm{2}}}\ensuremath{.}\\
+\,\,\,\,\,\,\,\,\,\,\,\,\,\HOLBoundVar{x\sb{\mathrm{1}}}\,\HOLTokenIn{}\,\HOLConst{fld}\,\HOLFreeVar{w\sb{\mathrm{1}}}\,\HOLTokenConj{}\,\HOLBoundVar{x\sb{\mathrm{2}}}\,\HOLTokenIn{}\,\HOLConst{fld}\,\HOLFreeVar{w\sb{\mathrm{1}}}\,\HOLTokenImp{}\\
+\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,(\HOLBoundVar{f}\,\HOLBoundVar{x\sb{\mathrm{1}}}\,{\ensuremath{=}}\,\HOLBoundVar{f}\,\HOLBoundVar{x\sb{\mathrm{2}}}\,\ensuremath{{\iff}}\,\HOLBoundVar{x\sb{\mathrm{1}}}\,{\ensuremath{=}}\,\HOLBoundVar{x\sb{\mathrm{2}}}))\,\HOLTokenConj{}\\
+\,\,\,\,\,\,\,\,\,\,(\ensuremath{{\forall}}\HOLBoundVar{y}\ensuremath{.}\,\HOLBoundVar{y}\,\HOLTokenIn{}\,\HOLConst{fld}\,\HOLFreeVar{w\sb{\mathrm{2}}}\,\HOLTokenImp{}\,\ensuremath{{\exists}}\HOLBoundVar{x}\ensuremath{.}\,\HOLBoundVar{x}\,\HOLTokenIn{}\,\HOLConst{fld}\,\HOLFreeVar{w\sb{\mathrm{1}}}\,\HOLTokenConj{}\,\HOLBoundVar{f}\,\HOLBoundVar{x}\,{\ensuremath{=}}\,\HOLBoundVar{y})\,\HOLTokenConj{}\\
+\,\,\,\,\,\,\,\,\,\,\ensuremath{{\forall}}\HOLBoundVar{x}\,\HOLBoundVar{y}\ensuremath{.}\,(\HOLBoundVar{x},\HOLBoundVar{y})\,\HOLTokenIn{}\,\HOLFreeVar{w\sb{\mathrm{1}}}\ensuremath{\sp{\ne}}\,\HOLTokenImp{}\,(\HOLBoundVar{f}\,\HOLBoundVar{x},\HOLBoundVar{f}\,\HOLBoundVar{y})\,\HOLTokenIn{}\,\HOLFreeVar{w\sb{\mathrm{2}}}\ensuremath{\sp{\ne}}
+\end{holmath}
+(%
+We are using syntax overloading to simplify notation: the formula \HOLinline{(\HOLFreeVar{x},\HOLFreeVar{y})\,\HOLTokenIn{}\,\HOLFreeVar{w\sb{\mathrm{1}}}\ensuremath{\sp{\ne}}} means that the pair \HOLinline{(\HOLFreeVar{x},\HOLFreeVar{y})} is a strict inequality in the relation (a set of pairs) that represents the wellorder value \HOLinline{\HOLFreeVar{w\sb{\mathrm{1}}}}.
+Alternatively, read \HOLinline{(\HOLFreeVar{x},\HOLFreeVar{y})\,\HOLTokenIn{}\,\HOLFreeVar{w\sb{\mathrm{1}}}\ensuremath{\sp{\ne}}} as ``$x$ is strictly less than $y$ in \HOLinline{\HOLFreeVar{w\sb{\mathrm{1}}}}''.
+Read \HOLinline{\HOLConst{fld}\,\HOLFreeVar{w}} as the union of the domain and range of the relation representing \HOLinline{\HOLFreeVar{w}}.%
+)
+\end{definition}
+
+The definition of the ordering relation on wellorders depends on the \HOLinline{\HOLConst{wobound}} function, which truncates a wellorder so that it includes only those elements below a particular point.
+There are two important theorems about \HOLinline{\HOLConst{wobound}}:
+\[
+\begin{array}{l}
+\vdash\;\holthmenv{(\HOLFreeVar{x},\HOLFreeVar{y})\,\HOLTokenIn{}\,(\HOLConst{wobound}\,\HOLFreeVar{z}\,\HOLFreeVar{w})\ensuremath{\sp{\ne}}\,\ensuremath{{\iff}}\\
+\,\,\,\,\,\,(\HOLFreeVar{x},\HOLFreeVar{z})\,\HOLTokenIn{}\,\HOLFreeVar{w}\ensuremath{\sp{\ne}}\,\HOLTokenConj{}\,(\HOLFreeVar{y},\HOLFreeVar{z})\,\HOLTokenIn{}\,\HOLFreeVar{w}\ensuremath{\sp{\ne}}\,\HOLTokenConj{}\,(\HOLFreeVar{x},\HOLFreeVar{y})\,\HOLTokenIn{}\,\HOLFreeVar{w}\ensuremath{\sp{\ne}}} \\[2mm]
+\vdash\;\holthmenv{(\HOLFreeVar{x},\HOLFreeVar{y})\,\HOLTokenIn{}\,\HOLFreeVar{w}\ensuremath{\sp{\ne}}\,\HOLTokenImp{}\,\HOLConst{wobound}\,\HOLFreeVar{x}\,(\HOLConst{wobound}\,\HOLFreeVar{y}\,\HOLFreeVar{w})\,{\ensuremath{=}}\,\HOLConst{wobound}\,\HOLFreeVar{x}\,\HOLFreeVar{w}}
+\end{array}
+\]
+\begin{definition}
+The ordering relation for wellorders (written \HOLinline{\HOLFreeVar{w\sb{\mathrm{1}}}\,{\ensuremath{\prec_w}}\,\HOLFreeVar{w\sb{\mathrm{2}}}}) can then be defined
+\begin{holmath}
+\,\,\HOLFreeVar{w\sb{\mathrm{1}}}\,{\ensuremath{\prec_w}}\,\HOLFreeVar{w\sb{\mathrm{2}}}\,\ensuremath{{\iff}}\,\ensuremath{{\exists}}\HOLBoundVar{x}\ensuremath{.}\,\HOLBoundVar{x}\,\HOLTokenIn{}\,\HOLConst{fld}\,\HOLFreeVar{w\sb{\mathrm{2}}}\,\HOLTokenConj{}\,\HOLFreeVar{w\sb{\mathrm{1}}}\,\ensuremath{{\approx_w}}\,\HOLConst{wobound}\,\HOLBoundVar{x}\,\HOLFreeVar{w\sb{\mathrm{2}}}
+\end{holmath}
+\end{definition}
+Transitivity of \HOLinline{\HOLConst{{\ensuremath{\prec_w}}}} follows from the transitivity of order-isomorphism and the second result about \HOLinline{\HOLConst{wobound}} above.
+Well-foundedness for \HOLinline{\HOLConst{{\ensuremath{\prec_w}}}} follows easily from the well-foundedness of the underlying relation.
+Well-foundedness is also the basis for the proof that \HOLinline{\HOLConst{{\ensuremath{\prec_w}}}} is irreflexive.
+Finally, we show that \HOLinline{\HOLConst{{\ensuremath{\prec_w}}}} is trichotomous:
+
+\begin{theorem}
+\begin{holmath}
+\,\,\HOLTokenTurnstile{}\,\HOLFreeVar{w\sb{\mathrm{1}}}\,{\ensuremath{\prec_w}}\,\HOLFreeVar{w\sb{\mathrm{2}}}\,\HOLTokenDisj{}\,\HOLFreeVar{w\sb{\mathrm{1}}}\,\ensuremath{{\approx_w}}\,\HOLFreeVar{w\sb{\mathrm{2}}}\,\HOLTokenDisj{}\,\HOLFreeVar{w\sb{\mathrm{2}}}\,{\ensuremath{\prec_w}}\,\HOLFreeVar{w\sb{\mathrm{1}}}
+\end{holmath}
+\end{theorem}
+The proof of this result is the most involved of this section.
+\begin{proof}
+Let $w_1$ and $w_2$ be wellorders over \HOLinline{\ensuremath{\alpha}} and \HOLinline{\ensuremath{\beta}} respectively.
+We define $f$ of type \HOLinline{\ensuremath{\alpha}\,\ensuremath{{\rightarrow}}\,\ensuremath{\beta}\,\HOLTyOp{option}} by well-founded recursion.
+The value of \HOLinline{\HOLFreeVar{f}\,\HOLFreeVar{x}} is \HOLinline{\HOLConst{SOME}\,\HOLFreeVar{y}} when $y$ is the least element in $w_2$ not in the image of $f$ applied to all elements less than $x$.
+If there is no such $y$, then \HOLinline{\HOLFreeVar{f}\,\HOLFreeVar{x}\,{\ensuremath{=}}\,\HOLConst{NONE}}.
+If there is an $x$ such that \HOLinline{\HOLFreeVar{f}\,\HOLFreeVar{x}\,{\ensuremath{=}}\,\HOLConst{NONE}}, then $w_2$ is less than $w_1$, and the least value $x$ where \HOLinline{\HOLFreeVar{f}\,\HOLFreeVar{x}\,{\ensuremath{=}}\,\HOLConst{NONE}} is the bound needed to demonstrate this.
+If $f$ never has value \HOLinline{\HOLConst{NONE}}, then $w_2$ is at least as big as $w_1$.
+If the image of $f$ on the elements of $w_1$ is all the elements of $w_2$, then $f$ is the bijection we need to demonstrate order-isomorphism of $w_1$ and $w_2$.
+Otherwise, there is an element of $w_2$ not in the image of $f$.
+Take the least such element to be the bound demonstrating \HOLinline{\HOLFreeVar{w\sb{\mathrm{1}}}\,{\ensuremath{\prec_w}}\,\HOLFreeVar{w\sb{\mathrm{2}}}}.\qed
+\end{proof}
+
+\section{Constructing the Ordinals}
+\label{sec:constructing}
+
+With \HOLinline{\HOLConst{\ensuremath{{\approx_w}}}} an equivalence relation, we can quotient all possible wellorders over the type \HOLinline{\ensuremath{\alpha}}, giving us a natural type of ordinals over \HOLinline{\ensuremath{\alpha}}.
+However, if \HOLinline{\ensuremath{\alpha}} is a finite type, then there are only finitely many ordinals over this type.
+Clearly, all the interesting ordinals are those over infinite types, and so our approach is to make the new type \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{ordinal}} a quotient over the wellorders over the sum type \HOLinline{\alpha + \HOLTyOp{num}}.
+Henceforth, this type is abbreviated as \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{inf}}.
+
+This construction means that the distinct types \HOLinline{\HOLTyOp{unit}\,\HOLTyOp{ordinal}}, \HOLinline{\HOLTyOp{bool}\,\HOLTyOp{ordinal}} and \HOLinline{\HOLTyOp{num}\,\HOLTyOp{ordinal}} will all be isomorphic (they will all be copies of the countable ordinals).
+On the other hand, the type \HOLinline{(\HOLTyOp{num}\,\ensuremath{{\rightarrow}}\,\HOLTyOp{bool})\,\HOLTyOp{ordinal}} is large enough to include the first uncountable ordinal, $\omega_1$.
+
+When we quotient, and create the new type \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{ordinal}}, the \HOLinline{(\HOLConst{{\ensuremath{\prec_w}}})} relation lifts to the new type, defining \HOLinline{(\HOLConst{\ensuremath{{<}}})}.
+This relation inherits the irreflexivity, transitivity, well-foundedness and trichotomy results of \HOLinline{(\HOLConst{{\ensuremath{\prec_w}}})}.
+Using these, it is trivial to show that the ordinals themselves form a well-order.
+
+\begin{definition}
+Well-foundedness also allows the definition of a ``least'' operator for ordinals:
+\begin{holmath}
+(\HOLConst{\HOLConst{oleast}})\,(\HOLFreeVar{P} :\ensuremath{\alpha}\,\HOLTyOp{ordinal}\,\ensuremath{{\rightarrow}}\,\HOLTyOp{bool})\,{\ensuremath{=}}\\
+\,\,\,\,\,\,\HOLTokenHilbert{}(\HOLBoundVar{x} :\ensuremath{\alpha}\,\HOLTyOp{ordinal})\ensuremath{.}\,\HOLFreeVar{P}\,\HOLBoundVar{x}\,\HOLTokenConj{}\,\ensuremath{{\forall}}(\HOLBoundVar{y} :\ensuremath{\alpha}\,\HOLTyOp{ordinal})\ensuremath{.}\,\HOLBoundVar{y}\,\ensuremath{{<}}\,\HOLBoundVar{x}\,\HOLTokenImp{}\,\HOLTokenNeg{}\HOLFreeVar{P}\,\HOLBoundVar{y}
+\end{holmath}
+This is well-defined as long as the predicate (or set) $P$ is not everywhere false (the empty set).
+\end{definition}
+
+\noindent Syntactically, we make \HOLinline{(\HOLConst{\HOLConst{oleast}})} a binder, allowing us to write terms such as $(\HOLinline{\HOLConst{oleast}\,\HOLBoundVar{x}\ensuremath{.}\,\HOLFreeVar{y}\,\ensuremath{{<}}\,\HOLBoundVar{x}})$ (the definition of the successor of \HOLinline{\HOLFreeVar{y}}, written \HOLinline{\HOLFreeVar{y}\HOLTokenSupPlus{}}), and $(\HOLinline{\HOLConst{oleast}\,\HOLBoundVar{x}\ensuremath{.}\,\HOLConst{T}})$ (the zero-ordinal).
+
+This copy of the natural numbers is a good starting point.
+It is straightforward to inject HOL's natural numbers with a new constant: \HOLinline{\HOLConst{\&}\,{:}}\HOLinline{\HOLTyOp{num}\,\ensuremath{{\rightarrow}}\,\ensuremath{\alpha}\,\HOLTyOp{ordinal}}, which is also the basis for ordinal numerals~($0$, $1$, $2$ \emph{etc}).
+
+\begin{definition}
+\label{defn:preds}
+Write \HOLinline{\HOLConst{preds}\,\HOLFreeVar{\ensuremath{\alpha}}} to denote the set of all predecessors of an ordinal.
+\end{definition}
+
+\begin{definition}
+\label{defn:dward-closed}
+Define the notion of a set being downward closed:
+\begin{holmath}
+\HOLTokenTurnstile{}\,\HOLConst{downward_closed}\,\HOLFreeVar{s}\,\ensuremath{{\iff}}\,\ensuremath{{\forall}}\HOLBoundVar{a}\,\HOLBoundVar{b}\ensuremath{.}\,\HOLBoundVar{a}\,\HOLTokenIn{}\,\HOLFreeVar{s}\,\HOLTokenConj{}\,\HOLBoundVar{b}\,\ensuremath{{<}}\,\HOLBoundVar{a}\,\HOLTokenImp{}\,\HOLBoundVar{b}\,\HOLTokenIn{}\,\HOLFreeVar{s}
+\end{holmath}
+\end{definition}
+
+Von Neumann famously characterised the ordinal numbers as those sets equal to their own predecessors.
+HOL's type system doesn't allow this: instead we must replace ``equal'' with the existence of a bijection:
+\begin{theorem}
+\label{thm:preds-bij}
+The \HOLinline{\HOLConst{preds}} function forms a bijection between all possible ordinals and all but one of the downward closed sets of ordinals.
+The one omission is the universal set.
+
+\begin{holmath}
+\HOLTokenTurnstile{}\;\,\HOLConst{BIJ}\;\,\HOLConst{preds}\;\,\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\;\,\HOLTyOp{ordinal})\;\,(\HOLConst{downward_closed}\;\,\HOLConst{DELETE}\;\,\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\;\,\HOLTyOp{ordinal}))
+\end{holmath}
+\end{theorem}
+
+
+
+
+\subsection{Cardinality Arguments and Supremum}
+\label{sec:supremum}
+
+We want a constant \HOLinline{(\HOLConst{sup} :(\ensuremath{\alpha}\,\HOLTyOp{ordinal}\,\ensuremath{{\rightarrow}}\,\HOLTyOp{bool})\,\ensuremath{{\rightarrow}}\,\ensuremath{\alpha}\,\HOLTyOp{ordinal})}, that takes a set of ordinals as an argument and returns their supremum.
+In our setting, this function can't be well-defined on all possible arguments: when passed the universal set of all $\alpha$-ordinals, there is no possible value to return.
+Nonetheless, we can characterise those situations when \HOLinline{\HOLConst{sup}\,\HOLFreeVar{s}} does have a reasonable value.
+First, the definition:
+
+\begin{definition}
+\label{defn:sup}
+The supremum of a set is the least element not in the set's collective predecessors.
+\begin{holmath}
+\,\,\HOLConst{sup}\,\HOLFreeVar{oset}\,{\ensuremath{=}}\,\HOLConst{oleast}\,\HOLBoundVar{\ensuremath{\alpha}}\ensuremath{.}\,\HOLBoundVar{\ensuremath{\alpha}}\,\HOLTokenNotIn{}\,\HOLConst{BIGUNION}\,(\HOLConst{preds}\,\textrm{`}\,\HOLFreeVar{oset})
+\end{holmath}
+\end{definition}
+
+To characterise the reasonable arguments to \HOLinline{\HOLConst{sup}}, we need a definition and two further theorems.
+
+\begin{definition}
+Let \HOLinline{\HOLConst{allOrds}} be the wellorder of all the $\alpha$-ordinals (ordered by \HOLinline{(\HOLConst{\ensuremath{{<}}})}).\begin{holmath}
+\,\,(\HOLConst{allOrds} :\ensuremath{\alpha}\,\HOLTyOp{ordinal}\,\HOLTyOp{wellorder})\,{\ensuremath{=}}\,\HOLConst{mkWO}\,\ensuremath{{\{}}(\HOLBoundVar{x},\HOLBoundVar{y})\,\ensuremath{{\,\mid\,}}\,\HOLBoundVar{x}\,{\ensuremath{=}}\,\HOLBoundVar{y}\,\HOLTokenDisj{}\,\HOLBoundVar{x}\,\ensuremath{{<}}\,\HOLBoundVar{y}\ensuremath{{\}}}
+\end{holmath}
+(%
+The constant \HOLinline{\HOLConst{mkWO}} lifts a relation into the type \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{wellorder}}.
+It is necessary to separately show that the relation satisfies the \HOLinline{\HOLConst{wellorder}} predicate from Definition~\ref{defn:wellorder}.%
+)
+\end{definition}
+
+\begin{theorem}
+\label{thm:wellorder-allOrds}
+Any wellorder $w$ over the type \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{inf}} is order-isomorphic to the segment of \HOLinline{\HOLConst{allOrds}} below the element of \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{ordinal}} to which the quotienting (\HOLinline{\HOLConst{mkOrdinal}}) maps $w$.
+\[
+\vdash \;\holthmenv{(\HOLFreeVar{w} :\ensuremath{\alpha}\,\HOLTyOp{inf}\,\HOLTyOp{wellorder})\,\ensuremath{{\approx_w}}\\
+\HOLConst{wobound}\,(\HOLConst{mkOrdinal}\,\HOLFreeVar{w})\,(\HOLConst{allOrds} :\ensuremath{\alpha}\,\HOLTyOp{ordinal}\,\HOLTyOp{wellorder})}
+\]
+Note how $w$ is a wellorder over \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{inf}}, but that the right-hand side of the isomorphism is a wellorder over all possible \emph{ordinals} over \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{inf}}.
+\end{theorem}
+
+\begin{proof}
+By contradiction.
+Then, by well-foundedness, there is a least $w$ where the isomorphism doesn't hold.
+If the two wellorders are not order-isomorphic, one is smaller than the other, by trichotomy of \HOLinline{(\HOLConst{{\ensuremath{\prec_w}}})}.
+If $w$ is smaller, there is a bound $b$ (an ordinal) in \HOLinline{\HOLConst{allOrds}}, smaller still than \HOLinline{\HOLConst{mkOrdinal}\,\HOLFreeVar{w}}, such that
+\begin{holmath}
+\HOLFreeVar{w}\,\ensuremath{{\approx_w}}\,\HOLConst{wobound}\,\HOLFreeVar{b}\,\HOLConst{allOrds}
+\end{holmath}
+There is a wellorder \HOLinline{\HOLFreeVar{bw}} that is a member of $b$'s equivalence class.
+As \HOLinline{(\HOLConst{{\ensuremath{\prec_w}}})} is reflected by \HOLinline{(\HOLConst{\ensuremath{{<}}})}, we have \HOLinline{\HOLFreeVar{bw}\,{\ensuremath{\prec_w}}\,\HOLFreeVar{w}}.
+Because \HOLinline{\HOLFreeVar{w}} was least, \HOLinline{\HOLFreeVar{bw}} must be order-isomorphic to \HOLinline{\HOLConst{wobound}\,\HOLFreeVar{b}\,\HOLConst{allOrds}}.
+So, \HOLinline{\HOLFreeVar{bw}} and \HOLinline{\HOLFreeVar{w}} are order-isomorphic to the same ordinal (\HOLinline{\HOLConst{wobound}\,\HOLFreeVar{b}\,\HOLConst{allOrds}}), but \HOLinline{\HOLFreeVar{bw}\,{\ensuremath{\prec_w}}\,\HOLFreeVar{w}}, contradicting the irreflexivity of \HOLinline{(\HOLConst{{\ensuremath{\prec_w}}})}.
+The other direction (when \HOLinline{\HOLFreeVar{w}} is larger) is similar.
+\qed
+\end{proof}
+
+This result means that the predecessors of any given \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{ordinal}} must be equinumerous to a wellorder over \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{inf}}.
+
+\begin{corollary}
+\label{clly:card-preds}
+The predecessors of any ordinal have cardinality no greater than that of (all of) the underlying set, \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{inf}}.
+\begin{holmath}
+\HOLTokenTurnstile{}\,\HOLConst{preds}\,\HOLFreeVar{a}\,\ensuremath{{\,\HOLTokenIsPrefix\,}}\,\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{inf})
+\end{holmath}
+\end{corollary}
+
+\begin{theorem}
+\label{thm:univ-over-greater-cardinal}
+The cardinality of all of the type \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{ordinal}} is strictly greater than that of the type \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{inf}}.
+\begin{holmath}
+\HOLTokenTurnstile{}\,\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{inf})\,\ensuremath{\prec}\,\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{ordinal})
+\end{holmath}
+\end{theorem}
+\begin{proof} By contradiction.
+If \HOLinline{\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{ordinal})\,\ensuremath{{\,\HOLTokenIsPrefix\,}}\,\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{inf})}, then the injection from left-to-right copies the wellorder \HOLinline{\HOLConst{allOrds}} into a wellorder \HOLinline{\HOLFreeVar{wo}} of type \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{inf}\,\HOLTyOp{wellorder}}.
+This gives \HOLinline{\HOLConst{allOrds}\,\ensuremath{{\approx_w}}\,\HOLFreeVar{wo}}.
+By Theorem~\ref{thm:wellorder-allOrds}, this \HOLinline{\HOLFreeVar{wo}} is also order-isomorphic to \HOLinline{\HOLConst{wobound}\,(\HOLConst{mkOrdinal}\,\HOLFreeVar{wo})\,\HOLConst{allOrds}}.
+Transitivity of \HOLinline{(\HOLConst{\ensuremath{{\approx_w}}})} then gives us that \HOLinline{\HOLConst{allOrds}} is less than itself, which is impossible.
+\qed
+\end{proof}
+
+These results then combine to give us the important characterising theorem about \HOLinline{\HOLConst{sup}}:
+\begin{theorem}
+\label{thm:sup-thm}
+As long as the cardinality of the set $s$ is not greater than that of \HOLinline{\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{inf})}, an arbitrary ordinal \HOLinline{\HOLFreeVar{\ensuremath{\alpha}}} is less than that set's supremum iff there is an element of $s$ that is bigger than \HOLinline{\HOLFreeVar{\ensuremath{\alpha}}}.
+\[
+\vdash \;
+\holthmenv{\HOLFreeVar{s}\,\ensuremath{{\,\HOLTokenIsPrefix\,}}\,\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{inf})\,\HOLTokenImp{}\\
+\,\,\,\,\,\,\ensuremath{{\forall}}\HOLBoundVar{\ensuremath{\alpha}}\ensuremath{.}\,\HOLBoundVar{\ensuremath{\alpha}}\,\ensuremath{{<}}\,\HOLConst{sup}\,\HOLFreeVar{s}\,\ensuremath{{\iff}}\,\ensuremath{{\exists}}\HOLBoundVar{\ensuremath{\beta}}\ensuremath{.}\,\HOLBoundVar{\ensuremath{\beta}}\,\HOLTokenIn{}\,\HOLFreeVar{s}\,\HOLTokenConj{}\,\HOLBoundVar{\ensuremath{\alpha}}\,\ensuremath{{<}}\,\HOLBoundVar{\ensuremath{\beta}}}
+\]
+\end{theorem}
+\begin{proof}
+\HOLinline{\HOLConst{sup}} takes the union of all the predecessors of all the elements of $s$ (Definition~\ref{defn:sup}).
+Let $\kappa$ be the cardinality of \HOLinline{\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{inf})}.
+By Corollary~\ref{clly:card-preds} above, the predecessors of each element of set $s$ have that cardinality.
+If $s$ has no more than the same cardinality, then from the fact that $\kappa \times \kappa \approx \kappa$ and Theorem~\ref{thm:wellorder-allOrds} above, the union calculated in the definition of \HOLinline{\HOLConst{sup}} cannot be the universal set of all possible ordinals.
+There must then be a least ordinal not within that union, and so \HOLinline{\HOLConst{sup}\,\HOLFreeVar{s}} will be well-defined.
+
+Moreover, the set of all the combined predecessors (call it \HOLinline{\HOLFreeVar{ps}}) is also downward closed, and so, by Theorem~\ref{thm:preds-bij}, there must be an ordinal $\alpha$ whose predecessors are exactly \HOLinline{\HOLFreeVar{ps}}.
+So, \HOLinline{\HOLConst{sup}\,\HOLFreeVar{s}\,{\ensuremath{=}}\,\HOLFreeVar{\ensuremath{\alpha}}}, and it is easy to show that the theorem's characterisation of its predecessors is correct.
+\qed
+\end{proof}
+
+An easy corollary is that there is no maximal ordinal.
+For any ordinal \HOLinline{\HOLFreeVar{\ensuremath{\alpha}}}, we observe that \HOLinline{\HOLFreeVar{s}\,{\ensuremath{=}}\,\HOLConst{preds}\,\HOLFreeVar{\ensuremath{\alpha}}\,\HOLTokenUnion{}\,\ensuremath{{\{}}\HOLFreeVar{\ensuremath{\alpha}}\ensuremath{{\}}}} is downward closed  and not equal to \HOLinline{\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{ordinal})}.
+Then, by Theorem~\ref{thm:preds-bij} there must be a \HOLinline{\HOLFreeVar{\ensuremath{\beta}}\,\HOLTokenGt{}\,\HOLFreeVar{\ensuremath{\alpha}}}, with \HOLinline{\HOLFreeVar{s}\,{\ensuremath{=}}\,\HOLConst{preds}\,\HOLFreeVar{\ensuremath{\beta}}}.
+
+\subsection{Limit ordinals}
+
+\begin{definition}\label{defn:omega-def}
+With \HOLinline{\HOLConst{sup}} defined, it is possible to define \HOLinline{\HOLConst{\ensuremath{\omega}}}.
+This, the first limit ordinal, is the supremum of the copy of the natural numbers that injects into the ordinals \emph{via} \HOLinline{(\HOLConst{\HOLConst{\&}})}.
+\begin{holmath}
+(\HOLConst{\ensuremath{\omega}} :\ensuremath{\alpha}\,\HOLTyOp{ordinal})\,{\ensuremath{=}}\,\HOLConst{sup}\,\ensuremath{{\{}}((\HOLConst{\&}\HOLBoundVar{i})\,\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{ordinal})\,\ensuremath{{\,\mid\,}}\,\HOLConst{T}\ensuremath{{\}}}
+\end{holmath}
+\end{definition}
+
+\begin{definition}
+We also define a constant \HOLinline{\HOLConst{omax}}, which returns the maximal element of a set of ordinals, if any.
+The \HOLTyOp{option} type is used to encode the partiality of this function, so the type of \HOLinline{\HOLConst{omax}} is \HOLinline{(\ensuremath{\alpha}\,\HOLTyOp{ordinal}\,\ensuremath{{\rightarrow}}\,\HOLTyOp{bool})\,\ensuremath{{\rightarrow}}\,\ensuremath{\alpha}\,\HOLTyOp{ordinal}\,\HOLTyOp{option}}.
+If \HOLinline{\HOLConst{omax}\,(\HOLConst{preds}\,\HOLFreeVar{a})} is \HOLinline{\HOLConst{NONE}}, we abbreviate this condition as \HOLinline{\HOLConst{islimit}\,\HOLFreeVar{a}}.
+%\begin{holmath}
+%\HOLConst{omax}\,\HOLFreeVar{s}\,{\ensuremath{=}}\,some\,\HOLBoundVar{\ensuremath{\alpha}}\ensuremath{.}\,\HOLConst{maximal_elements}\,\HOLFreeVar{s}\,\ensuremath{{\{}}(\HOLBoundVar{x},\HOLBoundVar{y})\,\ensuremath{{\,\mid\,}}\,\HOLBoundVar{x}\,\HOLTokenLeq{}\,\HOLBoundVar{y}\ensuremath{{\}}}\,{\ensuremath{=}}\,\ensuremath{{\{}}\HOLBoundVar{\ensuremath{\alpha}}\ensuremath{{\}}}
+%\end{holmath}
+\end{definition}
+
+\begin{theorem}
+\label{thm:lt-omega}
+One simple consequence of these definitions is that every natural number is less than \HOLinline{\HOLConst{\ensuremath{\omega}}}, and that only the natural numbers are less than \HOLinline{\HOLConst{\ensuremath{\omega}}}:
+\begin{holmath}
+\HOLTokenTurnstile{}\,(\HOLFreeVar{a} :\ensuremath{\alpha}\,\HOLTyOp{ordinal})\,\ensuremath{{<}}\,(\HOLConst{\ensuremath{\omega}} :\ensuremath{\alpha}\,\HOLTyOp{ordinal})\,\ensuremath{{\iff}}\,\ensuremath{{\exists}}(\HOLBoundVar{n} :\HOLTyOp{num})\ensuremath{.}\,\HOLFreeVar{a}\,{\ensuremath{=}}\,((\HOLConst{\&}\HOLBoundVar{n})\,\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{ordinal})
+\end{holmath}
+\end{theorem}
+
+\section{Arithmetic}
+\label{sec:arithmetic}
+
+\begin{theorem}
+With access to a total well-founded relation \HOLinline{(\HOLConst{\ensuremath{{<}}})}, we have always been able to define functions by well-founded recursion.
+However, we can now recast this in a more palatable form, one that makes the ordinals look a little like an algebraic type generated by constructors \HOLinline{0}, \HOLinline{\HOLFreeVar{x}\HOLTokenSupPlus{}} and \HOLinline{\HOLConst{sup}\,\HOLFreeVar{s}} (with $s$ not including its own upper bound):
+\[
+\vdash \;
+\holthmenv{\ensuremath{{\forall}}(\HOLBoundVar{z} :\ensuremath{\beta})\,(\HOLBoundVar{sf} :\ensuremath{\alpha}\,\HOLTyOp{ordinal}\,\ensuremath{{\rightarrow}}\,\ensuremath{\beta}\,\ensuremath{{\rightarrow}}\,\ensuremath{\beta})\,(\HOLBoundVar{lf} :\ensuremath{\alpha}\,\HOLTyOp{ordinal}\,\ensuremath{{\rightarrow}}\,(\ensuremath{\beta}\,\ensuremath{{\rightarrow}}\,\HOLTyOp{bool})\,\ensuremath{{\rightarrow}}\,\ensuremath{\beta})\ensuremath{.}\\
+\,\,\ensuremath{{\exists}}(\HOLBoundVar{h} :\ensuremath{\alpha}\,\HOLTyOp{ordinal}\,\ensuremath{{\rightarrow}}\,\ensuremath{\beta})\ensuremath{.}\\
+\,\,\,\,\HOLBoundVar{h}\,(0 :\ensuremath{\alpha}\,\HOLTyOp{ordinal})\,{\ensuremath{=}}\,\HOLBoundVar{z}\,\HOLTokenConj{}\,(\ensuremath{{\forall}}(\HOLBoundVar{a} :\ensuremath{\alpha}\,\HOLTyOp{ordinal})\ensuremath{.}\,\HOLBoundVar{h}\,\HOLBoundVar{a}\HOLTokenSupPlus{}\,{\ensuremath{=}}\,\HOLBoundVar{sf}\,\HOLBoundVar{a}\,(\HOLBoundVar{h}\,\HOLBoundVar{a}))\,\HOLTokenConj{}\\
+\,\,\,\,\ensuremath{{\forall}}(\HOLBoundVar{a} :\ensuremath{\alpha}\,\HOLTyOp{ordinal})\ensuremath{.}\\
+\,\,\,\,\,\,(0 :\ensuremath{\alpha}\,\HOLTyOp{ordinal})\,\ensuremath{{<}}\,\HOLBoundVar{a}\,\HOLTokenConj{}\,\HOLConst{islimit}\,\HOLBoundVar{a}\,\HOLTokenImp{}\,\HOLBoundVar{h}\,\HOLBoundVar{a}\,{\ensuremath{=}}\,\HOLBoundVar{lf}\,\HOLBoundVar{a}\,((\HOLBoundVar{h}\,\textrm{`}\,(\HOLConst{preds}\,\HOLBoundVar{a}))\,\ensuremath{{:}}\ensuremath{\beta}\,\ensuremath{{\rightarrow}}\,\HOLTyOp{bool})}
+\]
+\end{theorem}
+This recursion theorem allows the user to specify three cases: \HOLinline{\HOLFreeVar{z}}, a value in the desired range (\HOLinline{\ensuremath{\beta}}) for zero; \HOLinline{\HOLFreeVar{sf}}, a function for constructing a result when \HOLinline{\HOLFreeVar{h}} is passed a successor; and \HOLinline{\HOLFreeVar{lf}} when the argument to \HOLinline{\HOLFreeVar{h}} is a limit ordinal.
+The \HOLinline{\HOLFreeVar{lf}} function is given the original limit ordinal \HOLinline{\HOLFreeVar{a}} as well as the set of all the values given by recursive calls of \HOLinline{\HOLFreeVar{h}} on \HOLinline{\HOLFreeVar{a}}'s predecessors.
+
+The recursion theorem is all we need to define ordinal addition, multiplication and exponentiation.
+Working out the details for addition (\HOLinline{\HOLFreeVar{a}\,\ensuremath{{+}}\,\HOLFreeVar{b}}): we will recurse on \HOLinline{\HOLFreeVar{b}}, and let \HOLinline{\HOLFreeVar{z}} be the value \HOLinline{\HOLFreeVar{a}}, \HOLinline{\HOLFreeVar{sf}} be $(\HOLinline{\ensuremath{{\lambda}}\HOLBoundVar{x}\,\HOLBoundVar{r}\ensuremath{.}\,\HOLBoundVar{r}\HOLTokenSupPlus{}})$, and \HOLinline{\HOLFreeVar{lf}} be $(\HOLinline{\ensuremath{{\lambda}}\HOLBoundVar{x}\,\HOLBoundVar{rs}\ensuremath{.}\,\HOLConst{sup}\,\HOLBoundVar{rs}})$.
+This gives
+\begin{definition}
+Ordinal addition:
+\begin{holmath}
+\HOLFreeVar{a}\,\ensuremath{{+}}\,0\,{\ensuremath{=}}\,\HOLFreeVar{a}\\
+\HOLFreeVar{a}\,\ensuremath{{+}}\,\HOLFreeVar{b}\HOLTokenSupPlus{}\,{\ensuremath{=}}\,(\HOLFreeVar{a}\,\ensuremath{{+}}\,\HOLFreeVar{b})\HOLTokenSupPlus{}\\
+0\,\ensuremath{{<}}\,\HOLFreeVar{b}\,\HOLTokenConj{}\,\HOLConst{islimit}\,\HOLFreeVar{b}\,\HOLTokenImp{}\,\HOLFreeVar{a}\,\ensuremath{{+}}\,\HOLFreeVar{b}\,{\ensuremath{=}}\,\HOLConst{sup}\,((\HOLConst{\ensuremath{{+}}})\,\HOLFreeVar{a}\,\textrm{`}\,(\HOLConst{preds}\,\HOLFreeVar{b}))
+\end{holmath}
+\end{definition}
+The definitions of multiplication and exponentiation are as straightforward.
+For example:
+\begin{definition}
+Ordinal exponentiation:
+\begin{holmath}
+\HOLFreeVar{a}\sp{0}\,{\ensuremath{=}}\,1\\
+\HOLFreeVar{a}\sp{\HOLFreeVar{b}\HOLTokenSupPlus{}}\,{\ensuremath{=}}\,\HOLFreeVar{a}\sp{\HOLFreeVar{b}}\,\ensuremath{{\cdot}}\,\HOLFreeVar{a}\\
+0\,\ensuremath{{<}}\,\HOLFreeVar{b}\,\HOLTokenConj{}\,\HOLConst{islimit}\,\HOLFreeVar{b}\,\HOLTokenImp{}\,\HOLFreeVar{a}\sp{\HOLFreeVar{b}}\,{\ensuremath{=}}\,\HOLConst{sup}\,((\HOLConst{\HOLTokenExp{}})\,\HOLFreeVar{a}\,\textrm{`}\,(\HOLConst{preds}\,\HOLFreeVar{b}))
+\end{holmath}
+$(\HOLinline{(\HOLConst{\HOLTokenExp{}})\,\HOLFreeVar{a}})$ is equivalent to $(\HOLinline{\ensuremath{{\lambda}}\HOLBoundVar{b}\ensuremath{.}\,\HOLFreeVar{a}\sp{\HOLBoundVar{b}}})$; the pretty-printing obscures this because the underlying constant prints as \HOLinline{(\HOLConst{\HOLTokenExp{}})} when it doesn't have two arguments.
+\end{definition}
+
+Reasoning about these operations is made easier by the observation that all three are \emph{continuous} (in their second arguments).
+For addition, the continuity result is
+\begin{holmath}
+\HOLTokenTurnstile{}\,\HOLFreeVar{s}\,\ensuremath{{\,\HOLTokenIsPrefix\,}}\,\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{inf})\,\HOLTokenConj{}\,\HOLFreeVar{s}\,\HOLTokenNotEqual{}\,\HOLConst{\HOLTokenEmpty{}}\,\HOLTokenImp{}\,\HOLFreeVar{a}\,\ensuremath{{+}}\,\HOLConst{sup}\,\HOLFreeVar{s}\,{\ensuremath{=}}\,\HOLConst{sup}\,((\HOLConst{\ensuremath{{+}}})\,\HOLFreeVar{a}\,\textrm{`}\,\HOLFreeVar{s})
+\end{holmath}
+Rewriting with these theorems allows operators such as \HOLinline{(\HOLConst{\ensuremath{{+}}})} to move under \HOLinline{\HOLConst{sup}} arguments, where further simplification is usually possible.
+For example, the proofs (by induction) that addition and multiplication are associative are greatly simplified by their continuity theorems.
+
+\subsection{Division and Modulus}
+The various arithmetic operations on ordinal numbers do not satisfy many of the typical properties of number systems.
+For example, addition and multiplication are not commutative.
+However, they both enjoy cancellation properties for common arguments on the left:
+\[
+\begin{array}{l}
+\holthmenv{\HOLTokenTurnstile{}\,\HOLFreeVar{\ensuremath{\alpha}}\,\ensuremath{{+}}\,\HOLFreeVar{\ensuremath{\beta}}\,{\ensuremath{=}}\,\HOLFreeVar{\ensuremath{\alpha}}\,\ensuremath{{+}}\,\HOLFreeVar{\ensuremath{\gamma}}\,\ensuremath{{\iff}}\,\HOLFreeVar{\ensuremath{\beta}}\,{\ensuremath{=}}\,\HOLFreeVar{\ensuremath{\gamma}}} \\[2mm]
+\holthmenv{\HOLTokenTurnstile{}\,\HOLFreeVar{\ensuremath{\alpha}}\,\ensuremath{{\cdot}}\,\HOLFreeVar{\ensuremath{\beta}}\,{\ensuremath{=}}\,\HOLFreeVar{\ensuremath{\alpha}}\,\ensuremath{{\cdot}}\,\HOLFreeVar{\ensuremath{\gamma}}\,\ensuremath{{\iff}}\,\HOLFreeVar{\ensuremath{\alpha}}\,{\ensuremath{=}}\,0\,\HOLTokenDisj{}\,\HOLFreeVar{\ensuremath{\beta}}\,{\ensuremath{=}}\,\HOLFreeVar{\ensuremath{\gamma}}}
+\end{array}
+\]
+These then lead to the existence of unique quotients and remainders.
+
+\begin{theorem}
+\[
+\begin{array}{l}
+\holthmenv{\HOLTokenTurnstile{}\,0\,\ensuremath{{<}}\,\HOLFreeVar{b}\,\HOLTokenImp{}\,\HOLFreeVar{a}\,{\ensuremath{=}}\,\HOLFreeVar{b}\,\ensuremath{{\cdot}}\,(\HOLFreeVar{a}\,/\,\HOLFreeVar{b})\,\ensuremath{{+}}\,\HOLFreeVar{a}\,\textrm{\upshape mod}\,\HOLFreeVar{b}\,\HOLTokenConj{}\,\HOLFreeVar{a}\,\textrm{\upshape mod}\,\HOLFreeVar{b}\,\ensuremath{{<}}\,\HOLFreeVar{b}} \\[2mm]
+\holthmenv{\HOLTokenTurnstile{}\,0\,\ensuremath{{<}}\,\HOLFreeVar{b}\,\HOLTokenConj{}\,\HOLFreeVar{a}\,{\ensuremath{=}}\,\HOLFreeVar{b}\,\ensuremath{{\cdot}}\,\HOLFreeVar{q}\,\ensuremath{{+}}\,\HOLFreeVar{r}\,\HOLTokenConj{}\,\HOLFreeVar{r}\,\ensuremath{{<}}\,\HOLFreeVar{b}\,\HOLTokenImp{}\,\HOLFreeVar{q}\,{\ensuremath{=}}\,\HOLFreeVar{a}\,/\,\HOLFreeVar{b}\,\HOLTokenConj{}\,\HOLFreeVar{r}\,{\ensuremath{=}}\,\HOLFreeVar{a}\,\textrm{\upshape mod}\,\HOLFreeVar{b}}
+\end{array}
+\]
+\end{theorem}
+
+\begin{proof}
+The existence of the division and modulus constants is shown by taking the quotient \HOLinline{\HOLFreeVar{d}} to be \HOLinline{\HOLConst{sup}\,\ensuremath{{\{}}\HOLBoundVar{c}\,\ensuremath{{\,\mid\,}}\,\HOLFreeVar{b}\,\ensuremath{{\cdot}}\,\HOLBoundVar{c}\,\HOLTokenLeq{}\,\HOLFreeVar{a}\ensuremath{{\}}}}.
+(The supremum is well-defined because the set is bounded above.)
+Then \HOLinline{\HOLFreeVar{b}\,\ensuremath{{\cdot}}\,\HOLFreeVar{d}\,\HOLTokenLeq{}\,\HOLFreeVar{a}} follows from the continuity of multiplication.
+The existence of the remainder follows from an earlier result that
+\HOLinline{\HOLTokenTurnstile{}\,\HOLFreeVar{a}\,\HOLTokenLeq{}\,\HOLFreeVar{b}\,\ensuremath{{\iff}}\,\ensuremath{{\exists}}\HOLBoundVar{c}\ensuremath{.}\,\HOLFreeVar{b}\,{\ensuremath{=}}\,\HOLFreeVar{a}\,\ensuremath{{+}}\,\HOLBoundVar{c}}.
+
+The uniqueness result proceeds by first showing the uniqueness of the quotient (uniqueness of the modulus then follows from additive cancellation).
+If there is another quotient $q'$ not equal to \HOLinline{\HOLFreeVar{a}\,/\,\HOLFreeVar{b}} (write $q$), then it is either larger or smaller.
+If larger, then $q' = q + \delta$, for some non-zero $\delta$, and $a = b(q + \delta) + r'$, where $r'$ is the remainder accompanying $q'$.
+Then $a = bq + b\delta + r$, and cancellation and associativity then give us that $b\delta + r = \HOLinline{\HOLFreeVar{a}\,\textrm{\upshape mod}\,\HOLFreeVar{b}}$.
+But $0 < \delta$, making \HOLinline{\HOLFreeVar{a}\,\textrm{\upshape mod}\,\HOLFreeVar{b}} too large.
+The other case is similar.
+\qed
+\end{proof}
+
+\subsection{Cantor Normal Forms}
+
+In a discrete domain such as the ordinals, division approximates multiplication's inverse, leaving a remainder.
+Analogously, with exponentiation we can construct a discrete logarithm.
+If working with base $b$, and $e$ is the largest value such that $b^e$ is under the target $a$, then we can ``drop down'' to the level of multiplication and find how many whole copies of \HOLinline{\HOLFreeVar{b}\sp{\HOLFreeVar{e}}} fit into $a$, giving us a $c$ such that \HOLinline{\HOLFreeVar{b}\sp{\HOLFreeVar{e}}\,\ensuremath{{\cdot}}\,\HOLFreeVar{c}\,\HOLTokenLeq{}\,\HOLFreeVar{a}}.
+Then we can repeat the process with the remainder.
+
+Done over the natural numbers with $b=10$, we derive $a$'s decimal representation (strictly, the non-zero coefficients along with their indices).
+Over all ordinals, with $b=\omega$, we derive the \emph{Cantor Normal Form} of $a$.
+
+\begin{definition}
+The sequence of exponents and coefficients we derive in the above construction is the same as the information needed to specify a polynomial over a single variable.
+We define \HOLinline{\HOLConst{eval_poly}} to evaluate such sequences with respect to arbitrary bases:
+\begin{holmath}
+\HOLConst{eval_poly}\,\HOLFreeVar{b}\,\HOLConst{\ensuremath{{[\,]}}}\,{\ensuremath{=}}\,0\\
+\HOLConst{eval_poly}\,\HOLFreeVar{b}\,((\HOLFreeVar{c},\HOLFreeVar{e})::\HOLFreeVar{t})\,{\ensuremath{=}}\,\HOLFreeVar{b}\sp{\HOLFreeVar{e}}\,\ensuremath{{\cdot}}\,\HOLFreeVar{c}\,\ensuremath{{+}}\,\HOLConst{eval_poly}\,\HOLFreeVar{b}\,\HOLFreeVar{t}
+\end{holmath}
+\end{definition}
+
+\begin{definition}
+\label{defn:is-polyform}
+We define \HOLinline{\HOLConst{is_polyform}} to capture well-formed ``polynomial'' sequences, requiring that the exponents are decreasing, and that the coefficients are always strictly between $0$ and $b$:
+\begin{holmath}
+\HOLConst{is_polyform}\,\HOLFreeVar{b}\,\HOLConst{\ensuremath{{[\,]}}}\,\ensuremath{{\iff}}\,\HOLConst{T}\\
+\HOLConst{is_polyform}\,\HOLFreeVar{b}\,[(\HOLFreeVar{c},\HOLFreeVar{e})]\,\ensuremath{{\iff}}\,0\,\ensuremath{{<}}\,\HOLFreeVar{c}\,\HOLTokenConj{}\,\HOLFreeVar{c}\,\ensuremath{{<}}\,\HOLFreeVar{b}\\
+\HOLConst{is_polyform}\,\HOLFreeVar{b}\,((\HOLFreeVar{c\sb{\mathrm{1}}},\HOLFreeVar{e\sb{\mathrm{1}}})::(\HOLFreeVar{c\sb{\mathrm{2}}},\HOLFreeVar{e\sb{\mathrm{2}}})::\HOLFreeVar{t})\,\ensuremath{{\iff}}\\
+\,\,\,\,\,\,0\,\ensuremath{{<}}\,\HOLFreeVar{c\sb{\mathrm{1}}}\,\HOLTokenConj{}\,\HOLFreeVar{c\sb{\mathrm{1}}}\,\ensuremath{{<}}\,\HOLFreeVar{b}\,\HOLTokenConj{}\,\HOLFreeVar{e\sb{\mathrm{2}}}\,\ensuremath{{<}}\,\HOLFreeVar{e\sb{\mathrm{1}}}\,\HOLTokenConj{}\,\HOLConst{is_polyform}\,\HOLFreeVar{b}\,((\HOLFreeVar{c\sb{\mathrm{2}}},\HOLFreeVar{e\sb{\mathrm{2}}})::\HOLFreeVar{t})
+\end{holmath}
+\end{definition}
+
+Then, just as with division, we are able to prove that ``polynomial forms'' always exist, and that they are unique.
+
+\begin{theorem}
+For all ordinals \HOLinline{\HOLFreeVar{a}}, and bases \HOLinline{\HOLFreeVar{b}} greater than $1$, it is possible to express \HOLinline{\HOLFreeVar{a}} as the sum of a sequence of pairs of coefficients and powers-of-\HOLinline{\HOLFreeVar{b}}.
+In the sequence each successive exponent is smaller than its predecessors.
+\begin{holmath}
+\HOLTokenTurnstile{}\,1\,\ensuremath{{<}}\,\HOLFreeVar{b}\,\HOLTokenImp{}\,\ensuremath{{\exists}}\HOLBoundVar{ces}\ensuremath{.}\,\HOLConst{is_polyform}\,\HOLFreeVar{b}\,\HOLBoundVar{ces}\,\HOLTokenConj{}\,\HOLFreeVar{a}\,{\ensuremath{=}}\,\HOLConst{eval_poly}\,\HOLFreeVar{b}\,\HOLBoundVar{ces}
+\end{holmath}
+Define the new constant \HOLinline{\HOLConst{polyform}} to return such a sequence when given parameters \HOLinline{\HOLFreeVar{b}} and \HOLinline{\HOLFreeVar{a}} (if \HOLinline{\HOLFreeVar{b}\,\ensuremath{{<}}\,2}, allow that the function has no definite value).
+We show that all possible sequences with the desired property have \HOLinline{\HOLConst{polyform}}'s value:
+\[
+\vdash \;\holthmenv{1\,\ensuremath{{<}}\,\HOLFreeVar{b}\,\HOLTokenConj{}\,\HOLConst{is_polyform}\,\HOLFreeVar{b}\,\HOLFreeVar{ces}\,\HOLTokenConj{}\,\HOLFreeVar{a}\,{\ensuremath{=}}\,\HOLConst{eval_poly}\,\HOLFreeVar{b}\,\HOLFreeVar{ces}\,\HOLTokenImp{}\\
+\,\,\,\,\,\,\HOLConst{polyform}\,\HOLFreeVar{b}\,\HOLFreeVar{a}\,{\ensuremath{=}}\,\HOLFreeVar{ces}}
+\]
+\end{theorem}
+
+\begin{proof}
+Both proofs are by induction on the argument \HOLinline{\HOLFreeVar{a}}.
+The first proof is similar to the proof of the existence of a quotient: the leading exponent is taken to be \HOLinline{\HOLConst{sup}\,\ensuremath{{\{}}\HOLBoundVar{e}\,\ensuremath{{\,\mid\,}}\,\HOLFreeVar{b}\sp{\HOLBoundVar{e}}\,\HOLTokenLeq{}\,\HOLFreeVar{a}\ensuremath{{\}}}}.
+After the coefficient $c$ is calculated by division, and $b^e\cdot c$ subtracted out, the remaining ordinal is smaller and the inductive hypothesis applies.
+The uniqueness proof hinges on the following important lemma:
+\begin{holmath}
+\HOLTokenTurnstile{}\,1\,\ensuremath{{<}}\,\HOLFreeVar{b}\,\HOLTokenConj{}\,\HOLConst{is_polyform}\,\HOLFreeVar{b}\,((\HOLFreeVar{c},\HOLFreeVar{e})::\HOLFreeVar{t})\,\HOLTokenImp{}\,\HOLConst{eval_poly}\,\HOLFreeVar{b}\,\HOLFreeVar{t}\,\ensuremath{{<}}\,\HOLFreeVar{b}\sp{\HOLFreeVar{e}}
+\end{holmath}
+\end{proof}
+
+\subsection{Fixpoints and $\varepsilon_0$}
+
+A function \HOLinline{(\HOLFreeVar{f} :\ensuremath{\alpha}\,\HOLTyOp{ordinal}\,\ensuremath{{\rightarrow}}\,\ensuremath{\alpha}\,\HOLTyOp{ordinal})} can be iterated any number of times from a starting value $x$.
+The resulting set $\{x,f(x),f(f(x)),\dots,f^n(x),\dots\}$ is clearly only countably infinite, and so will always have a supremum.
+Under certain conditions, that supremum will also be a fixpoint for $f$.
+
+\begin{theorem}
+\label{thm:fixpoints-exist}
+If $f$ is non-decreasing and continuous, then it has a fixpoint.
+In fact, for \emph{any} lower bound $a$, the function $f$ has a fixpoint at least as large as $a$.
+\renewcommand{\arraystretch}{1.2}
+\[
+\vdash\;\holthmenv{(\ensuremath{{\forall}}\HOLBoundVar{s}\ensuremath{.}\,\HOLBoundVar{s}\,\HOLTokenNotEqual{}\,\HOLConst{\HOLTokenEmpty{}}\,\HOLTokenConj{}\,\HOLBoundVar{s}\,\ensuremath{{\,\HOLTokenIsPrefix\,}}\,\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{inf})\,\HOLTokenImp{}\,\HOLFreeVar{f}\,(\HOLConst{sup}\,\HOLBoundVar{s})\,{\ensuremath{=}}\,\HOLConst{sup}\,(\HOLFreeVar{f}\,\textrm{`}\,\HOLBoundVar{s}))\,\HOLTokenConj{}\\
+(\ensuremath{{\forall}}\HOLBoundVar{x}\ensuremath{.}\,\HOLBoundVar{x}\,\HOLTokenLeq{}\,\HOLFreeVar{f}\,\HOLBoundVar{x})\,\HOLTokenImp{}\\
+\,\,\,\,\,\,\ensuremath{{\forall}}\HOLBoundVar{a}\ensuremath{.}\,\ensuremath{{\exists}}\HOLBoundVar{b}\ensuremath{.}\,\HOLBoundVar{a}\,\HOLTokenLeq{}\,\HOLBoundVar{b}\,\HOLTokenConj{}\,\HOLFreeVar{f}\,\HOLBoundVar{b}\,{\ensuremath{=}}\,\HOLBoundVar{b}}
+\]
+\end{theorem}
+\begin{proof}
+Let \HOLinline{\HOLFreeVar{s}} be the set above (all the $f$-iterates of $a$).
+Take the fixpoint to be the supremum of \HOLinline{\HOLFreeVar{s}}.
+We have that \HOLinline{\HOLFreeVar{f}\,(\HOLConst{sup}\,\HOLFreeVar{s})\,{\ensuremath{=}}\,\HOLConst{sup}\,(\HOLFreeVar{f}\,\textrm{`}\,\HOLFreeVar{s})}, and are required to show that \HOLinline{\HOLConst{sup}\,(\HOLFreeVar{f}\,\textrm{`}\,\HOLFreeVar{s})\,{\ensuremath{=}}\,\HOLConst{sup}\,\HOLFreeVar{s}}.
+This follows straightforwardly because $f$ is non-decreasing.
+\qed
+\end{proof}
+
+Our arithmetic operations (addition, multiplication and exponentiation) are all continuous in their right arguments and non-decreasing.
+So, for example, the first fixpoint of $(\HOLinline{(\HOLConst{\ensuremath{{\cdot}}})\,2})$ is \HOLinline{0}; the next is \HOLinline{\HOLConst{\ensuremath{\omega}}}, and the third is \HOLinline{\HOLConst{\ensuremath{\omega}}\,\ensuremath{{\cdot}}\,2}.
+The first non-zero fixpoint of $(\HOLinline{(\HOLConst{\ensuremath{{\cdot}}})\,\HOLConst{\ensuremath{\omega}}})$ is \HOLinline{\HOLConst{\ensuremath{\omega}}\sp{\HOLConst{\ensuremath{\omega}}}}.
+However, it turns out that the first fixpoint of $(\HOLinline{(\HOLConst{\HOLTokenExp{}})\,\HOLConst{\ensuremath{\omega}}})$ is not expressible with any of the notation we have developed thus far.
+
+\begin{definition}
+Let $\HOLinline{\HOLConst{\ensuremath{\varepsilon_0}}}$ be the least fixpoint of $(\HOLinline{(\HOLConst{\HOLTokenExp{}})\,\HOLConst{\ensuremath{\omega}}})$:
+\begin{holmath}
+\HOLConst{\ensuremath{\varepsilon_0}}\,{\ensuremath{=}}\,\HOLConst{oleast}\,\HOLBoundVar{x}\ensuremath{.}\,\HOLConst{\ensuremath{\omega}}\sp{\HOLBoundVar{x}}\,{\ensuremath{=}}\,\HOLBoundVar{x}
+\end{holmath}
+This is well-defined because of Theorem~\ref{thm:fixpoints-exist}, giving us the following characterisations of \HOLinline{\HOLConst{\ensuremath{\varepsilon_0}}}:
+\[
+\begin{array}{l}
+\vdash\;\holthmenv{\HOLConst{\ensuremath{\omega}}\sp{\HOLConst{\ensuremath{\varepsilon_0}}}\,{\ensuremath{=}}\,\HOLConst{\ensuremath{\varepsilon_0}}}\\[2mm]
+\vdash\;\holthmenv{\HOLFreeVar{a}\,\ensuremath{{<}}\,\HOLConst{\ensuremath{\varepsilon_0}}\,\HOLTokenImp{}\,\HOLFreeVar{a}\,\ensuremath{{<}}\,\HOLConst{\ensuremath{\omega}}\sp{\HOLFreeVar{a}}\,\HOLTokenConj{}\,\HOLConst{\ensuremath{\omega}}\sp{\HOLFreeVar{a}}\,\ensuremath{{<}}\,\HOLConst{\ensuremath{\varepsilon_0}}}
+\end{array}
+\]
+\end{definition}
+
+\begin{theorem}
+As suggested, the arithmetic operations are all closed under \HOLinline{\HOLConst{\ensuremath{\varepsilon_0}}}:
+\[
+\begin{array}{c}
+\vdash \;\holthmenv{\HOLFreeVar{a}\,\ensuremath{{<}}\,\HOLConst{\ensuremath{\varepsilon_0}}\,\HOLTokenConj{}\,\HOLFreeVar{b}\,\ensuremath{{<}}\,\HOLConst{\ensuremath{\varepsilon_0}}\,\HOLTokenImp{}\,\HOLFreeVar{a}\,\ensuremath{{+}}\,\HOLFreeVar{b}\,\ensuremath{{<}}\,\HOLConst{\ensuremath{\varepsilon_0}}} \qquad
+\vdash \;\holthmenv{\HOLFreeVar{a}\,\ensuremath{{<}}\,\HOLConst{\ensuremath{\varepsilon_0}}\,\HOLTokenConj{}\,\HOLFreeVar{b}\,\ensuremath{{<}}\,\HOLConst{\ensuremath{\varepsilon_0}}\,\HOLTokenImp{}\,\HOLFreeVar{a}\,\ensuremath{{\cdot}}\,\HOLFreeVar{b}\,\ensuremath{{<}}\,\HOLConst{\ensuremath{\varepsilon_0}}}\\[2mm]
+\vdash \;\holthmenv{\HOLFreeVar{a}\,\ensuremath{{<}}\,\HOLConst{\ensuremath{\varepsilon_0}}\,\HOLTokenConj{}\,\HOLFreeVar{b}\,\ensuremath{{<}}\,\HOLConst{\ensuremath{\varepsilon_0}}\,\HOLTokenImp{}\,\HOLFreeVar{a}\sp{\HOLFreeVar{b}}\,\ensuremath{{<}}\,\HOLConst{\ensuremath{\varepsilon_0}}}
+\end{array}
+\]
+\end{theorem}
+
+\section{Uncountable Ordinals}
+\label{sec:uncountable-ordinals}
+
+\begin{definition}
+The ``countable ordinals'' are those with countably many predecessors.
+Write \HOLinline{\HOLConst{countableOrd}\,\HOLFreeVar{a}} for an $a$ with this property.
+\end{definition}
+
+An immediate consequence of Theorem~\ref{thm:univ-over-greater-cardinal} is that there are uncountably many countable ordinals.
+To guarantee even larger ordinals, we must instantiate the \HOLinline{\HOLFreeVar{\ensuremath{\alpha}}} type-parameter with known-to-be-larger types:
+\begin{definition}
+\label{defn:uncord-tyabbrevs}
+The \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{ucinf}} type has at least the cardinality of $2^{\aleph_0}$, and is thus at least as big as $\aleph_1$.
+The \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{ucord}} type contains ordinals that are quotients of wellorders over \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{ucinf}}:
+\begin{eqnarray*}
+\HOLinline{\ensuremath{\alpha}\,\HOLTyOp{ucinf}} &=& (\HOLinline{\ensuremath{\alpha}\,\ensuremath{{+}}\,(\HOLTyOp{num}\,\ensuremath{{\rightarrow}}\,\HOLTyOp{bool})})\,\HOLTyOp{inf}\\
+\HOLinline{\ensuremath{\alpha}\,\HOLTyOp{ucord}} &=& (\HOLinline{\ensuremath{\alpha}\,\ensuremath{{+}}\,(\HOLTyOp{num}\,\ensuremath{{\rightarrow}}\,\HOLTyOp{bool})})\,\HOLTyOp{ordinal}
+\end{eqnarray*}
+Note that these abbreviations mean that every \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{ucord}} is also an ordinal.
+Every theorem about values of type \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{ordinal}} applies to values of type \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{ucord}}.
+\end{definition}
+\begin{lemma}
+\label{lem:ucord-sup-exists}
+The countable ordinals are not larger than the universe of \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{ucinf}} (which contains \HOLinline{\ensuremath{\cal{U}}(\ensuremath{{:}}\HOLTyOp{num}\,\ensuremath{{\rightarrow}}\,\HOLTyOp{bool})} as a subset).
+\begin{holmath}
+\HOLTokenTurnstile{}\,\ensuremath{{\{}}\HOLBoundVar{a}\,\ensuremath{{\,\mid\,}}\,\HOLConst{countableOrd}\,\HOLBoundVar{a}\ensuremath{{\}}}\,\ensuremath{{\,\HOLTokenIsPrefix\,}}\,\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{ucinf})
+\end{holmath}
+\end{lemma}
+\begin{proof}
+By contradiction.
+Then \HOLinline{\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{ucinf})} injects into the countable ordinals \emph{via} some \HOLinline{\HOLFreeVar{f}}, but there is no bijection between the two.
+Let \HOLinline{\HOLFreeVar{a}\,{\ensuremath{=}}\,\HOLConst{sup}\,(\HOLFreeVar{f}\,\textrm{`}\,\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{ucinf}))}.
+(The supremum is well-defined because the image cannot have greater cardinality than \HOLinline{\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{ucinf})}.)
+We now consider whether or not \HOLinline{\HOLFreeVar{a}} is a countable ordinal.
+
+If so, then we show that there is an injection from \HOLinline{\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{ucinf})} into the (countable) predecessors of \HOLinline{\HOLFreeVar{a}}, which gives an immediate contradiction.
+If the image of \HOLinline{\HOLFreeVar{f}} doesn't includes the supremum, the injection is $f$ itself.
+If there is a $u$ such that \HOLinline{\HOLFreeVar{f}\,\HOLFreeVar{u}\,{\ensuremath{=}}\,\HOLFreeVar{a}}, then \HOLinline{\HOLFreeVar{f}} is an injection from \HOLinline{\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{ucinf})\,\HOLConst{DELETE}\,\HOLFreeVar{u}} into the predecessors, and deleting a single element from an infinite set doesn't change its cardinality, so the contradiction can still be obtained.
+
+If \HOLinline{\HOLFreeVar{a}} is not a countable ordinal, then all of the countable ordinals must be among its predecessors.
+So, \HOLinline{\ensuremath{{\{}}\HOLBoundVar{b}\,\ensuremath{{\,\mid\,}}\,\HOLConst{countableOrd}\,\HOLBoundVar{b}\ensuremath{{\}}}\,\ensuremath{{\,\HOLTokenIsPrefix\,}}\,\HOLConst{preds}\,\HOLFreeVar{a}}.
+But we also have that \HOLinline{\HOLConst{preds}\,\HOLFreeVar{a}\,\ensuremath{{\,\HOLTokenIsPrefix\,}}\,\ensuremath{\cal{U}}(\ensuremath{{:}}\ensuremath{\alpha}\,\HOLTyOp{ucinf})}, giving a contradiction by the transitivity of \HOLinline{(\HOLConst{\HOLTokenIsPrefix{}})}.
+\qed
+\end{proof}
+
+\begin{definition}
+\label{defn:omega1}
+\begin{holmath}
+(\HOLConst{\ensuremath{\omega}\ensuremath{\sb{1}}} :\ensuremath{\alpha}\,\HOLTyOp{ucord})\,{\ensuremath{=}}\,\HOLConst{sup}\,\ensuremath{{\{}}\HOLBoundVar{a}\,\ensuremath{{\,\mid\,}}\,\HOLConst{countableOrd}\,\HOLBoundVar{a}\ensuremath{{\}}}
+\end{holmath}
+The supremum is well-defined because of Lemma~\ref{lem:ucord-sup-exists} above.
+\end{definition}
+
+\begin{theorem}
+The ordinal \HOLinline{\HOLConst{\ensuremath{\omega}\ensuremath{\sb{1}}}} is the first uncountable ordinal:
+\begin{holmath}
+\HOLTokenTurnstile{}\,\HOLFreeVar{x}\,\ensuremath{{<}}\,\HOLConst{\ensuremath{\omega}\ensuremath{\sb{1}}}\,\ensuremath{{\iff}}\,\HOLConst{countableOrd}\,\HOLFreeVar{x}
+\end{holmath}
+(The irreflexivity of \HOLinline{(\HOLConst{\ensuremath{{<}}})} means that \HOLinline{\HOLConst{\ensuremath{\omega}\ensuremath{\sb{1}}}} cannot itself be countable.)
+\end{theorem}
+
+\section{Validating Algorithms on ACL2's Ordinals}
+\label{sec:validating-acl2}
+
+The ACL2 system models ordinals up to \HOLinline{\HOLConst{\ensuremath{\varepsilon_0}}} with a representation based on Cantor Normal Form.
+ACL2's manipulations of those values are defined by recursive functions over that syntax.
+ACL2 then takes as axiomatic that these recursive functions are correct; that, for example, its less-than relation on these values really does correspond to \HOLinline{(\HOLConst{\ensuremath{{<}}})}.
+
+In isolation, these axiomatic assertions can only be checked manually.
+However, thanks to work started by Gordon~\emph{et~al.}~\cite{DBLP:conf/fmcad/GordonRHK06}, much of the ACL2 axiomatic system has been embedded in HOL4.
+More recently, the ``ACL2 in HOL'' project was completed by Kaufmann and Slind~\cite{KaufmannSlind:tphols09:ordinal-pearl}, who showed that ACL2's less-than relation is well-founded, justifying ACL2's recursion and induction principles.
+Kaufmann and Slind note in passing:
+\begin{quote}\itshape
+\dots{}we are not ascribing any semantics at all to the notation; a separate proof would be needed to show that indeed the following definitions do correspond to the ordinals up to \HOLinline{\HOLConst{\ensuremath{\varepsilon_0}}}.
+\end{quote}
+A little earlier, Manolios and Vroon~\cite{ManoliosVroon:JAR2006:ordinal-arithmetic} improved ACL's representation of the ordinals-up-to-$\varepsilon_0$, and developed efficient arithmetic algorithms for that representation.
+They noted:
+\begin{quote}\itshape
+Note that these proofs are not mechanically verified.
+To do so would require using a theorem prover that can reason both about ACL2 and set theory.
+\end{quote}
+
+HOL4 can reason about ACL2, thanks to the embedding above, and can now also reason about ordinals in a way that captures their nature as canonical wellorders.
+Thus we are now in a position to do the mechanised proofs that could not be done in~\cite{KaufmannSlind:tphols09:ordinal-pearl,ManoliosVroon:JAR2006:ordinal-arithmetic}.
+
+Kaufmann and Slind's HOL4 theory file defines the ACL2 ordinals to be
+\begin{holmath}
+\,\,\HOLTyOp{osyntax}\,= \HOLConst{End}\,\mbox{\texttt{\,of\,}}\,\HOLTyOp{num}\,\ensuremath{{\,\mid\,}}\,\HOLConst{Plus}\,\mbox{\texttt{\,of\,}}\,\HOLTyOp{osyntax}\,\HOLTokenImp{}\,\HOLTyOp{num}\,\HOLTokenImp{}\,\HOLTyOp{osyntax}
+\end{holmath}
+That is, \HOLinline{\HOLTyOp{osyntax}} is an algebraic type with two constructors: \HOLinline{\HOLConst{End}} takes a natural number argument, and \HOLinline{\HOLConst{Plus}} takes a number and two \HOLinline{\HOLTyOp{osyntax}} values as arguments.
+
+\begin{definition}
+\renewcommand{\arraystretch}{1.2}
+The \HOLinline{\HOLTyOp{osyntax}} type can be given a semantics in \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{ordinal}}:
+\begin{holmath}
+\ensuremath{\llbracket}\HOLConst{End}\,\HOLFreeVar{n}\ensuremath{\rrbracket}\,{\ensuremath{=}}\,\HOLConst{\&}\HOLFreeVar{n}\\
+\ensuremath{\llbracket}\HOLConst{Plus}\,\HOLFreeVar{e}\,\HOLFreeVar{c}\,\HOLFreeVar{t}\ensuremath{\rrbracket}\,{\ensuremath{=}}\,\HOLConst{\ensuremath{\omega}}\sp{\ensuremath{\llbracket}\HOLFreeVar{e}\ensuremath{\rrbracket}}\,\ensuremath{{\cdot}}\,\HOLConst{\&}\HOLFreeVar{c}\,\ensuremath{{+}}\,\ensuremath{\llbracket}\HOLFreeVar{t}\ensuremath{\rrbracket}
+\end{holmath}
+\end{definition}
+Kaufmann and Slind define functions \HOLinline{\HOLConst{oless}} and \HOLinline{\HOLConst{is_ord}}, with the following equations for the interesting cases:
+\[
+\begin{array}{l}
+\begin{holarray}\HOLConst{oless}\,(\HOLConst{Plus}\,\HOLFreeVar{e\sb{\mathrm{1}}}\,\HOLFreeVar{k\sb{\mathrm{1}}}\,\HOLFreeVar{t\sb{\mathrm{1}}})\,(\HOLConst{Plus}\,\HOLFreeVar{e\sb{\mathrm{2}}}\,\HOLFreeVar{k\sb{\mathrm{2}}}\,\HOLFreeVar{t\sb{\mathrm{2}}})\,\ensuremath{{\iff}}\\
+\,\,\,\,\,\,\HOLKeyword{if}\,\HOLConst{oless}\,\HOLFreeVar{e\sb{\mathrm{1}}}\,\HOLFreeVar{e\sb{\mathrm{2}}}\,\HOLKeyword{then}\,\HOLConst{T}\\
+\,\,\,\,\,\,\HOLKeyword{else}\,\HOLKeyword{if}\,\HOLFreeVar{e\sb{\mathrm{1}}}\,{\ensuremath{=}}\,\HOLFreeVar{e\sb{\mathrm{2}}}\,\HOLTokenConj{}\,\HOLFreeVar{k\sb{\mathrm{1}}}\,\ensuremath{{<}}\,\HOLFreeVar{k\sb{\mathrm{2}}}\,\HOLKeyword{then}\,\HOLConst{T}\\
+\,\,\,\,\,\,\HOLKeyword{else}\,\HOLKeyword{if}\,\HOLFreeVar{e\sb{\mathrm{1}}}\,{\ensuremath{=}}\,\HOLFreeVar{e\sb{\mathrm{2}}}\,\HOLTokenConj{}\,\HOLFreeVar{k\sb{\mathrm{1}}}\,{\ensuremath{=}}\,\HOLFreeVar{k\sb{\mathrm{2}}}\,\HOLTokenConj{}\,\HOLConst{oless}\,\HOLFreeVar{t\sb{\mathrm{1}}}\,\HOLFreeVar{t\sb{\mathrm{2}}}\,\HOLKeyword{then}\,\HOLConst{T}\\
+\,\,\,\,\,\,\HOLKeyword{else}\,\HOLConst{F}\end{holarray}\\[3mm]
+\begin{holarray}\HOLConst{is_ord}\,(\HOLConst{Plus}\,\HOLFreeVar{e}\,\HOLFreeVar{k}\,\HOLFreeVar{t})\,\ensuremath{{\iff}}\\
+\,\,\,\,\,\,\HOLConst{is_ord}\,\HOLFreeVar{e}\,\HOLTokenConj{}\,\HOLFreeVar{e}\,\HOLTokenNotEqual{}\,\HOLConst{End}\,0\,\HOLTokenConj{}\,0\,\ensuremath{{<}}\,\HOLFreeVar{k}\,\HOLTokenConj{}\,\HOLConst{is_ord}\,\HOLFreeVar{t}\,\HOLTokenConj{}\\
+\,\,\,\,\,\,\HOLConst{oless}\,(\HOLConst{expt}\,\HOLFreeVar{t})\,\HOLFreeVar{e}\end{holarray}
+\end{array}
+\]
+The \HOLinline{\HOLConst{is_ord}} function is the analogue of \HOLinline{\HOLConst{is_polyform}} from Definition~\ref{defn:is-polyform}, capturing whether or not the notation is well-formed (non-zero coefficients and decreasing exponents).
+(The \HOLinline{\HOLConst{expt}} function returns $e$ when applied to \HOLinline{\HOLConst{Plus}\,\HOLFreeVar{e}\,\HOLFreeVar{c}\,\HOLFreeVar{t}}, and \HOLinline{\HOLConst{End}\,0} otherwise.)
+
+\begin{theorem}
+The \HOLinline{\HOLConst{oless}} function is correct on well-formed \HOLinline{\HOLTyOp{osyntax}} values:
+\begin{holmath}
+\HOLTokenTurnstile{}\,\HOLConst{is_ord}\,\HOLFreeVar{x}\,\HOLTokenConj{}\,\HOLConst{is_ord}\,\HOLFreeVar{y}\,\HOLTokenImp{}\,(\HOLConst{oless}\,\HOLFreeVar{x}\,\HOLFreeVar{y}\,\ensuremath{{\iff}}\,\ensuremath{\llbracket}\HOLFreeVar{x}\ensuremath{\rrbracket}\,\ensuremath{{<}}\,\ensuremath{\llbracket}\HOLFreeVar{y}\ensuremath{\rrbracket})
+\end{holmath}
+\end{theorem}
+And, ultimately:
+\begin{theorem}
+The model function ($\llbracket\_\rrbracket$) is a bijection from well-formed \HOLinline{\HOLTyOp{osyntax}} values into the ordinals less than \HOLinline{\HOLConst{\ensuremath{\varepsilon_0}}}.
+\begin{holmath}
+\HOLTokenTurnstile{}\;\HOLConst{BIJ}\;(\ensuremath{{\lambda}}\HOLBoundVar{x}\ensuremath{.}\;\ensuremath{\llbracket}\HOLBoundVar{x}\ensuremath{\rrbracket})\;\ensuremath{{\{}}\HOLBoundVar{x}\;\ensuremath{{\,\mid\,}}\;\HOLConst{is_ord}\;\HOLBoundVar{x}\ensuremath{{\}}}\;\ensuremath{{\{}}\HOLBoundVar{a}\;\ensuremath{{\,\mid\,}}\;\HOLBoundVar{a}\;\ensuremath{{<}}\;\HOLConst{\ensuremath{\varepsilon_0}}\ensuremath{{\}}}
+\end{holmath}
+\end{theorem}
+
+\subsection{Arithmetic}
+
+The ACL2 definitions of addition and multiplication over \HOLinline{\HOLTyOp{osyntax}} are correct:
+\begin{theorem}
+\[
+\begin{array}{l}
+\holthmenv{\HOLTokenTurnstile{}\,\HOLConst{is_ord}\,\HOLFreeVar{x}\,\HOLTokenConj{}\,\HOLConst{is_ord}\,\HOLFreeVar{y}\,\HOLTokenImp{}\,\ensuremath{\llbracket}\HOLConst{ord_add}\,\HOLFreeVar{x}\,\HOLFreeVar{y}\ensuremath{\rrbracket}\,{\ensuremath{=}}\,\ensuremath{\llbracket}\HOLFreeVar{x}\ensuremath{\rrbracket}\,\ensuremath{{+}}\,\ensuremath{\llbracket}\HOLFreeVar{y}\ensuremath{\rrbracket}} \\[2mm]
+\holthmenv{\HOLTokenTurnstile{}\,\HOLConst{is_ord}\,\HOLFreeVar{x}\,\HOLTokenConj{}\,\HOLConst{is_ord}\,\HOLFreeVar{y}\,\HOLTokenImp{}\,\ensuremath{\llbracket}\HOLConst{ord_mult}\,\HOLFreeVar{x}\,\HOLFreeVar{y}\ensuremath{\rrbracket}\,{\ensuremath{=}}\,\ensuremath{\llbracket}\HOLFreeVar{x}\ensuremath{\rrbracket}\,\ensuremath{{\cdot}}\,\ensuremath{\llbracket}\HOLFreeVar{y}\ensuremath{\rrbracket}}
+\end{array}
+\]
+\end{theorem}
+
+Manolios and Vroon~\cite{ManoliosVroon:JAR2006:ordinal-arithmetic} note that \HOLinline{\HOLConst{ord_mult}} is very inefficient, and prove a version with better complexity, based on new constants \HOLinline{\HOLConst{pmult}}, \HOLinline{\HOLConst{c1}} and \HOLinline{\HOLConst{c2}}.
+In order to embed it in ACL2, Manolios and Vroon have already mechanically proved \HOLinline{\HOLConst{pmult}} equivalent to \HOLinline{\HOLConst{ord_mult}}.
+Nonetheless, we also proved a version of their Theorem~10:
+\begin{theorem}[after Manolios and Vroon]
+The efficient \HOLinline{\HOLConst{pmult}} algorithm correctly calculates ordinal multiplication.
+(The natural number parameter $n$ can be set to zero initially.)
+\renewcommand{\arraystretch}{1.2}
+\begin{holmath}
+\vdash \; \holthmenv{\HOLConst{is_ord}\,\HOLFreeVar{a}\,\HOLTokenConj{}\,\HOLConst{is_ord}\,\HOLFreeVar{b}\,\HOLTokenConj{}\,\HOLFreeVar{n}\,\HOLTokenLeq{}\,\HOLConst{c1}\,(\HOLConst{expt}\,\HOLFreeVar{a})\,(\HOLConst{expt}\,\HOLFreeVar{b})\,\HOLTokenImp{}\,\ensuremath{\llbracket}\HOLConst{pmult}\,\HOLFreeVar{a}\,\HOLFreeVar{b}\,\HOLFreeVar{n}\ensuremath{\rrbracket}\,{\ensuremath{=}}\,\ensuremath{\llbracket}\HOLFreeVar{a}\ensuremath{\rrbracket}\,\ensuremath{{\cdot}}\,\ensuremath{\llbracket}\HOLFreeVar{b}\ensuremath{\rrbracket}}
+\end{holmath}
+\end{theorem}
+
+\section{Another Model}
+
+Sections \ref{sec:wellorders} and \ref{sec:constructing} showed how to construct a type \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{ordinal}} using wellorders.
+In this section, we describe an alternative, earlier construction of ordinals that starts with the infinitely-branching tree datatype shown below.\footnote{If we replaced \HOLinline{\HOLTyOp{num}} with \HOLinline{\ensuremath{\alpha}\,\HOLTyOp{inf}} in this data type, we might (this has not been pursued) then capture uncountable ordinals as in Section~\ref{sec:uncountable-ordinals}.
+Similarly, it is also plausible that a supremum constant akin to that in the model of Sections~\ref{sec:wellorders} and~\ref{sec:constructing} should be definable for this type.
+}
+The goal is to construct a wellordered type \HOLTyOp{ordinal} that has upper bounds for all countable sets; from this foundation, an Isabelle formalization by the second author \cite{Huffman-AFP05} develops ordinal arithmetic as described in Section~\ref{sec:arithmetic}.
+\[
+\HOLTyOp{preordinal}\,\,=\,\,\HOLConst{Zero}\,\,|\,\,\HOLConst{StrictLim}(\HOLTyOp{num}\,\ensuremath{\rightarrow}\,\HOLTyOp{preordinal})\]
+
+%TODO: We might instead give the parameterized definition:
+%\begin{HOLblock}
+%\HOLKeyword{datatype}\,\ensuremath{\alpha}\,\HOLTyOp{preordinal}\,=\,\HOLConst{Zero}\,|\,\HOLConst{StrictLim}(\HOLinline{\ensuremath{\alpha}\,\HOLTyOp{inf}}\,\ensuremath{\rightarrow}\,\ensuremath{\alpha}\,\HOLTyOp{preordinal})
+%\end{HOLblock}
+
+We define the subterm relation $\lhd$ as the least transitive relation satisfying $f(x) \lhd \HOLConst{StrictLim}(f)$ for all $f, x$. The wellfoundedness of $\lhd$ follows from the datatype induction rule for \HOLTyOp{preordinal}. However, $\lhd$ is not a wellorder because it is not linear. To construct a wellorder, we will need to quotient \HOLTyOp{preordinal} by a suitable equivalence relation.
+
+We define relations $\preceq$ and $\prec$ as the smallest relations satisfying the following rules. Intuitively, $x \preceq y$ iff $(\preceq)$ relates every subterm of $x$ to some subterm of $y$. We then define $x \approx y$ iff $x \preceq y \land y \preceq x$.
+
+\[
+\begin{array}{c}
+(\forall x.\;x \lhd y \Rightarrow x \prec z) \Rightarrow y \preceq z\\[2mm]
+x \preceq y \land y \lhd z \Rightarrow x \prec z
+\end{array}
+\]
+
+Wellfounded inductions (using $\lhd$) show that $\preceq$ is reflexive and transitive.
+It directly follows that $\approx$ is an equivalence relation. We can similarly prove further transitivity rules for various combinations of $\prec$ and $\preceq$.
+Finally we can prove the order trichotomy rule $x \prec y \lor y \prec x \lor x \approx y$ by nested inductions on $x$ and $y$.
+
+We then define type \HOLTyOp{ordinal} as a quotient $\HOLTyOp{preordinal} / \mathord{\approx}$.
+The various transitivity rules show that $\prec$ and $\preceq$ respect $\approx$, so we can lift them to relations $<$ and $\le$ on the quotient type \HOLTyOp{ordinal}.
+The order trichotomy rule implies that \HOLTyOp{ordinal} is wellordered by $<$.
+Finally, we can construct a (strict) upper bound for any countably infinite set by lifting the constructor function \HOLConst{StrictLim} to type \HOLTyOp{ordinal}.
+
+
+
+\section{Conclusion}
+
+The HOL4 theory of ordinals demonstrates that ordinals can be cleanly modelled as a quotient of wellorders, that this approach supports ordinals of large cardinalities, and that supremum can be modelled as a function taking a set as an argument.
+All these contributions are novel with this work.
+In addition, the utility of the approach has been demonstrated by validating practically important algorithms in the ACL2 theorem-prover.
+
+\paragraph{Related Work}
+There is relatively little published work on mechanisations of ordinals within a non-set-theoretic setting.
+One early development is John Harrison's \texttt{wellorder} library~\cite{harrison92:_hol_wellorder}.
+Originally developed for HOL88, this remains part of the HOL~Light library.
+This theory picks out certain wellorders to be ordinals using Hilbert-choice, and proves some consequences of the Axiom of Choice, such as Zorn's Lemma.
+It does not include any ordinal arithmetic.
+
+In similar vein, there is a large theory of ordinals and cardinals behind Traytel~\emph{et~al.}~\cite{LICS2012:Traytel:datatypes}.
+This work is available at Isabelle's Archive of Formal Proofs.
+It defines wellorders and develops a number of important facts about cardinalities.
+It does not quotient its wellorder type, and emulates ordinal arithmetic ``synthetically'' (\emph{e.g.}, addition as wellorder concatenation).
+This work does not define ordinal multiplication nor exponentiation.
+
+Finally, as in ACL2, it is possible to use ordinal \emph{notations} (capturing countably many ordinals).
+A great deal of interesting ordinal theory (up to $\Gamma_0$) has been mechanised in this style in Coq by Cast\'eran and Contejean~\cite{coq-ordinals}.
+
+\paragraph{Availability}
+Most of the HOL4 theory of the ordinals described here is in the current release of HOL4.
+Newer material, including the validation of the ACL2 algorithms, was in the HOL4 repository by the time of commit \texttt{e3bd872ec1} and will appear in the next release.
+The sources for this paper are at \url{github.com/mn200/ordinals-paper}.
+
+\bibliography{ordinals}
+\bibliographystyle{plain}
+
+\end{document}
+
+% LocalWords:  HOL wellorder HOL's wellorders bijective bijection cardinality wobound ordlt ACL2
