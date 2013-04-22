@@ -61,7 +61,7 @@ val _ = add_rule {block_style = (AroundEachPhrase, (PP.CONSISTENT, 0)),
 
 val _ = add_rule {block_style = (AroundEachPhrase, (PP.CONSISTENT, 0)),
                   paren_style = OnlyIfNecessary,
-                  fixity = Suffix 750,
+                  fixity = Suffix 760,
                   term_name = "**",
                   pp_elements = [TOK "(BSUP)", TM, TOK "(ESUP)"]}
 
