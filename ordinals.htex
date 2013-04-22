@@ -115,7 +115,7 @@ There are two important theorems about \HOLtm{wobound}:
 \end{array}
 \]
 \begin{definition}
-The ordering relation for wellorders (written \HOLtm{w1 orderlt w1}) can then be defined
+The ordering relation for wellorders (written \HOLtm{w1 orderlt w2}) can then be defined
 \begin{holmath}
 \HOLthm[>>,def]{wellorder.orderlt_def}
 \end{holmath}
