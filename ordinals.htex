@@ -123,9 +123,9 @@ The ordering relation for wellorders (written \HOLtm{w1 orderlt w1}) can then be
 Transitivity of \HOLtm[nodollarparens]{(orderlt)} follows from the transitivity of order-isomorphism and the second result about \HOLtm{wobound} above.
 Well-foundedness for \HOLtm[nodollarparens]{(orderlt)} follows easily from the well-foundedness of the underlying relation.
 Well-foundedness is also the basis for the proof that \HOLtm[nodollarparens]{(orderlt)} is irreflexive.
+Finally, we show that \HOLtm[nodollarparens]{(orderlt)} is trichotomous:
 
 \begin{theorem}
-The last important property of \HOLtm[nodollarparens]{(orderlt)} is that it is trichotomous.
 \begin{holmath}
 \HOLthm[>>]{wellorder.orderlt_trichotomy}
 \end{holmath}
@@ -184,13 +184,13 @@ Define the notion of a set being downward closed:
 \end{holmath}
 \end{definition}
 
+Von Neumann famously characterised the ordinal numbers as those sets equal to their own predecessors.
+HOL's type system doesn't allow this: instead we must replace ``equal'' with the existence of a bijection:
 \begin{theorem}
 \label{thm:preds-bij}
-Von Neumann famously characterised the ordinal numbers as those sets equal to their own predecessors.
-HOL's type system doesn't allow this, but we do have that there is a bijection between all possible ordinals and all but one of the downward closed sets of ordinals.
+The \HOLtm{preds} function forms a bijection between all possible ordinals and all but one of the downward closed sets of ordinals.
 The one omission is the universal set.
 
-The bijection is given by the \HOLtm{preds} function, so that while the ordinals are not \emph{equal} to their predecessors, they are at least in bijection with them:
 \begin{holmath}
 \HOLthm[m;c,width=70]{ordinal.preds_bij}
 \end{holmath}
