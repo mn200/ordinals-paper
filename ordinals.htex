@@ -90,6 +90,7 @@ We define what it is for a relation $R$ to be a wellorder:
 \begin{holmath}
 \HOLthm[def,width=65]{wellorder.wellorder_def}
 \end{holmath}
+\label{defn:wellorder}
 \end{definition}
 As there is at least one value satisfying this definition (the empty set will do), we use HOL's standard type definition mechanism to define a new type (family) \HOLty{:'a wellorder} that captures all of the possible wellorders over values drawn from arbitrary types \HOLty{:'a}.
 The critical relations over wellorders are order-isomorphism and the relation that orders them linearly.
@@ -215,12 +216,21 @@ The supremum of a set is the least element not in the set's collective predecess
 \end{holmath}
 \end{definition}
 
-To characterise the reasonable arguments to \HOLtm{sup}, we need two further theorems.
+To characterise the reasonable arguments to \HOLtm{sup}, we need a definition and two further theorems.
+
+\begin{definition}
+Let \HOLtm{allOrds} be the wellorder of all the $\alpha$-ordinals (ordered by \HOLtm{ordlt}).\begin{holmath}
+\HOLthm[def,>>,showtypes,width=70]{ordinal.allOrds_def}
+\end{holmath}
+(%
+The constant \HOLtm{mkWO} lifts a relation into the type \HOLty{:'a wellorder}.
+It is necessary to separately show that the relation satisfies the \HOLtm{wellorder} predicate from Definition~\ref{defn:wellorder}.%
+)
+\end{definition}
 
 \begin{theorem}
 \label{thm:wellorder-allOrds}
-Let \HOLtm{allOrds} be the wellorder of all the $\alpha$-ordinals (ordered by \HOLtm{ordlt}).
-Then any wellorder $w$ over the type \HOLty{:'a inf} is order-isomorphic to the segment of \HOLtm{allOrds} below the element of \HOLty{:'a ordinal} to which the quotienting (\HOLtm{mkOrdinal}) maps $w$.
+Any wellorder $w$ over the type \HOLty{:'a inf} is order-isomorphic to the segment of \HOLtm{allOrds} below the element of \HOLty{:'a ordinal} to which the quotienting (\HOLtm{mkOrdinal}) maps $w$.
 \[
 \vdash \;\holthmenv{\HOLthm[showtypes,width=70,nostile]{ordinal.wellorder_ordinal_isomorphism}}
 \]
