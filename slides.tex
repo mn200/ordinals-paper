@@ -1,0 +1,290 @@
+\documentclass[xetex,14pt]{beamer}
+\usepackage{fontspec}
+\usepackage{alltt}
+\setbeamertemplate{navigation symbols}{}
+\usefonttheme{serif}
+\setmainfont{Hoefler Text}
+%\renewcommand\ttdefault{lmtt}
+\setmonofont[Scale=MatchLowercase%,WordSpace={1,0,0}
+]{Menlo}
+\newcommand{\const}[1]{\mbox{\fontspec{Abadi MT Condensed Light}#1}}
+
+
+\title{Ordinals in HOL:
+\\transfinite arithmetic up to\\
+(and beyond) $\omega_1$}
+\author{Michael Norrish \and Brian Huffman}
+\date{Wednesday, 24 July 2013}
+
+% 68	66	41
+% 44 42 29
+
+\definecolor{DarkBrown}{RGB}{86,83,55}
+\definecolor{PaperBrown}{RGB}{226,225,199}
+\definecolor{MyPurple}{RGB}{75,30,187}
+\setbeamercolor{normal text}{fg=DarkBrown}
+\setbeamercolor{structure}{fg=DarkBrown}
+\setbeamercolor{background canvas}{bg=PaperBrown}
+\setbeamertemplate{frametitle}[default][center]
+\usebackgroundtemplate{%
+  \includegraphics[width=\paperwidth,height=\paperheight]{keynotepaper}}
+
+\newenvironment{mytt}{\color{MyPurple}\fontsize{12}{12}\selectfont\begin{alltt}}{\end{alltt}}
+\newcommand{\ty}[1]{\texttt{\color{MyPurple} #1}}
+
+\begin{document}
+\begin{frame}
+\maketitle
+\end{frame}
+
+\begin{frame}{Why?}
+Ordinals are \textbf{cool}: where else can we say something as mind-blowing as \emph{“the set of countable ordinals is uncountable”}\,?
+
+\bigskip
+Previous approaches in typed higher order logics have not allowed
+\begin{itemize}
+\item suitably arbitrary uses of supremum; or
+\item modelling of $\omega_1$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Also, Ordinals in ACL2}
+
+ACL2 uses ordinals to justify recursive definitions:
+\begin{enumerate}
+\item find a suitable ordinal when making definition (automatically or interactively);
+\item system admits definition
+\end{enumerate}
+
+\bigskip But, ACL2’s ordinals are actually an ordinal notation, with no verified connection to “real” ordinals.
+\end{frame}
+
+\begin{frame}{ACL2’s Ordinals}
+
+ACL2’s notation is Cantor Normal Form up to $\varepsilon_0$
+\begin{itemize}
+\item \emph{e.g.}, $\omega^2 + \omega\cdot 2 + 1$ or $\omega^{\omega^{\omega+1}} + \omega^3\cdot 4 + \omega \cdot 10 + 4$
+\end{itemize}
+
+\bigskip Kaufmann and Slind show that $<$ on this type is well-founded; this is all that’s really necessary.
+
+\bigskip
+However, we \emph{have} shown the ACL2 type and operations are valid ordinal arithmetic.
+
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{Notational Approaches}
+Generally, a notational approach is easy to mechanise.
+
+\bigskip
+Do the equivalent of
+\begin{mytt}
+  Hol_datatype`ord = End of num
+                   | Plus of ord \(\times\) num \(\times\) ord`
+\end{mytt}
+
+\bigskip
+But, this only captures countably many ordinals.
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Another Algebraic Approach}
+
+Based on understanding of ordinals as \emph{‘just like the naturals with a \const{sup} (or \const{limit}\,) function’}.
+
+\begin{mytt}
+  Hol_datatype`ord = Z
+                   | S of ord
+                   | Lim of (num \(\to\) ord)`
+\end{mytt}
+Using \ty{num} above still only gets countable ordinals (\,and \const{sup} over countable sets).
+
+\bigskip
+More importantly, tricky quotienting still required (\,see paper for how to make this work).
+
+\end{frame}
+
+\begin{frame}{von Neumann’s Approach}
+An ordinal number is a set $\alpha$ such that
+\begin{itemize}
+\item $\alpha$ is transitive (that is, every member of $\alpha$ is also a subset of $\alpha$); and
+\item
+$\forall x,\,y \in \alpha$ one of the following holds: $x \in y$, $x=y$ or $y \in x$.
+\end{itemize}
+
+\bigskip
+And so, every ordinal is equal to the set of its own predecessors.
+\end{frame}
+
+\begin{frame}{Simple Types and von Neumann}
+
+If the type of an ordinal $\alpha$ has to equal the type of a set of ordinals ($\alpha$’s predecessors), we must solve “\ty{$\tau$ set $=\; \tau$}”, which is clearly impossible in HOL.
+
+\bigskip
+The best we can hope for is to show that ordinals are in bijection with predecessor sets\dots
+
+\end{frame}
+\begin{frame}{von Neumann is a Distraction}
+
+“Really,” ordinals are just canonical wellorders of a given order type.
+
+\bigskip
+In set theory (ZFC, NBG, ...) we can’t say “\emph{ordinals are equivalence classes of wellorders}” because this phrase does not denote a set.
+
+\bigskip
+But we \emph{can} do just this in HOL.
+
+\end{frame}
+
+\begin{frame}{Ordinals \emph{are} Wellorder Equivalence Classes}
+
+This works in HOL because the wellorders, and thus the ordinals, are with respect to some underlying set.
+
+\bigskip
+Start with \ty{$\alpha$ wellorder}, the type of sets of pairs of \ty{$\alpha$}s where the relation is a wellorder.
+
+\bigskip
+And so, the \ty{$\alpha$ wellorder}s are in bijection with a (strict) subset of all possible values of type \ty{$(\alpha \times \alpha)$~set}.
+\end{frame}
+
+\begin{frame}{Necessary Properties of Wellorders}
+Need to \textbf{define} notions of
+\begin{itemize}
+\item wellorder isomorphism;
+\item initial segments on wellorders; and
+\item wellorder $<$:  $u < v$ iff there is an $e$ in $v$ such that $u$ is order isomorphic to the initial segment of $v$ up to $e$
+\end{itemize}
+
+\bigskip
+Need to \textbf{prove}:
+\begin{itemize}
+\item isomorphism an equivalence;
+\item ordering is a partial order, well-founded, trichotomous.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Next Step: Quotient}
+All the important properties lift through quotienting.
+
+\bigskip
+Thanks to well-foundedness, can define \const{oleast} operator, returning minimal ordinal of a non-empty set.
+\begin{itemize}
+\item $\const{oleast}\{x\mid\const{T}\}$ is the zero ordinal.
+\end{itemize}
+\end{frame}
+
+\newcommand{\ainf}{\ty{$\alpha\;\,+$~num}}
+\begin{frame}{Cardinalities}
+If the type \ty{$\alpha$} is finite, \ty{$\alpha$~wellorder} only has finitely many elements too.
+
+\bigskip
+So, let the \ty{$\alpha$~ordinal} type be a quotient of wellorders over the (sure to be infinite) type \ainf.
+\begin{itemize}
+\item $\const{oleast}\{ x \mid y < x \}$ is the successor of $y$
+\item some work (still to come) to show this always exists
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{The Critical Cardinality Result}
+There are strictly more values in \ty{$\alpha$~ordinal} than there are in \ainf
+\begin{itemize}
+\item follows from the observation that \ty{$\alpha$~ordinal} itself forms a wellorder, and
+\item
+that every wellorder over \ainf{} is isomorphic to an initial segment of the \ty{$\alpha$~ordinal} wellorder
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Defining Supremum}
+
+Let
+\[
+\const{sup}\;S = \const{oleast}\{ \alpha \mid \alpha \not\in \bigcup_{\beta\in S}\const{preds}\;\beta\}
+\]
+
+\bigskip
+\emph{I.e.}, the least ordinal not in the combined predecessors of all the elements in $S$.
+
+\end{frame}
+
+\begin{frame}{Supremum Works}
+
+“\emph{The least ordinal not in the combined predecessors of all the elements in $S$}” is OK because:
+\begin{itemize}
+\item any given ordinal in \ty{$\alpha$~ordinal} has no more predecessors than \ainf; and
+\item
+cardinal $\kappa\times\kappa\approx\kappa$, so there must be a minimal element not in the collective predecessors
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{And so\dots}
+Can define $\omega = \const{sup} \{\const{\&}n \mid \const{T} \}$
+\begin{itemize}
+\item where \const{\&} is the injection from natural numbers into ordinals
+\end{itemize}
+
+\bigskip
+Can distinguish limit and successor ordinals.
+
+\bigskip
+Can prove a recursion theorem by cases\dots
+
+\end{frame}
+
+\begin{frame}{A Recursion Theorem}
+
+With $<$ on ordinals well-founded, one could always define functions by well-founded recursion.
+
+\bigskip
+\onslide<2->
+However, this pseudo-algebraic principle is nicer to use:
+\[
+\begin{array}{l}
+\forall z\,\mathit{sf}\,\mathit{lf}.\;\exists! f.\\
+\quad\begin{array}[t]{rcl}
+f(0) &=& z\\
+f(\alpha^+) &=& \mathit{sf}(\alpha,f(\alpha))\\
+f(\beta) &=& \mathit{lf}(\beta, \{\, f(\eta)\mid \eta < \beta\})
+\end{array}
+\end{array}
+\]
+(where $\beta$ has to be a non-zero limit ordinal).
+
+\end{frame}
+
+\begin{frame}{Arithmetic Comes Next}
+The recursion principle makes it easy to define
+\begin{itemize}
+\item addition,
+\item multiplication,
+\item exponentiation
+\end{itemize}
+
+\bigskip
+Some more work results in definitions and properties of division, remainder, and discrete logarithm.
+
+\end{frame}
+
+\begin{frame}{See Paper For:}
+\textbf{Cantor Normal Forms}:
+\begin{itemize}
+\item Every ordinal can be expressed as a unique “polynomial” over bases $\geq 2$
+\end{itemize}
+
+\bigskip\bigskip\onslide<2->
+\textbf{Existence of Fixed Points}:
+\begin{itemize}
+\item Every increasing, continuous function has infinitely many fixed points
+\item \emph{E.g.}, can define $\varepsilon_0$, first fixed point for $x \mapsto \omega^x$
+\end{itemize}
+
+\end{frame}
+
+\end{document}
+%%% Local Variables:
+%%% coding: utf-8
+%%% mode: latex
+%%% TeX-engine: xetex
+%%% End:

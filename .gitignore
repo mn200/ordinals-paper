@@ -1,9 +1,16 @@
 ordinals.pdf
+slides.pdf
 ordinals.tex
 *.blg
 *.bbl
 *.aux
 *.log
+*.nav
+*.out
+*.toc
+*.synctex.gz
+*.snm
+*.vrb
 *~
 .HOLMK
 *.uo
