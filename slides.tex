@@ -29,6 +29,17 @@
 \usebackgroundtemplate{%
   \includegraphics[width=\paperwidth,height=\paperheight]{keynotepaper}}
 
+\setbeamertemplate{footline}{%
+\leavevmode%
+\hbox{%
+\begin{beamercolorbox}[wd=.50\paperwidth,ht=2.25ex,dp=1ex,right]{section in head/foot}%
+\color{gray}ITP~$2014$\end{beamercolorbox}%
+\begin{beamercolorbox}[wd=.50\paperwidth,ht=2.25ex,dp=1ex,right]{section in head/foot}%
+\color{gray}$\insertframenumber$/$\inserttotalframenumber$\hspace*{1em}%
+\end{beamercolorbox}}%
+\vskip0pt%
+}
+
 \newenvironment{mytt}{\color{MyPurple}\fontsize{12}{12}\selectfont\begin{alltt}}{\end{alltt}}
 \newcommand{\ty}[1]{\texttt{\color{MyPurple} #1}}
 
@@ -86,7 +97,8 @@ Do the equivalent of
 \bigskip
 But, this only captures countably many ordinals.
 \end{frame}
-
+\newcommand{\num}{\ty{num}}
+\newcommand{\bool}{\ty{bool}}
 \begin{frame}[fragile]
 \frametitle{Another Algebraic Approach}
 
@@ -219,6 +231,19 @@ cardinal $\kappa\times\kappa\approx\kappa$, so there must be a minimal element n
 
 \end{frame}
 
+\begin{frame}{The Supremum Rule}
+
+It is legitimate to write
+\[
+\const{sup}\; S
+\]
+when $S$ is a set of \ty{$\alpha$~ordinal}s if
+\[
+S \preceq \ainf
+\]
+
+\end{frame}
+
 \begin{frame}{And so\dots}
 Can define $\omega = \const{sup} \{\const{\&}n \mid \const{T} \}$
 \begin{itemize}
@@ -279,6 +304,66 @@ Some more work results in definitions and properties of division, remainder, and
 \item Every increasing, continuous function has infinitely many fixed points
 \item \emph{E.g.}, can define $\varepsilon_0$, first fixed point for $x \mapsto \omega^x$
 \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Countable Ordinals and $\omega_1$}
+
+A \emph{countable ordinal} is one with countably many predecessors.
+
+\bigskip
+In \ty{$\alpha$~ordinal}, which is over \ainf, all ordinals may be countable.
+\begin{itemize}
+\item Critical cardinality result tells us there are uncountably many of them!
+\end{itemize}
+
+\bigskip
+To get more, instantiate \ty{$\alpha$} in \ainf{} to \ty{$\alpha + (\texttt{num}\to\texttt{bool})$}
+
+\end{frame}
+
+\begin{frame}{The First Uncountable Ordinal}
+
+
+First, prove that cardinality of $\{\beta \mid \beta\mbox{ is countable}\}$ is $\preceq$
+cardinality of \ty{$(\alpha + (\texttt{num} \to \texttt{bool})) + \texttt{num}$}
+
+\bigskip
+Then, it’s legitimate to write
+\[
+\omega_1 \stackrel{\mbox{\tiny def}}{=} \const{sup}\{\beta \mid \beta \mbox{ is countable}\}
+\]
+when $\beta$ has type \ty{$(\alpha + (\texttt{num}\to\texttt{bool}))\;\texttt{ordinal}$}
+
+\end{frame}
+
+\begin{frame}{$\omega_1$ and so on}
+
+$\omega_1$ is the first uncountable ordinal:
+\[
+\beta < \omega_1 \iff \beta \mbox{ is countable}
+\]
+
+\bigskip
+To capture $\omega_2$ we might instantiate type variable
+\[
+\ty{$\alpha$} \mapsto \ty{$\alpha + ((\num\to\bool)\to\bool)$}
+\]
+
+\end{frame}
+
+\begin{frame}{Conclusions}
+
+The “obvious” way to mechanise ordinals, as equivalence classes of wellorders, works well.
+\begin{itemize}
+\item Usual arithmetic falls out
+\end{itemize}
+
+\bigskip
+Supremum can be defined naturally, taking sets of ordinals as an argument.
+
+\bigskip
+Just as naturally, large ordinals such as $\omega_1$ can be defined.
 
 \end{frame}
 
