@@ -724,7 +724,7 @@ Newer material, including the validation of the ACL2 algorithms, was in the HOL4
 The sources for this paper are at \url{github.com/mn200/ordinals-paper}.
 
 \bibliography{std-abbrevs,theorem-proving,includes}
-\bibliographystyle{plain}
+\bibliographystyle{splncs03}
 
 \end{document}
 
