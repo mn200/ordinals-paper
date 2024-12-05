@@ -20,3 +20,8 @@ ordinals.tex
 munger
 munger.o
 holtexbasic.sty
+ordinals.fdb_latexmk
+ordinals.fls
+.holobjs
+.hollogs
+
