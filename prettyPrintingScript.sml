@@ -5,7 +5,7 @@
 open HolKernel boolLib Parse bossLib
 
 (* open dependent theories *)
-open ordinalTheory ucordTheory
+open ordinalTheory
 open ordNotationSemanticsTheory
 
 val _ = new_theory "prettyPrinting"
@@ -81,6 +81,8 @@ val _ = overload_on ("'", ``IMAGE``)
 val _ = set_fixity "'" (Infixl 2000);
 
 val _ = disable_tyabbrev_printing "cord"
+
+Type inf[pp] = “:num + 'a”
 
 val _ = export_theory()
 

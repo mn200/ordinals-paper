@@ -1,10 +1,10 @@
-\documentclass[11pt]{llncs}
+\documentclass[11pt]{article}
 \usepackage[T1]{fontenc}
 \usepackage{alltt}
 \usepackage{url}
 \usepackage{times}
 \usepackage{stmaryrd}
-
+\usepackage{amsthm}
 \usepackage[strings]{underscore}
 \usepackage{holtexbasic}
 
@@ -17,12 +17,13 @@
 \newenvironment{holmath}{\begin{displaymath}\begin{array}{l}}{\end{array}\end{displaymath}\ignorespacesafterend}
 \newenvironment{holarray}{\begin{array}[t]{l}}{\end{array}}
 
-
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{lemma}{Lemma}
 \title{Ordinals in HOL: Transfinite Arithmetic \\
 up to (and beyond) $\omega_1$}
-\author{Michael Norrish\inst{1} \and Brian Huffman\inst{2}}
-\institute{Canberra Research Lab., NICTA\thanks{NICTA is funded by the Australian Government as represented by the Department of Broadband, Communications and the Digital Economy and the Australian Research Council through the ICT Centre of Excellence program. The first author also thanks Thomas Forster for productive early discussions.
-Finally, we thank ITP's anonymous reviewers for helpful comments.}\\ \emph{also,} Australian National University\\\email{Michael.Norrish@nicta.com.au} \and Galois, Inc.\\\email{huffman@galois.com}}
+\author{Michael Norrish \and Brian Huffman}
 
 \begin{document}
 
@@ -46,7 +47,7 @@ The user is thus able to choose an ordinal domain of sufficient size for their p
 
 Our approach is to model ordinals as quotients of wellorders with respect to wellorder isomorphism.
 This approach has not been mechanised before.
-Within HOL, any wellorder is some underlying domain (represented as a polymorphic type argument).
+Within HOL, any wellorder over is some underlying domain (represented as a polymorphic type argument).
 The resulting ordinals are also parameterised by a type argument, indirectly encoding the limit of the type.
 For example, the type \HOLty{:num ordinal} captures only the countable ordinals.
 
@@ -142,7 +143,7 @@ If there is an $x$ such that \HOLtm{f(x) = NONE}, then $w_2$ is less than $w_1$,
 If $f$ never has value \HOLtm{NONE}, then $w_2$ is at least as big as $w_1$.
 If the image of $f$ on the elements of $w_1$ is all the elements of $w_2$, then $f$ is the bijection we need to demonstrate order-isomorphism of $w_1$ and $w_2$.
 Otherwise, there is an element of $w_2$ not in the image of $f$.
-Take the least such element to be the bound demonstrating \HOLtm{w1 orderlt w2}.\qed
+Take the least such element to be the bound demonstrating \HOLtm{w1 orderlt w2}.
 \end{proof}
 
 \section{Constructing the Ordinals}
@@ -251,7 +252,6 @@ As \HOLtm{(orderlt)} is reflected by \HOLtm{(ordlt)}, we have \HOLtm{bw orderlt 
 Because \HOLtm{w} was least, \HOLtm{bw} must be order-isomorphic to \HOLtm{wobound b allOrds}.
 So, \HOLtm{bw} and \HOLtm{w} are order-isomorphic to the same ordinal (\HOLtm{wobound b allOrds}), but \HOLtm{bw orderlt w}, contradicting the irreflexivity of \HOLtm{(orderlt)}.
 The other direction (when \HOLtm{w} is larger) is similar.
-\qed
 \end{proof}
 
 This result means that the predecessors of any given \HOLty{:'a ordinal} must be equinumerous to a wellorder over \HOLty{:'a inf}.
@@ -276,7 +276,6 @@ If \HOLtm{univ(:'a ordinal) <<= univ(:'a inf)}, then the injection from left-to-
 This gives \HOLtm{(orderiso) allOrds wo}.
 By Theorem~\ref{thm:wellorder-allOrds}, this \HOLtm{wo} is also order-isomorphic to \HOLtm{wobound (mkOrdinal wo) allOrds}.
 Transitivity of \HOLtm{(orderiso)} then gives us that \HOLtm{allOrds} is less than itself, which is impossible.
-\qed
 \end{proof}
 
 These results then combine to give us the important characterising theorem about \HOLtm{sup}:
@@ -297,7 +296,6 @@ There must then be a least ordinal not within that union, and so \HOLtm{sup s} w
 
 Moreover, the set of all the combined predecessors (call it \HOLtm{ps}) is also downward closed, and so, by Theorem~\ref{thm:preds-bij}, there must be an ordinal $\alpha$ whose predecessors are exactly \HOLtm{ps}.
 So, \HOLtm{sup s = α}, and it is easy to show that the theorem's characterisation of its predecessors is correct.
-\qed
 \end{proof}
 
 An easy corollary is that there is no maximal ordinal.
@@ -327,7 +325,7 @@ If \HOLtm{omax (preds a)} is \HOLtm{NONE}, we abbreviate this condition as \HOLt
 \label{thm:lt-omega}
 One simple consequence of these definitions is that every natural number is less than \HOLtm{ω}, and that only the natural numbers are less than \HOLtm{ω}:
 \begin{holmath}
-\HOLthm[showtypes,width=85,a/α,n/m]{ordinal.lt_omega}
+\HOLthm[showtypes,a/α,n/m]{ordinal.lt_omega}
 \end{holmath}
 \end{theorem}
 
@@ -337,10 +335,9 @@ One simple consequence of these definitions is that every natural number is less
 \begin{theorem}
 With access to a total well-founded relation \HOLtm{ordlt}, we have always been able to define functions by well-founded recursion.
 However, we can now recast this in a more palatable form, one that makes the ordinals look a little like an algebraic type generated by constructors \HOLtm{0}, \HOLtm{ordSUC x} and \HOLtm{sup s} (with $s$ not including its own upper bound):
-\[
-\vdash \;
-\holthmenv{\HOLthm[nosp,nostile,showtypes,width=80,a/α]{ordinal.ord_RECURSION}}
-\]
+\begin{holmath}
+\HOLthm[nosp,showtypes,width=100,a/α]{ordinal.ord_RECURSION}
+\end{holmath}
 \end{theorem}
 This recursion theorem allows the user to specify three cases: \HOLtm{z}, a value in the desired range (\HOLty{:'b}) for zero; \HOLtm{sf}, a function for constructing a result when \HOLtm{h} is passed a successor; and \HOLtm{lf} when the argument to \HOLtm{h} is a limit ordinal.
 The \HOLtm{lf} function is given the original limit ordinal \HOLtm{a} as well as the set of all the values given by recursive calls of \HOLtm{h} on \HOLtm{a}'s predecessors.
@@ -351,7 +348,7 @@ This gives
 \begin{definition}
 Ordinal addition:
 \begin{holmath}
-\HOLthm[def,a/β,b/α]{ordinal.ordADD_def}
+\HOLthm[a/β,b/α]{ordinal.ordADD_def}
 \end{holmath}
 \end{definition}
 The definitions of multiplication and exponentiation are as straightforward.
@@ -359,7 +356,7 @@ For example:
 \begin{definition}
 Ordinal exponentiation:
 \begin{holmath}
-\HOLthm[def,a/β,b/α]{ordinal.ordEXP_def}
+\HOLthm[a/β,b/α]{ordinal.ordEXP_def}
 \end{holmath}
 $(\HOLtm{ordEXP a})$ is equivalent to $(\HOLtm{\b. a ** b})$; the pretty-printing obscures this because the underlying constant prints as \HOLtm{ordEXP} when it doesn't have two arguments.
 \end{definition}
@@ -406,7 +403,6 @@ If larger, then $q' = q + \delta$, for some non-zero $\delta$, and $a = b(q + \d
 Then $a = bq + b\delta + r$, and cancellation and associativity then give us that $b\delta + r = \HOLtm{a%b}$.
 But $0 < \delta$, making \HOLtm{a%b} too large.
 The other case is similar.
-\qed
 \end{proof}
 
 \subsection{Cantor Normal Forms}
@@ -480,13 +476,12 @@ Let \HOLtm{s} be the set above (all the $f$-iterates of $a$).
 Take the fixpoint to be the supremum of \HOLtm{s}.
 We have that \HOLtm{f (sup s) = sup (IMAGE f s)}, and are required to show that \HOLtm{sup (IMAGE f s) = sup s}.
 This follows straightforwardly because $f$ is non-decreasing.
-\qed
 \end{proof}
 
 Our arithmetic operations (addition, multiplication and exponentiation) are all continuous in their right arguments and non-decreasing.
 So, for example, the first fixpoint of $(\HOLtm{ordMULT (2:'a ordinal)})$ is \HOLtm{0}; the next is \HOLtm{ω}, and the third is \HOLtm{ω * 2}.
 The first non-zero fixpoint of $(\HOLtm{ordMULT ω})$ is \HOLtm{ordEXP ω ω}.
-However, it turns out that the first fixpoint of $(\HOLtm{ordEXP ω})$ is not expressible with any of the notation we have developed thus far.
+However, it turns out that the first fixpoint of $(\HOLtm[tr'pp_avoids_symbol_merges'=0]{ordEXP ω})$ is not expressible with any of the notation we have developed thus far.
 
 \begin{definition}
 Let $\HOLtm{epsilon0}$ be the least fixpoint of $(\HOLtm{ordEXP ω})$:
@@ -538,13 +533,15 @@ Every theorem about values of type \HOLty{:'a ordinal} applies to values of type
 \label{lem:ucord-sup-exists}
 The countable ordinals are not larger than the universe of \HOLty{:'a ucinf} (which contains \HOLtm{univ(:num->bool)} as a subset).
 \begin{holmath}
-\HOLthm{ucord.ucord_sup_exists_lemma}
+\HOLthm{ordinal.ucord_sup_exists_lemma}
 \end{holmath}
 \end{lemma}
 \begin{proof}
 By contradiction.
 Then \HOLtm{univ(:'a ucinf)} injects into the countable ordinals \emph{via} some \HOLtm{f}, but there is no bijection between the two.
-Let \HOLtm{a = sup (IMAGE f univ(:'a ucinf))}.
+Let \begin{holmath}
+\HOLtm[alltt]{a = sup (IMAGE f univ(:'a ucinf))}
+\end{holmath}
 (The supremum is well-defined because the image cannot have greater cardinality than \HOLtm{univ(:'a ucinf)}.)
 We now consider whether or not \HOLtm{a} is a countable ordinal.
 
@@ -555,13 +552,12 @@ If there is a $u$ such that \HOLtm{f u = a}, then \HOLtm{f} is an injection from
 If \HOLtm{a} is not a countable ordinal, then all of the countable ordinals must be among its predecessors.
 So, \HOLtm{{b:'a ucord | countableOrd b\} <<= preds a}.
 But we also have that \HOLtm{preds a <<= univ(:'a ucinf)}, giving a contradiction by the transitivity of \HOLtm{(<<=)}.
-\qed
 \end{proof}
 
 \begin{definition}
 \label{defn:omega1}
 \begin{holmath}
-\HOLthm[def,showtypes]{ucord.omega1_def}
+\HOLthm[def,showtypes]{ordinal.omega1_def}
 \end{holmath}
 The supremum is well-defined because of Lemma~\ref{lem:ucord-sup-exists} above.
 \end{definition}
@@ -569,7 +565,7 @@ The supremum is well-defined because of Lemma~\ref{lem:ucord-sup-exists} above.
 \begin{theorem}
 The ordinal \HOLtm{omega1} is the first uncountable ordinal:
 \begin{holmath}
-\HOLthm{ucord.x_lt_omega1_countable}
+\HOLthm{ordinal.x_lt_omega1_countable}
 \end{holmath}
 (The irreflexivity of \HOLtm{(<)} means that \HOLtm{ω₁} cannot itself be countable.)
 \end{theorem}

@@ -1,22 +1,17 @@
-ORDINAL_DIR = $(HOLDIR)/examples/set-theory/hol_sets
-INCLUDES = $(ORDINAL_DIR)
 
 MASTER_THEORY = prettyPrintingTheory
 
 EXTRA_CLEANS = holtexbasic.sty munger munger.o ordinals.tex \
                ordinals.pdf ordinals.log ordinals.aux
 
-ordinals.pdf: ordinals.tex ordinals.blg
-	pdflatex $<
+ordinals.pdf: ordinals.tex
+	latexmk -pdf ordinals
 
 ordinals.tex: ordinals.htex holtexbasic.sty overrides munger
 	./munger -mc overrides < $< > $@
-
-ordinals.blg: ordinals.tex
-	bibtex ordinals
 
 munger: $(dprot $(MASTER_THEORY)).uo $(dprot $(HOLDIR)/bin/mkmunge.exe)
 	$(protect $(HOLDIR)/bin/mkmunge.exe) -o $@ $(MASTER_THEORY)
 
 holtexbasic.sty: $(dprot $(HOLDIR)/src/TeX/holtexbasic.sty)
-	$(CP) $(protect $<) $@
+	sed -e 's/fancyvrb,// ; /fvset/d' < $(protect $<) > $@
